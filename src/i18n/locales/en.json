@@ -1,5 +1,7 @@
 {
-  "app": { "name": "Online Accounting" },
+  "app": {
+    "name": "Online Accounting"
+  },
   "nav": {
     "dashboard": "Dashboard",
     "sales": "Sales",
@@ -12,7 +14,8 @@
     "next": "Next",
     "back": "Back",
     "cancel": "Cancel",
-    "optional": "optional"
+    "optional": "optional",
+    "save": "Save"
   },
   "hello": {
     "title": "Hello 👋",
@@ -52,10 +55,22 @@
     }
   },
   "businessTypes": {
-    "service": { "name": "Services", "description": "Consulting, agencies, repair, freelancing" },
-    "trading": { "name": "Trading", "description": "Retail, wholesale, online shops" },
-    "manufacturing": { "name": "Manufacturing", "description": "Making goods from raw materials" },
-    "restaurant": { "name": "Restaurant", "description": "Restaurants, cafés, beverages" }
+    "service": {
+      "name": "Services",
+      "description": "Consulting, agencies, repair, freelancing"
+    },
+    "trading": {
+      "name": "Trading",
+      "description": "Retail, wholesale, online shops"
+    },
+    "manufacturing": {
+      "name": "Manufacturing",
+      "description": "Making goods from raw materials"
+    },
+    "restaurant": {
+      "name": "Restaurant",
+      "description": "Restaurants, cafés, beverages"
+    }
   },
   "company": {
     "name": "Company / business name",
@@ -95,5 +110,102 @@
     "accept": "Accept"
   },
   "comingSoon": "Coming soon",
-  "language": "Language"
+  "language": "Language",
+  "accountTypes": {
+    "asset": "Asset",
+    "liability": "Liability",
+    "equity": "Equity",
+    "revenue": "Revenue",
+    "expense": "Expense"
+  },
+  "accountRoles": {
+    "CASH": "Cash",
+    "BANK": "Bank",
+    "AR": "Accounts receivable",
+    "INPUT_VAT": "Input VAT",
+    "WHT_RECEIVABLE": "WHT receivable",
+    "INVENTORY": "Inventory",
+    "AP": "Accounts payable",
+    "OUTPUT_VAT": "Output VAT",
+    "WHT_PAYABLE": "WHT payable",
+    "RETAINED_EARNINGS": "Retained earnings",
+    "SALES_REVENUE": "Sales revenue",
+    "SALES_RETURNS": "Sales returns",
+    "DEFAULT_EXPENSE": "Default expense"
+  },
+  "accounts": {
+    "title": "Chart of accounts",
+    "search": "Search code or name",
+    "showInactive": "Show inactive accounts",
+    "expandAll": "Expand all",
+    "collapseAll": "Collapse all",
+    "expand": "Expand",
+    "collapse": "Collapse",
+    "add": "Add account",
+    "addChild": "Add sub-account",
+    "edit": "Edit account",
+    "deactivate": "Deactivate",
+    "activate": "Activate",
+    "delete": "Delete",
+    "confirmDelete": "Delete account {{code}}?",
+    "actions": "Actions for account {{code}}",
+    "inactive": "Inactive",
+    "system": "System account (cannot be deleted)",
+    "systemNote": "System account: you can change its name, code and parent, but not its type or group flag, and it cannot be deleted.",
+    "empty": "No accounts found",
+    "code": "Code",
+    "type": "Type",
+    "nameTh": "Name (Thai)",
+    "nameEn": "Name (English)",
+    "parent": "Parent",
+    "noParent": "— Top level —",
+    "isGroup": "Group (header) account",
+    "isGroupHelp": "Groups organise sub-accounts and cannot be posted to directly.",
+    "errors": {
+      "required": "Required",
+      "tooLong": "Too long"
+    }
+  },
+  "mappings": {
+    "title": "Account mappings",
+    "description": "The system posts documents to these accounts automatically. You can change them, but the account must be active, not a group, and of the right type.",
+    "notMapped": "Not mapped",
+    "help": {
+      "CASH": "Cash receipts/payments",
+      "BANK": "Bank receipts/payments (default)",
+      "AR": "Credit sales, invoices",
+      "INPUT_VAT": "VAT on purchases",
+      "WHT_RECEIVABLE": "Tax withheld by customers",
+      "INVENTORY": "Goods / materials on hand",
+      "AP": "Credit purchases, unpaid bills",
+      "OUTPUT_VAT": "VAT on sales",
+      "WHT_PAYABLE": "Tax we withhold from suppliers",
+      "RETAINED_EARNINGS": "Profit carried forward at period close",
+      "SALES_REVENUE": "Default revenue for products/services",
+      "SALES_RETURNS": "Credit notes (returns/discounts)",
+      "DEFAULT_EXPENSE": "Expense when no account is given"
+    }
+  },
+  "dbErrors": {
+    "UNKNOWN": "Something went wrong, please try again",
+    "DUPLICATE": "This code already exists",
+    "IN_USE": "Cannot delete: it has sub-accounts or is in use",
+    "PERMISSION": "You do not have permission to do this",
+    "ACCOUNT_NAME_REQUIRED": "Account name is required",
+    "ACCOUNT_COMPANY_IMMUTABLE": "Accounts cannot move between companies",
+    "ACCOUNT_SYSTEM_TYPE_LOCKED": "System accounts cannot change type",
+    "ACCOUNT_SYSTEM_GROUP_LOCKED": "System accounts cannot change their group flag",
+    "ACCOUNT_HAS_CHILDREN": "This account has sub-accounts",
+    "ACCOUNT_HAS_ACTIVE_CHILDREN": "Deactivate all sub-accounts first",
+    "ACCOUNT_IS_MAPPED": "This account is used in Account mappings; change the mapping first",
+    "ACCOUNT_PARENT_NOT_FOUND": "Parent account not found",
+    "ACCOUNT_PARENT_NOT_GROUP": "Parent must be a group account",
+    "ACCOUNT_PARENT_TYPE_MISMATCH": "Type must match the parent account",
+    "ACCOUNT_PARENT_INACTIVE": "Parent account is inactive",
+    "ACCOUNT_PARENT_CYCLE": "Cannot use this parent (it would create a loop)",
+    "MAPPING_ACCOUNT_NOT_FOUND": "Account not found",
+    "MAPPING_ACCOUNT_IS_GROUP": "Cannot map to a group account",
+    "MAPPING_ACCOUNT_INACTIVE": "Cannot map to an inactive account",
+    "MAPPING_ACCOUNT_TYPE_MISMATCH": "Account type does not match this role"
+  }
 }

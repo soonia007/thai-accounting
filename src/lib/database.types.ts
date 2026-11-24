@@ -331,6 +331,10 @@ export type Database = {
     }
     Functions: {
       accept_invitation: { Args: { p_invitation_id: string }; Returns: string }
+      account_role_type: {
+        Args: { p_role: Database['public']['Enums']['account_role'] }
+        Returns: Database['public']['Enums']['account_type']
+      }
       create_company: {
         Args: {
           p_address?: string
