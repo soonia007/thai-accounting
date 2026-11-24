@@ -577,6 +577,55 @@ export type Database = {
           },
         ]
       }
+      document_shares: {
+        Row: {
+          company_id: string
+          created_at: string
+          created_by: string | null
+          document_id: string | null
+          expires_at: string | null
+          payment_id: string | null
+          revoked_at: string | null
+          token: string
+        }
+        ComputedFields: never
+        Insert: {
+          company_id: string
+          created_at?: string
+          created_by?: string | null
+          document_id?: string | null
+          expires_at?: string | null
+          payment_id?: string | null
+          revoked_at?: string | null
+          token: string
+        }
+        Update: {
+          company_id?: string
+          created_at?: string
+          created_by?: string | null
+          document_id?: string | null
+          expires_at?: string | null
+          payment_id?: string | null
+          revoked_at?: string | null
+          token?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'document_shares_company_id_document_id_fkey'
+            columns: ['company_id', 'document_id']
+            isOneToOne: false
+            referencedRelation: 'documents'
+            referencedColumns: ['company_id', 'id']
+          },
+          {
+            foreignKeyName: 'document_shares_company_id_payment_id_fkey'
+            columns: ['company_id', 'payment_id']
+            isOneToOne: false
+            referencedRelation: 'payments'
+            referencedColumns: ['company_id', 'id']
+          },
+        ]
+      }
       documents: {
         Row: {
           company_id: string
@@ -1115,8 +1164,50 @@ export type Database = {
         }
         Returns: string
       }
+      create_share_link: {
+        Args: { p_document_id?: string; p_expires_at?: string; p_payment_id?: string }
+        Returns: string
+      }
       document_balance: { Args: { p_document_id: string }; Returns: Json }
+      get_shared_document: { Args: { p_token: string }; Returns: Json }
       is_valid_thai_tax_id: { Args: { p_tax_id: string }; Returns: boolean }
+      list_documents: {
+        Args: { p_company_id: string; p_types: Database['public']['Enums']['document_type'][] }
+        Returns: {
+          contact_id: string
+          contact_name: string
+          created_at: string
+          doc_date: string
+          due_date: string
+          id: string
+          number: string
+          outstanding: number
+          paid: number
+          payment_status: string
+          ref_document_id: string
+          status: Database['public']['Enums']['document_status']
+          total: number
+          type: Database['public']['Enums']['document_type']
+        }[]
+      }
+      list_payments: {
+        Args: {
+          p_company_id: string
+          p_direction: Database['public']['Enums']['payment_direction']
+        }
+        Returns: {
+          amount: number
+          contact_id: string
+          contact_name: string
+          created_at: string
+          documents: string
+          id: string
+          number: string
+          pay_date: string
+          status: Database['public']['Enums']['document_status']
+          wht_amount: number
+        }[]
+      }
       my_invitations: {
         Args: Record<PropertyKey, never>
         Returns: {
@@ -1127,9 +1218,29 @@ export type Database = {
           role: Database['public']['Enums']['member_role']
         }[]
       }
+      open_documents: {
+        Args: {
+          p_company_id: string
+          p_contact_id: string
+          p_direction: Database['public']['Enums']['payment_direction']
+        }
+        Returns: {
+          deferred_vat_remaining: number
+          doc_date: string
+          due_date: string
+          id: string
+          number: string
+          outstanding: number
+          total: number
+          type: Database['public']['Enums']['document_type']
+          wht_total: number
+        }[]
+      }
       post_document: { Args: { p_document_id: string }; Returns: Json }
       post_payment: { Args: { p_payment_id: string }; Returns: Json }
+      print_document: { Args: { p_document_id?: string; p_payment_id?: string }; Returns: Json }
       remove_member: { Args: { p_company_id: string; p_user_id: string }; Returns: undefined }
+      revoke_share_link: { Args: { p_token: string }; Returns: undefined }
       save_document: { Args: { p_doc: Json }; Returns: string }
       save_payment: { Args: { p_pay: Json }; Returns: string }
       simulate_posting: { Args: { p_kind: string; p_payload: Json }; Returns: Json }
