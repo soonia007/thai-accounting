@@ -3,7 +3,7 @@ import { NavLink, Outlet } from 'react-router-dom'
 import { CompanySwitcher } from '@/features/company/CompanySwitcher'
 import { cn } from '@/lib/utils'
 import { LanguageSwitcher } from './LanguageSwitcher'
-import { NAV_ITEMS } from './nav-items'
+import { MENU_ITEM, NAV_ITEMS } from './nav-items'
 
 export function AppLayout() {
   const { t } = useTranslation()
@@ -54,7 +54,7 @@ export function AppLayout() {
           aria-label="bottom navigation"
           className="pb-safe fixed inset-x-0 bottom-0 z-10 grid grid-cols-5 border-t bg-background md:hidden"
         >
-          {NAV_ITEMS.filter((i) => i.mobile).map(({ to, labelKey, icon: Icon }) => (
+          {[...NAV_ITEMS.filter((i) => i.mobile), MENU_ITEM].map(({ to, labelKey, icon: Icon }) => (
             <NavLink
               key={to}
               to={to}

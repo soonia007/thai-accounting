@@ -161,6 +161,64 @@ export type Database = {
           },
         ]
       }
+      bank_accounts: {
+        Row: {
+          account_id: string
+          account_name: string
+          account_number: string
+          bank_code: string
+          branch: string | null
+          company_id: string
+          created_at: string
+          id: string
+          is_active: boolean
+          kind: Database['public']['Enums']['bank_account_kind']
+          updated_at: string
+        }
+        ComputedFields: never
+        Insert: {
+          account_id: string
+          account_name: string
+          account_number: string
+          bank_code: string
+          branch?: string | null
+          company_id: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          kind?: Database['public']['Enums']['bank_account_kind']
+          updated_at?: string
+        }
+        Update: {
+          account_id?: string
+          account_name?: string
+          account_number?: string
+          bank_code?: string
+          branch?: string | null
+          company_id?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          kind?: Database['public']['Enums']['bank_account_kind']
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'bank_accounts_company_id_account_id_fkey'
+            columns: ['company_id', 'account_id']
+            isOneToOne: true
+            referencedRelation: 'accounts'
+            referencedColumns: ['company_id', 'id']
+          },
+          {
+            foreignKeyName: 'bank_accounts_company_id_fkey'
+            columns: ['company_id']
+            isOneToOne: false
+            referencedRelation: 'companies'
+            referencedColumns: ['id']
+          },
+        ]
+      }
       companies: {
         Row: {
           address: string | null
@@ -300,6 +358,155 @@ export type Database = {
           },
         ]
       }
+      contacts: {
+        Row: {
+          address: string | null
+          branch_code: string
+          branch_name: string | null
+          code: string
+          company_id: string
+          contact_person: string | null
+          contact_type: Database['public']['Enums']['contact_type']
+          created_at: string
+          credit_term_days: number
+          email: string | null
+          entity_type: Database['public']['Enums']['entity_type']
+          id: string
+          is_active: boolean
+          name: string
+          notes: string | null
+          phone: string | null
+          tax_id: string | null
+          updated_at: string
+        }
+        ComputedFields: never
+        Insert: {
+          address?: string | null
+          branch_code?: string
+          branch_name?: string | null
+          code: string
+          company_id: string
+          contact_person?: string | null
+          contact_type?: Database['public']['Enums']['contact_type']
+          created_at?: string
+          credit_term_days?: number
+          email?: string | null
+          entity_type?: Database['public']['Enums']['entity_type']
+          id?: string
+          is_active?: boolean
+          name: string
+          notes?: string | null
+          phone?: string | null
+          tax_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          address?: string | null
+          branch_code?: string
+          branch_name?: string | null
+          code?: string
+          company_id?: string
+          contact_person?: string | null
+          contact_type?: Database['public']['Enums']['contact_type']
+          created_at?: string
+          credit_term_days?: number
+          email?: string | null
+          entity_type?: Database['public']['Enums']['entity_type']
+          id?: string
+          is_active?: boolean
+          name?: string
+          notes?: string | null
+          phone?: string | null
+          tax_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'contacts_company_id_fkey'
+            columns: ['company_id']
+            isOneToOne: false
+            referencedRelation: 'companies'
+            referencedColumns: ['id']
+          },
+        ]
+      }
+      products: {
+        Row: {
+          code: string
+          company_id: string
+          created_at: string
+          description: string | null
+          expense_account_id: string | null
+          id: string
+          income_account_id: string | null
+          is_active: boolean
+          kind: Database['public']['Enums']['product_kind']
+          name: string
+          purchase_price: number | null
+          sale_price: number | null
+          unit: string | null
+          updated_at: string
+          vat_type: Database['public']['Enums']['product_vat_type']
+        }
+        ComputedFields: never
+        Insert: {
+          code: string
+          company_id: string
+          created_at?: string
+          description?: string | null
+          expense_account_id?: string | null
+          id?: string
+          income_account_id?: string | null
+          is_active?: boolean
+          kind?: Database['public']['Enums']['product_kind']
+          name: string
+          purchase_price?: number | null
+          sale_price?: number | null
+          unit?: string | null
+          updated_at?: string
+          vat_type?: Database['public']['Enums']['product_vat_type']
+        }
+        Update: {
+          code?: string
+          company_id?: string
+          created_at?: string
+          description?: string | null
+          expense_account_id?: string | null
+          id?: string
+          income_account_id?: string | null
+          is_active?: boolean
+          kind?: Database['public']['Enums']['product_kind']
+          name?: string
+          purchase_price?: number | null
+          sale_price?: number | null
+          unit?: string | null
+          updated_at?: string
+          vat_type?: Database['public']['Enums']['product_vat_type']
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'products_company_id_expense_account_id_fkey'
+            columns: ['company_id', 'expense_account_id']
+            isOneToOne: false
+            referencedRelation: 'accounts'
+            referencedColumns: ['company_id', 'id']
+          },
+          {
+            foreignKeyName: 'products_company_id_fkey'
+            columns: ['company_id']
+            isOneToOne: false
+            referencedRelation: 'companies'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'products_company_id_income_account_id_fkey'
+            columns: ['company_id', 'income_account_id']
+            isOneToOne: false
+            referencedRelation: 'accounts'
+            referencedColumns: ['company_id', 'id']
+          },
+        ]
+      }
       profiles: {
         Row: {
           created_at: string
@@ -334,6 +541,19 @@ export type Database = {
       account_role_type: {
         Args: { p_role: Database['public']['Enums']['account_role'] }
         Returns: Database['public']['Enums']['account_type']
+      }
+      create_bank_account_with_ledger: {
+        Args: {
+          p_account_name: string
+          p_account_number: string
+          p_bank_code: string
+          p_branch?: string
+          p_company_id: string
+          p_kind?: Database['public']['Enums']['bank_account_kind']
+          p_ledger_code: string
+          p_ledger_name: string
+        }
+        Returns: string
       }
       create_company: {
         Args: {
@@ -385,9 +605,14 @@ export type Database = {
         | 'INVENTORY'
         | 'RETAINED_EARNINGS'
       account_type: 'asset' | 'liability' | 'equity' | 'revenue' | 'expense'
+      bank_account_kind: 'savings' | 'current' | 'fixed' | 'other'
       business_type: 'service' | 'trading' | 'manufacturing' | 'restaurant'
+      contact_type: 'customer' | 'vendor' | 'both'
       date_era: 'BE' | 'CE'
+      entity_type: 'juristic' | 'individual'
       member_role: 'owner' | 'admin' | 'staff' | 'accountant' | 'viewer'
+      product_kind: 'product' | 'service'
+      product_vat_type: 'standard' | 'zero' | 'exempt'
     }
     CompositeTypes: {
       [_ in never]: never
@@ -518,9 +743,14 @@ export const Constants = {
         'RETAINED_EARNINGS',
       ],
       account_type: ['asset', 'liability', 'equity', 'revenue', 'expense'],
+      bank_account_kind: ['savings', 'current', 'fixed', 'other'],
       business_type: ['service', 'trading', 'manufacturing', 'restaurant'],
+      contact_type: ['customer', 'vendor', 'both'],
       date_era: ['BE', 'CE'],
+      entity_type: ['juristic', 'individual'],
       member_role: ['owner', 'admin', 'staff', 'accountant', 'viewer'],
+      product_kind: ['product', 'service'],
+      product_vat_type: ['standard', 'zero', 'exempt'],
     },
   },
 } as const

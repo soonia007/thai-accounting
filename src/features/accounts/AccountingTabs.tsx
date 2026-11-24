@@ -5,6 +5,7 @@ import { cn } from '@/lib/utils'
 const TABS = [
   { to: '/accounting/accounts', labelKey: 'accounts.title' },
   { to: '/accounting/mappings', labelKey: 'mappings.title' },
+  { to: '/accounting/bank-accounts', labelKey: 'bankAccounts.title' },
 ]
 
 export function AccountingTabs() {

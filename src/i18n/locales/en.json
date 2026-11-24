@@ -8,14 +8,22 @@
     "purchases": "Purchases",
     "accounting": "Accounting",
     "reports": "Reports",
-    "settings": "Settings"
+    "settings": "Settings",
+    "contacts": "Contacts",
+    "products": "Products",
+    "menu": "Menu"
   },
   "common": {
     "next": "Next",
     "back": "Back",
     "cancel": "Cancel",
     "optional": "optional",
-    "save": "Save"
+    "save": "Save",
+    "active": "Active",
+    "showInactive": "Show inactive",
+    "noResults": "Nothing matches your search",
+    "countOf": "Showing {{shown}} of {{total}}",
+    "close": "Close"
   },
   "hello": {
     "title": "Hello 👋",
@@ -188,7 +196,7 @@
   },
   "dbErrors": {
     "UNKNOWN": "Something went wrong, please try again",
-    "DUPLICATE": "This code already exists",
+    "DUPLICATE": "This already exists (duplicate code, tax ID or account number)",
     "IN_USE": "Cannot delete: it has sub-accounts or is in use",
     "PERMISSION": "You do not have permission to do this",
     "ACCOUNT_NAME_REQUIRED": "Account name is required",
@@ -206,6 +214,149 @@
     "MAPPING_ACCOUNT_NOT_FOUND": "Account not found",
     "MAPPING_ACCOUNT_IS_GROUP": "Cannot map to a group account",
     "MAPPING_ACCOUNT_INACTIVE": "Cannot map to an inactive account",
-    "MAPPING_ACCOUNT_TYPE_MISMATCH": "Account type does not match this role"
+    "MAPPING_ACCOUNT_TYPE_MISMATCH": "Account type does not match this role",
+    "COMPANY_IMMUTABLE": "Records cannot move between companies",
+    "PRODUCT_INCOME_ACCOUNT_TYPE": "Income account must be a revenue account",
+    "PRODUCT_EXPENSE_ACCOUNT_TYPE": "Expense account must be an expense or asset account",
+    "PRODUCT_ACCOUNT_NOT_POSTABLE": "Cannot use a group or inactive account",
+    "BANK_ACCOUNT_LEDGER_TYPE": "The ledger account must be an asset account",
+    "BANK_ACCOUNT_LEDGER_NOT_POSTABLE": "Cannot use a group or inactive account"
+  },
+  "contacts": {
+    "title": "Contacts",
+    "search": "Search code, name, tax ID or phone",
+    "filterAll": "All types",
+    "add": "Add contact",
+    "edit": "Edit contact",
+    "editNamed": "Edit {{name}}",
+    "deleteNamed": "Delete {{name}}",
+    "confirmDelete": "Delete {{name}}? (If it is used on documents, deactivate it instead.)",
+    "empty": "Add your first customer or vendor, or import them from a CSV file.",
+    "importTitle": "Import contacts from CSV",
+    "contactType": "Type",
+    "entityType": "Entity",
+    "types": {
+      "customer": "Customer",
+      "vendor": "Vendor",
+      "both": "Customer and vendor"
+    },
+    "entities": {
+      "juristic": "Juristic person",
+      "individual": "Individual"
+    },
+    "name": "Name",
+    "code": "Code",
+    "codeAuto": "leave empty to auto-assign",
+    "nationalId": "National ID",
+    "branchName": "Branch name",
+    "contactPerson": "Contact person",
+    "phone": "Phone",
+    "creditTerm": "Credit term (days)",
+    "termDays": "{{days}}-day term",
+    "notes": "Notes",
+    "noTaxId": "No tax ID",
+    "errors": {
+      "required": "Required",
+      "taxId": "Invalid ID (13 digits)",
+      "branchCode": "Branch number must be 5 digits",
+      "email": "Invalid email address",
+      "creditTerm": "Must be 0–365 days"
+    }
+  },
+  "products": {
+    "title": "Products and services",
+    "search": "Search code or name",
+    "add": "Add product or service",
+    "edit": "Edit product or service",
+    "editNamed": "Edit {{name}}",
+    "deleteNamed": "Delete {{name}}",
+    "confirmDelete": "Delete {{name}}? (If it is used on documents, deactivate it instead.)",
+    "empty": "No products or services yet",
+    "importTitle": "Import products from CSV",
+    "kind": "Type",
+    "kinds": {
+      "product": "Product",
+      "service": "Service"
+    },
+    "name": "Name",
+    "unit": "Unit",
+    "unitPlaceholder": "piece, hour, job",
+    "salePrice": "Sale price",
+    "purchasePrice": "Purchase price",
+    "buy": "Buy",
+    "priceNote": "Prices exclude VAT. Each document applies VAT according to its VAT mode.",
+    "vatType": "VAT",
+    "vatTypes": {
+      "standard": "Company standard rate",
+      "zero": "Zero-rated (0%)",
+      "exempt": "Exempt"
+    },
+    "incomeAccount": "Income account",
+    "expenseAccount": "Expense / purchase account",
+    "useMapping": "Use default ({{role}})",
+    "description": "Description",
+    "errors": {
+      "required": "Required",
+      "money": "Invalid amount"
+    }
+  },
+  "bankAccounts": {
+    "title": "Bank accounts",
+    "description": "Each bank account is linked to one ledger account in the chart of accounts.",
+    "add": "Add bank account",
+    "edit": "Edit bank account",
+    "editNamed": "Edit account {{number}}",
+    "deleteNamed": "Delete account {{number}}",
+    "confirmDelete": "Delete this bank account? (Its ledger account stays.)",
+    "empty": "No bank accounts yet",
+    "default": "Default",
+    "bank": "Bank",
+    "number": "Account number",
+    "kind": "Account type",
+    "kinds": {
+      "savings": "Savings",
+      "current": "Current",
+      "fixed": "Fixed deposit",
+      "other": "Other"
+    },
+    "accountName": "Account name",
+    "branch": "Branch",
+    "ledger": "Ledger account",
+    "ledgerNew": "Create a new ledger account",
+    "ledgerExisting": "Use an existing account",
+    "ledgerPick": "Choose an account",
+    "errors": {
+      "required": "Enter the account number and account name",
+      "ledgerCode": "Enter a code for the new ledger account",
+      "ledgerPick": "Choose a ledger account"
+    }
+  },
+  "import": {
+    "import": "Import",
+    "export": "Export CSV",
+    "template": "Download template",
+    "chooseFile": "Choose CSV file",
+    "help": "Rows whose code matches an existing record update it; rows without a code are added with an automatic code. The file must be UTF-8.",
+    "summary": "{{valid}} rows ready · {{errors}} problems",
+    "partialNote": "Rows with problems are skipped. Fix the file and import again.",
+    "importN": "Import {{count}} rows",
+    "done": "Imported {{count}} rows",
+    "missingColumns": "The file is missing columns: {{columns}}",
+    "row": "Row",
+    "column": "Column",
+    "problem": "Problem",
+    "errors": {
+      "required": "Required",
+      "invalidValue": "Invalid value",
+      "taxId": "Invalid tax ID",
+      "branchCode": "Invalid branch number",
+      "duplicateInFile": "Duplicate of another row in the file",
+      "taxIdExists": "This tax ID and branch already belong to another contact",
+      "creditTerm": "Credit term must be 0–365",
+      "email": "Invalid email",
+      "money": "Invalid amount",
+      "accountNotFound": "Account code not found",
+      "accountInvalid": "Account cannot be used (wrong type, group, or inactive)"
+    }
   }
 }
