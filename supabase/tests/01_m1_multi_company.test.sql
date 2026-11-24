@@ -89,7 +89,7 @@ select is(
 select is(
   (select count(*)::int from public.accounts where parent_id is null),
   5, 'only the 5 top-level groups have no parent');
-select is((select count(*)::int from public.account_mappings), 12, 'service company has 12 mappings');
+select is((select count(*)::int from public.account_mappings), 14, 'service company has 14 mappings (incl. deferred VAT)');
 
 select throws_ok(
   $$ select public.create_company('Bad', 'service', '1111111111111') $$,

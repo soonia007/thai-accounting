@@ -139,7 +139,9 @@
     "RETAINED_EARNINGS": "Retained earnings",
     "SALES_REVENUE": "Sales revenue",
     "SALES_RETURNS": "Sales returns",
-    "DEFAULT_EXPENSE": "Default expense"
+    "DEFAULT_EXPENSE": "Default expense",
+    "OUTPUT_VAT_DEFERRED": "Deferred output VAT",
+    "INPUT_VAT_DEFERRED": "Deferred input VAT"
   },
   "accounts": {
     "title": "Chart of accounts",
@@ -179,19 +181,8 @@
     "description": "The system posts documents to these accounts automatically. You can change them, but the account must be active, not a group, and of the right type.",
     "notMapped": "Not mapped",
     "help": {
-      "CASH": "Cash receipts/payments",
-      "BANK": "Bank receipts/payments (default)",
-      "AR": "Credit sales, invoices",
-      "INPUT_VAT": "VAT on purchases",
-      "WHT_RECEIVABLE": "Tax withheld by customers",
-      "INVENTORY": "Goods / materials on hand",
-      "AP": "Credit purchases, unpaid bills",
-      "OUTPUT_VAT": "VAT on sales",
-      "WHT_PAYABLE": "Tax we withhold from suppliers",
-      "RETAINED_EARNINGS": "Profit carried forward at period close",
-      "SALES_REVENUE": "Default revenue for products/services",
-      "SALES_RETURNS": "Credit notes (returns/discounts)",
-      "DEFAULT_EXPENSE": "Expense when no account is given"
+      "OUTPUT_VAT_DEFERRED": "VAT on services sold on credit, until paid",
+      "INPUT_VAT_DEFERRED": "VAT on services bought on credit, until paid"
     }
   },
   "dbErrors": {
@@ -220,7 +211,39 @@
     "PRODUCT_EXPENSE_ACCOUNT_TYPE": "Expense account must be an expense or asset account",
     "PRODUCT_ACCOUNT_NOT_POSTABLE": "Cannot use a group or inactive account",
     "BANK_ACCOUNT_LEDGER_TYPE": "The ledger account must be an asset account",
-    "BANK_ACCOUNT_LEDGER_NOT_POSTABLE": "Cannot use a group or inactive account"
+    "BANK_ACCOUNT_LEDGER_NOT_POSTABLE": "Cannot use a group or inactive account",
+    "MAPPING_MISSING": "A required account mapping is missing. Go to Accounting → Account mappings.",
+    "LINE_NEGATIVE": "The discount is larger than the line amount",
+    "LINE_ACCOUNT_TYPE": "The line account has the wrong type",
+    "PRODUCT_NOT_FOUND": "Product or service not found",
+    "DOCUMENT_TYPE_REQUIRED": "Choose a document type",
+    "DOCUMENT_NOT_FOUND": "Document not found",
+    "DOCUMENT_NOT_DRAFT": "This document is posted and cannot be edited or deleted. Void it or issue a credit note instead.",
+    "DOCUMENT_NOT_POSTED": "This document is not posted",
+    "DOCUMENT_NO_LINES": "Add at least one line",
+    "DOCUMENT_ZERO_TOTAL": "The document total must be more than 0",
+    "DOCUMENT_HAS_PAYMENTS": "This document has payments. Void the payments first.",
+    "DOCUMENT_HAS_NOTES": "Credit or debit notes reference this document. Void them first.",
+    "VOID_REASON_REQUIRED": "Enter a reason for voiding",
+    "CONTACT_REQUIRED": "Choose a contact",
+    "PAYMENT_ACCOUNT_REQUIRED": "Choose a cash or bank account",
+    "NOTE_REF_REQUIRED": "Credit and debit notes must reference an invoice",
+    "NOTE_REF_INVALID": "The referenced document must be a posted invoice",
+    "NOTE_CONTACT_MISMATCH": "The customer does not match the referenced invoice",
+    "NOTE_REF_PARTIALLY_PAID": "This service invoice is partly paid. Settle it fully or void the payment before issuing a note.",
+    "CREDIT_NOTE_EXCEEDS": "The credit note is larger than what remains on the invoice",
+    "PAYMENT_DIRECTION_REQUIRED": "Choose whether money is received or paid",
+    "PAYMENT_NO_ALLOCATIONS": "Choose the documents this payment settles",
+    "ALLOCATION_AMOUNT_INVALID": "Amounts must be more than 0",
+    "ALLOCATION_DOCUMENT_INVALID": "This document cannot be settled by this payment",
+    "ALLOCATION_CONTACT_MISMATCH": "The document belongs to another contact",
+    "ALLOCATION_EXCEEDS_OUTSTANDING": "The amount is more than what is outstanding",
+    "PAYMENT_NOT_ALLOCATED": "Amount plus withholding tax must equal the total settled",
+    "JOURNAL_NOT_BALANCED": "The entry does not balance (debits ≠ credits)",
+    "JOURNAL_GROUP_ACCOUNT": "Cannot post to a group account",
+    "JOURNAL_INACTIVE_ACCOUNT": "Cannot post to an inactive account",
+    "IMMUTABLE_RECORD": "Journal entries cannot be changed. Use a reversing entry instead.",
+    "ACCOUNT_HAS_ENTRIES": "This account has entries; its type and group flag can no longer change"
   },
   "contacts": {
     "title": "Contacts",

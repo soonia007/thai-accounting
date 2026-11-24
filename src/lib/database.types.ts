@@ -161,6 +161,43 @@ export type Database = {
           },
         ]
       }
+      audit_logs: {
+        Row: {
+          action: string
+          actor: string | null
+          at: string
+          company_id: string | null
+          id: number
+          new_data: Json | null
+          old_data: Json | null
+          record_id: string | null
+          table_name: string
+        }
+        ComputedFields: never
+        Insert: {
+          action: string
+          actor?: string | null
+          at?: string
+          company_id?: string | null
+          id?: never
+          new_data?: Json | null
+          old_data?: Json | null
+          record_id?: string | null
+          table_name: string
+        }
+        Update: {
+          action?: string
+          actor?: string | null
+          at?: string
+          company_id?: string | null
+          id?: never
+          new_data?: Json | null
+          old_data?: Json | null
+          record_id?: string | null
+          table_name?: string
+        }
+        Relationships: []
+      }
       bank_accounts: {
         Row: {
           account_id: string
@@ -430,6 +467,505 @@ export type Database = {
           },
         ]
       }
+      doc_sequences: {
+        Row: {
+          company_id: string
+          last_number: number
+          period_key: string
+          series: string
+        }
+        ComputedFields: never
+        Insert: {
+          company_id: string
+          last_number?: number
+          period_key: string
+          series: string
+        }
+        Update: {
+          company_id?: string
+          last_number?: number
+          period_key?: string
+          series?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'doc_sequences_company_id_fkey'
+            columns: ['company_id']
+            isOneToOne: false
+            referencedRelation: 'companies'
+            referencedColumns: ['id']
+          },
+        ]
+      }
+      document_lines: {
+        Row: {
+          account_id: string | null
+          base_amount: number
+          company_id: string
+          description: string
+          discount: number
+          document_id: string
+          id: string
+          item_kind: Database['public']['Enums']['product_kind']
+          line_no: number
+          product_id: string | null
+          qty: number
+          unit_price: number
+          vat_amount: number
+          vat_type: Database['public']['Enums']['product_vat_type']
+          wht_amount: number
+          wht_rate: number
+        }
+        ComputedFields: never
+        Insert: {
+          account_id?: string | null
+          base_amount?: number
+          company_id: string
+          description?: string
+          discount?: number
+          document_id: string
+          id?: string
+          item_kind?: Database['public']['Enums']['product_kind']
+          line_no: number
+          product_id?: string | null
+          qty?: number
+          unit_price?: number
+          vat_amount?: number
+          vat_type?: Database['public']['Enums']['product_vat_type']
+          wht_amount?: number
+          wht_rate?: number
+        }
+        Update: {
+          account_id?: string | null
+          base_amount?: number
+          company_id?: string
+          description?: string
+          discount?: number
+          document_id?: string
+          id?: string
+          item_kind?: Database['public']['Enums']['product_kind']
+          line_no?: number
+          product_id?: string | null
+          qty?: number
+          unit_price?: number
+          vat_amount?: number
+          vat_type?: Database['public']['Enums']['product_vat_type']
+          wht_amount?: number
+          wht_rate?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'document_lines_company_id_account_id_fkey'
+            columns: ['company_id', 'account_id']
+            isOneToOne: false
+            referencedRelation: 'accounts'
+            referencedColumns: ['company_id', 'id']
+          },
+          {
+            foreignKeyName: 'document_lines_company_id_document_id_fkey'
+            columns: ['company_id', 'document_id']
+            isOneToOne: false
+            referencedRelation: 'documents'
+            referencedColumns: ['company_id', 'id']
+          },
+          {
+            foreignKeyName: 'document_lines_company_id_product_id_fkey'
+            columns: ['company_id', 'product_id']
+            isOneToOne: false
+            referencedRelation: 'products'
+            referencedColumns: ['company_id', 'id']
+          },
+        ]
+      }
+      documents: {
+        Row: {
+          company_id: string
+          contact_id: string | null
+          created_at: string
+          created_by: string | null
+          doc_date: string
+          due_date: string | null
+          id: string
+          net_total: number
+          notes: string | null
+          number: string | null
+          payment_account_id: string | null
+          posted_at: string | null
+          posted_by: string | null
+          ref_document_id: string | null
+          reference: string | null
+          source: Database['public']['Enums']['document_source']
+          status: Database['public']['Enums']['document_status']
+          subtotal: number
+          total: number
+          type: Database['public']['Enums']['document_type']
+          updated_at: string
+          vat_deferred_total: number
+          vat_mode: Database['public']['Enums']['vat_mode']
+          vat_rate: number
+          vat_total: number
+          void_reason: string | null
+          voided_at: string | null
+          voided_by: string | null
+          wht_total: number
+        }
+        ComputedFields: never
+        Insert: {
+          company_id: string
+          contact_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          doc_date?: string
+          due_date?: string | null
+          id?: string
+          net_total?: number
+          notes?: string | null
+          number?: string | null
+          payment_account_id?: string | null
+          posted_at?: string | null
+          posted_by?: string | null
+          ref_document_id?: string | null
+          reference?: string | null
+          source?: Database['public']['Enums']['document_source']
+          status?: Database['public']['Enums']['document_status']
+          subtotal?: number
+          total?: number
+          type: Database['public']['Enums']['document_type']
+          updated_at?: string
+          vat_deferred_total?: number
+          vat_mode?: Database['public']['Enums']['vat_mode']
+          vat_rate?: number
+          vat_total?: number
+          void_reason?: string | null
+          voided_at?: string | null
+          voided_by?: string | null
+          wht_total?: number
+        }
+        Update: {
+          company_id?: string
+          contact_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          doc_date?: string
+          due_date?: string | null
+          id?: string
+          net_total?: number
+          notes?: string | null
+          number?: string | null
+          payment_account_id?: string | null
+          posted_at?: string | null
+          posted_by?: string | null
+          ref_document_id?: string | null
+          reference?: string | null
+          source?: Database['public']['Enums']['document_source']
+          status?: Database['public']['Enums']['document_status']
+          subtotal?: number
+          total?: number
+          type?: Database['public']['Enums']['document_type']
+          updated_at?: string
+          vat_deferred_total?: number
+          vat_mode?: Database['public']['Enums']['vat_mode']
+          vat_rate?: number
+          vat_total?: number
+          void_reason?: string | null
+          voided_at?: string | null
+          voided_by?: string | null
+          wht_total?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'documents_company_id_contact_id_fkey'
+            columns: ['company_id', 'contact_id']
+            isOneToOne: false
+            referencedRelation: 'contacts'
+            referencedColumns: ['company_id', 'id']
+          },
+          {
+            foreignKeyName: 'documents_company_id_fkey'
+            columns: ['company_id']
+            isOneToOne: false
+            referencedRelation: 'companies'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'documents_company_id_payment_account_id_fkey'
+            columns: ['company_id', 'payment_account_id']
+            isOneToOne: false
+            referencedRelation: 'accounts'
+            referencedColumns: ['company_id', 'id']
+          },
+          {
+            foreignKeyName: 'documents_company_id_ref_document_id_fkey'
+            columns: ['company_id', 'ref_document_id']
+            isOneToOne: false
+            referencedRelation: 'documents'
+            referencedColumns: ['company_id', 'id']
+          },
+        ]
+      }
+      journal_entries: {
+        Row: {
+          company_id: string
+          created_at: string
+          created_by: string | null
+          description: string | null
+          document_id: string | null
+          entry_date: string
+          id: string
+          payment_id: string | null
+          reverses_entry_id: string | null
+        }
+        ComputedFields: never
+        Insert: {
+          company_id: string
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          document_id?: string | null
+          entry_date: string
+          id?: string
+          payment_id?: string | null
+          reverses_entry_id?: string | null
+        }
+        Update: {
+          company_id?: string
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          document_id?: string | null
+          entry_date?: string
+          id?: string
+          payment_id?: string | null
+          reverses_entry_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'journal_entries_company_id_document_id_fkey'
+            columns: ['company_id', 'document_id']
+            isOneToOne: false
+            referencedRelation: 'documents'
+            referencedColumns: ['company_id', 'id']
+          },
+          {
+            foreignKeyName: 'journal_entries_company_id_fkey'
+            columns: ['company_id']
+            isOneToOne: false
+            referencedRelation: 'companies'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'journal_entries_company_id_payment_id_fkey'
+            columns: ['company_id', 'payment_id']
+            isOneToOne: false
+            referencedRelation: 'payments'
+            referencedColumns: ['company_id', 'id']
+          },
+          {
+            foreignKeyName: 'journal_entries_reverses_entry_id_fkey'
+            columns: ['reverses_entry_id']
+            isOneToOne: false
+            referencedRelation: 'journal_entries'
+            referencedColumns: ['id']
+          },
+        ]
+      }
+      journal_lines: {
+        Row: {
+          account_id: string
+          company_id: string
+          contact_id: string | null
+          credit: number
+          debit: number
+          description: string | null
+          entry_id: string
+          id: string
+          line_no: number
+        }
+        ComputedFields: never
+        Insert: {
+          account_id: string
+          company_id: string
+          contact_id?: string | null
+          credit?: number
+          debit?: number
+          description?: string | null
+          entry_id: string
+          id?: string
+          line_no: number
+        }
+        Update: {
+          account_id?: string
+          company_id?: string
+          contact_id?: string | null
+          credit?: number
+          debit?: number
+          description?: string | null
+          entry_id?: string
+          id?: string
+          line_no?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'journal_lines_company_id_account_id_fkey'
+            columns: ['company_id', 'account_id']
+            isOneToOne: false
+            referencedRelation: 'accounts'
+            referencedColumns: ['company_id', 'id']
+          },
+          {
+            foreignKeyName: 'journal_lines_company_id_contact_id_fkey'
+            columns: ['company_id', 'contact_id']
+            isOneToOne: false
+            referencedRelation: 'contacts'
+            referencedColumns: ['company_id', 'id']
+          },
+          {
+            foreignKeyName: 'journal_lines_company_id_entry_id_fkey'
+            columns: ['company_id', 'entry_id']
+            isOneToOne: false
+            referencedRelation: 'journal_entries'
+            referencedColumns: ['company_id', 'id']
+          },
+        ]
+      }
+      payment_allocations: {
+        Row: {
+          amount: number
+          company_id: string
+          document_id: string
+          id: string
+          payment_id: string
+          vat_transferred: number
+          wht_amount: number
+        }
+        ComputedFields: never
+        Insert: {
+          amount: number
+          company_id: string
+          document_id: string
+          id?: string
+          payment_id: string
+          vat_transferred?: number
+          wht_amount?: number
+        }
+        Update: {
+          amount?: number
+          company_id?: string
+          document_id?: string
+          id?: string
+          payment_id?: string
+          vat_transferred?: number
+          wht_amount?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'payment_allocations_company_id_document_id_fkey'
+            columns: ['company_id', 'document_id']
+            isOneToOne: false
+            referencedRelation: 'documents'
+            referencedColumns: ['company_id', 'id']
+          },
+          {
+            foreignKeyName: 'payment_allocations_company_id_payment_id_fkey'
+            columns: ['company_id', 'payment_id']
+            isOneToOne: false
+            referencedRelation: 'payments'
+            referencedColumns: ['company_id', 'id']
+          },
+        ]
+      }
+      payments: {
+        Row: {
+          amount: number
+          company_id: string
+          contact_id: string
+          created_at: string
+          created_by: string | null
+          direction: Database['public']['Enums']['payment_direction']
+          id: string
+          notes: string | null
+          number: string | null
+          pay_date: string
+          payment_account_id: string
+          posted_at: string | null
+          posted_by: string | null
+          reference: string | null
+          status: Database['public']['Enums']['document_status']
+          updated_at: string
+          void_reason: string | null
+          voided_at: string | null
+          voided_by: string | null
+          wht_amount: number
+        }
+        ComputedFields: never
+        Insert: {
+          amount?: number
+          company_id: string
+          contact_id: string
+          created_at?: string
+          created_by?: string | null
+          direction: Database['public']['Enums']['payment_direction']
+          id?: string
+          notes?: string | null
+          number?: string | null
+          pay_date?: string
+          payment_account_id: string
+          posted_at?: string | null
+          posted_by?: string | null
+          reference?: string | null
+          status?: Database['public']['Enums']['document_status']
+          updated_at?: string
+          void_reason?: string | null
+          voided_at?: string | null
+          voided_by?: string | null
+          wht_amount?: number
+        }
+        Update: {
+          amount?: number
+          company_id?: string
+          contact_id?: string
+          created_at?: string
+          created_by?: string | null
+          direction?: Database['public']['Enums']['payment_direction']
+          id?: string
+          notes?: string | null
+          number?: string | null
+          pay_date?: string
+          payment_account_id?: string
+          posted_at?: string | null
+          posted_by?: string | null
+          reference?: string | null
+          status?: Database['public']['Enums']['document_status']
+          updated_at?: string
+          void_reason?: string | null
+          voided_at?: string | null
+          voided_by?: string | null
+          wht_amount?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'payments_company_id_contact_id_fkey'
+            columns: ['company_id', 'contact_id']
+            isOneToOne: false
+            referencedRelation: 'contacts'
+            referencedColumns: ['company_id', 'id']
+          },
+          {
+            foreignKeyName: 'payments_company_id_fkey'
+            columns: ['company_id']
+            isOneToOne: false
+            referencedRelation: 'companies'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'payments_company_id_payment_account_id_fkey'
+            columns: ['company_id', 'payment_account_id']
+            isOneToOne: false
+            referencedRelation: 'accounts'
+            referencedColumns: ['company_id', 'id']
+          },
+        ]
+      }
       products: {
         Row: {
           code: string
@@ -542,6 +1078,17 @@ export type Database = {
         Args: { p_role: Database['public']['Enums']['account_role'] }
         Returns: Database['public']['Enums']['account_type']
       }
+      calc_line: {
+        Args: {
+          p_discount: number
+          p_qty: number
+          p_unit_price: number
+          p_vat_mode: Database['public']['Enums']['vat_mode']
+          p_vat_rate: number
+          p_wht_rate: number
+        }
+        Returns: Record<string, unknown>
+      }
       create_bank_account_with_ledger: {
         Args: {
           p_account_name: string
@@ -568,6 +1115,7 @@ export type Database = {
         }
         Returns: string
       }
+      document_balance: { Args: { p_document_id: string }; Returns: Json }
       is_valid_thai_tax_id: { Args: { p_tax_id: string }; Returns: boolean }
       my_invitations: {
         Args: Record<PropertyKey, never>
@@ -579,7 +1127,12 @@ export type Database = {
           role: Database['public']['Enums']['member_role']
         }[]
       }
+      post_document: { Args: { p_document_id: string }; Returns: Json }
+      post_payment: { Args: { p_payment_id: string }; Returns: Json }
       remove_member: { Args: { p_company_id: string; p_user_id: string }; Returns: undefined }
+      save_document: { Args: { p_doc: Json }; Returns: string }
+      save_payment: { Args: { p_pay: Json }; Returns: string }
+      simulate_posting: { Args: { p_kind: string; p_payload: Json }; Returns: Json }
       update_member_role: {
         Args: {
           p_company_id: string
@@ -588,6 +1141,8 @@ export type Database = {
         }
         Returns: undefined
       }
+      void_document: { Args: { p_document_id: string; p_reason: string }; Returns: undefined }
+      void_payment: { Args: { p_payment_id: string; p_reason: string }; Returns: undefined }
     }
     Enums: {
       account_role:
@@ -604,15 +1159,30 @@ export type Database = {
         | 'DEFAULT_EXPENSE'
         | 'INVENTORY'
         | 'RETAINED_EARNINGS'
+        | 'OUTPUT_VAT_DEFERRED'
+        | 'INPUT_VAT_DEFERRED'
       account_type: 'asset' | 'liability' | 'equity' | 'revenue' | 'expense'
       bank_account_kind: 'savings' | 'current' | 'fixed' | 'other'
       business_type: 'service' | 'trading' | 'manufacturing' | 'restaurant'
       contact_type: 'customer' | 'vendor' | 'both'
       date_era: 'BE' | 'CE'
+      document_source: 'manual' | 'ocr'
+      document_status: 'draft' | 'posted' | 'voided'
+      document_type:
+        | 'quotation'
+        | 'invoice'
+        | 'cash_sale'
+        | 'credit_note'
+        | 'debit_note'
+        | 'purchase_order'
+        | 'bill'
+        | 'cash_purchase'
       entity_type: 'juristic' | 'individual'
       member_role: 'owner' | 'admin' | 'staff' | 'accountant' | 'viewer'
+      payment_direction: 'received' | 'paid'
       product_kind: 'product' | 'service'
       product_vat_type: 'standard' | 'zero' | 'exempt'
+      vat_mode: 'exclusive' | 'inclusive' | 'none'
     }
     CompositeTypes: {
       [_ in never]: never
@@ -741,16 +1311,32 @@ export const Constants = {
         'DEFAULT_EXPENSE',
         'INVENTORY',
         'RETAINED_EARNINGS',
+        'OUTPUT_VAT_DEFERRED',
+        'INPUT_VAT_DEFERRED',
       ],
       account_type: ['asset', 'liability', 'equity', 'revenue', 'expense'],
       bank_account_kind: ['savings', 'current', 'fixed', 'other'],
       business_type: ['service', 'trading', 'manufacturing', 'restaurant'],
       contact_type: ['customer', 'vendor', 'both'],
       date_era: ['BE', 'CE'],
+      document_source: ['manual', 'ocr'],
+      document_status: ['draft', 'posted', 'voided'],
+      document_type: [
+        'quotation',
+        'invoice',
+        'cash_sale',
+        'credit_note',
+        'debit_note',
+        'purchase_order',
+        'bill',
+        'cash_purchase',
+      ],
       entity_type: ['juristic', 'individual'],
       member_role: ['owner', 'admin', 'staff', 'accountant', 'viewer'],
+      payment_direction: ['received', 'paid'],
       product_kind: ['product', 'service'],
       product_vat_type: ['standard', 'zero', 'exempt'],
+      vat_mode: ['exclusive', 'inclusive', 'none'],
     },
   },
 } as const
