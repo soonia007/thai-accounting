@@ -1,0 +1,20 @@
+{
+  "app": { "name": "Online Accounting" },
+  "nav": {
+    "dashboard": "Dashboard",
+    "sales": "Sales",
+    "purchases": "Purchases",
+    "accounting": "Accounting",
+    "reports": "Reports",
+    "settings": "Settings"
+  },
+  "hello": {
+    "title": "Hello 👋",
+    "subtitle": "The online accounting system is ready for development",
+    "supabase": "Supabase status",
+    "configured": "Configured",
+    "notConfigured": "Not configured (see .env.example)"
+  },
+  "comingSoon": "Coming soon",
+  "language": "Language"
+}

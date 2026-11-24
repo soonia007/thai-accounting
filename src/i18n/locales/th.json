@@ -1,0 +1,20 @@
+{
+  "app": { "name": "บัญชีออนไลน์" },
+  "nav": {
+    "dashboard": "หน้าแรก",
+    "sales": "ขาย",
+    "purchases": "ซื้อ/ค่าใช้จ่าย",
+    "accounting": "บัญชี",
+    "reports": "รายงาน",
+    "settings": "ตั้งค่า"
+  },
+  "hello": {
+    "title": "สวัสดี 👋",
+    "subtitle": "ระบบบัญชีออนไลน์พร้อมเริ่มพัฒนาแล้ว",
+    "supabase": "สถานะ Supabase",
+    "configured": "ตั้งค่าแล้ว",
+    "notConfigured": "ยังไม่ได้ตั้งค่า (ดู .env.example)"
+  },
+  "comingSoon": "กำลังพัฒนา",
+  "language": "ภาษา"
+}
