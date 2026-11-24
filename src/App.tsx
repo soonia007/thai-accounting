@@ -1,18 +1,34 @@
-import { Route, Routes } from 'react-router-dom'
+import { Navigate, Route, Routes } from 'react-router-dom'
 import { AppLayout } from '@/components/layout/AppLayout'
 import { NAV_ITEMS } from '@/components/layout/nav-items'
+import { RequireAuth, RequireCompany } from '@/features/auth/guards'
+import { LoginPage } from '@/features/auth/LoginPage'
+import { MembersPage } from '@/features/members/MembersPage'
+import { OnboardingPage } from '@/features/onboarding/OnboardingPage'
 import { ComingSoonPage } from '@/pages/ComingSoonPage'
 import { HelloPage } from '@/pages/HelloPage'
+import { SettingsPage } from '@/pages/SettingsPage'
+
+const PLACEHOLDER_ROUTES = NAV_ITEMS.filter((i) => i.to !== '/' && i.to !== '/settings')
 
 export default function App() {
   return (
     <Routes>
-      <Route element={<AppLayout />}>
-        <Route index element={<HelloPage />} />
-        {NAV_ITEMS.filter((i) => i.to !== '/').map((i) => (
-          <Route key={i.to} path={i.to} element={<ComingSoonPage titleKey={i.labelKey} />} />
-        ))}
+      <Route path="/login" element={<LoginPage />} />
+      <Route element={<RequireAuth />}>
+        <Route path="/onboarding" element={<OnboardingPage />} />
+        <Route element={<RequireCompany />}>
+          <Route element={<AppLayout />}>
+            <Route index element={<HelloPage />} />
+            <Route path="/settings" element={<SettingsPage />} />
+            <Route path="/settings/members" element={<MembersPage />} />
+            {PLACEHOLDER_ROUTES.map((i) => (
+              <Route key={i.to} path={i.to} element={<ComingSoonPage titleKey={i.labelKey} />} />
+            ))}
+          </Route>
+        </Route>
       </Route>
+      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   )
 }

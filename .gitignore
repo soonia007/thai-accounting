@@ -34,3 +34,4 @@ dev-dist
 # Supabase local
 supabase/.temp
 supabase/.branches
+supabase/.env

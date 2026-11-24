@@ -8,12 +8,91 @@
     "reports": "Reports",
     "settings": "Settings"
   },
+  "common": {
+    "next": "Next",
+    "back": "Back",
+    "cancel": "Cancel",
+    "optional": "optional"
+  },
   "hello": {
     "title": "Hello 👋",
-    "subtitle": "The online accounting system is ready for development",
-    "supabase": "Supabase status",
-    "configured": "Configured",
-    "notConfigured": "Not configured (see .env.example)"
+    "workingIn": "Working in {{company}}"
+  },
+  "auth": {
+    "signInTitle": "Sign in",
+    "signUpTitle": "Create an account",
+    "email": "Email",
+    "password": "Password",
+    "signIn": "Sign in",
+    "signUp": "Sign up",
+    "signOut": "Sign out",
+    "or": "or",
+    "google": "Continue with Google",
+    "toSignUp": "No account? Sign up",
+    "toSignIn": "Have an account? Sign in",
+    "checkEmail": "Please confirm your email using the link we sent, then sign in.",
+    "errors": {
+      "email": "Invalid email address",
+      "password": "Password must be at least 8 characters",
+      "invalidLogin": "Incorrect email or password"
+    }
+  },
+  "onboarding": {
+    "title": "Create a company",
+    "step": "Step {{step}}/{{total}}",
+    "chooseType": "Choose business type",
+    "companyInfo": "Company details",
+    "chartNote": "We'll set up a starter chart of accounts for this business type. You can edit it later.",
+    "create": "Create company",
+    "errors": {
+      "required": "Required",
+      "taxId": "Invalid tax ID (13 digits)",
+      "taxIdRequired": "VAT-registered companies need a tax ID",
+      "branchCode": "Branch number must be 5 digits"
+    }
+  },
+  "businessTypes": {
+    "service": { "name": "Services", "description": "Consulting, agencies, repair, freelancing" },
+    "trading": { "name": "Trading", "description": "Retail, wholesale, online shops" },
+    "manufacturing": { "name": "Manufacturing", "description": "Making goods from raw materials" },
+    "restaurant": { "name": "Restaurant", "description": "Restaurants, cafés, beverages" }
+  },
+  "company": {
+    "name": "Company / business name",
+    "taxId": "Tax ID",
+    "vatRegistered": "VAT registered",
+    "branch": "Office",
+    "headOffice": "Head office",
+    "branchNo": "Branch no.",
+    "address": "Address",
+    "switch": "Switch company",
+    "create": "Create new company"
+  },
+  "roles": {
+    "owner": "Owner",
+    "admin": "Admin",
+    "accountant": "Accountant",
+    "staff": "Staff",
+    "viewer": "Viewer"
+  },
+  "members": {
+    "title": "Members & roles",
+    "invite": "Invite a member",
+    "role": "Role",
+    "sendInvite": "Send invite",
+    "inviteHelp": "The invitee signs up / signs in with this email, then accepts the invitation in the app.",
+    "list": "Members",
+    "you": "You",
+    "pending": "Pending invitations",
+    "remove": "Remove from company",
+    "leave": "Leave company",
+    "confirmRemove": "Remove this member from the company?",
+    "confirmLeave": "Leave this company?"
+  },
+  "invitations": {
+    "title": "Company invitations",
+    "invitedAs": "{{company}} invited you as {{role}}",
+    "accept": "Accept"
   },
   "comingSoon": "Coming soon",
   "language": "Language"

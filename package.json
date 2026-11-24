@@ -18,7 +18,8 @@
     "db:test": "supabase test db",
     "cap:sync": "npm run build && cap sync",
     "cap:android": "npm run build && cap sync android && cap run android",
-    "cap:ios": "npm run build && cap sync ios && cap open ios"
+    "cap:ios": "npm run build && cap sync ios && cap open ios",
+    "db:types": "supabase gen types typescript --local > src/lib/database.types.ts && prettier --write src/lib/database.types.ts"
   },
   "dependencies": {
     "@capacitor/app": "^8.1.2",

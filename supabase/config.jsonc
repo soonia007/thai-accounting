@@ -383,6 +383,17 @@
     // `discord`, `facebook`, `github`, `gitlab`, `google`, `keycloak`, `linkedin_oidc`, `notion`, `twitch`,
     // `twitter`, `x`, `slack_oidc`, `spotify`, `workos`, `zoom`.
     "external": {
+      // Google sign-in (M1). Set enabled=true and put the credentials in supabase/.env (git-ignored):
+      //   SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_ID=...
+      //   SUPABASE_AUTH_EXTERNAL_GOOGLE_SECRET=...
+      "google": {
+        "enabled": false,
+        "client_id": "env(SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_ID)",
+        "secret": "env(SUPABASE_AUTH_EXTERNAL_GOOGLE_SECRET)",
+        "redirect_uri": "",
+        "url": "",
+        "skip_nonce_check": true,
+      },
       "apple": {
         "enabled": false,
         "client_id": "",
