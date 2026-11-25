@@ -16,6 +16,8 @@
     "db:start": "supabase start",
     "db:reset": "supabase db reset",
     "db:test": "supabase test db",
+    "db:stop": "supabase stop",
+    "db:status": "supabase status",
     "cap:sync": "npm run build && cap sync",
     "cap:android": "npm run build && cap sync android && cap run android",
     "cap:ios": "npm run build && cap sync ios && cap open ios",
