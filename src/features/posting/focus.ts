@@ -30,6 +30,15 @@ export function focusForField(name: string): PreviewFocus | null {
     if (f === 'account_id') return { field: f, line: n, sources: ['line', 'returns'] }
     return { field: f, line: n, sources: [] }
   }
+  const jl = /^jl\.(\d+)\.(account_id|debit|credit|description)$/.exec(name)
+  if (jl) {
+    const n = Number(jl[1]) + 1
+    return {
+      field: `jl_${jl[2]}`,
+      line: n,
+      sources: jl[2] === 'description' ? [] : [`line:${n}`],
+    }
+  }
   const alloc = /^alloc\.(\d+)\.(amount|wht)$/.exec(name)
   if (alloc) {
     const n = Number(alloc[1]) + 1

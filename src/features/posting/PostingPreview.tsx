@@ -99,14 +99,14 @@ function PlainSummary({ lines }: { lines: SimLine[] }) {
   const focus = usePreviewFocus()
   return (
     <ul className="flex flex-col gap-2 rounded-xl bg-accent/60 p-3.5 text-sm leading-snug">
-      {lines.map((l) => {
+      {lines.map((l, i) => {
         const { key, icon } = plainSentence(l)
         const Icon = ICONS[icon] ?? Circle
         const amount = formatMoney(Number(l.debit) || Number(l.credit), i18n.language)
         const name = i18n.language === 'en' ? l.name_en || l.name_th : l.name_th
         return (
           <li
-            key={`${l.account_id}-${l.debit > 0 ? 'd' : 'c'}`}
+            key={`${i}-${l.account_id}-${l.debit > 0 ? 'd' : 'c'}`}
             className={cn(
               '-mx-1.5 flex gap-2 rounded-lg px-1.5 py-0.5 transition-all duration-300',
               focusRow(focus, l),
@@ -134,9 +134,9 @@ function JournalView({ lines }: { lines: SimLine[] }) {
         </tr>
       </thead>
       <tbody>
-        {lines.map((l) => (
+        {lines.map((l, i) => (
           <tr
-            key={`${l.account_id}-${l.debit > 0 ? 'd' : 'c'}`}
+            key={`${i}-${l.account_id}-${l.debit > 0 ? 'd' : 'c'}`}
             className={cn(
               'border-b border-border/60 transition-all duration-300',
               focusRow(focus, l),

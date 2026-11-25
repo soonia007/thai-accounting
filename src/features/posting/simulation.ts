@@ -118,10 +118,10 @@ export function usePostingSimulation(
 
 /** Journal entries of a posted document/payment, shaped like simulation lines. */
 export function usePostedJournal(
-  target: { documentId?: string; paymentId?: string },
+  target: { documentId?: string; paymentId?: string; manualJournalId?: string },
   enabled: boolean,
 ) {
-  const id = target.documentId ?? target.paymentId
+  const id = target.documentId ?? target.paymentId ?? target.manualJournalId
   return useQuery({
     queryKey: ['posted-journal', id],
     enabled: enabled && !!id,
@@ -134,7 +134,9 @@ export function usePostedJournal(
         .order('created_at')
       q = target.documentId
         ? q.eq('document_id', target.documentId)
-        : q.eq('payment_id', target.paymentId!)
+        : target.paymentId
+          ? q.eq('payment_id', target.paymentId)
+          : q.eq('manual_journal_id', target.manualJournalId!)
       const [{ data, error }, { data: maps }] = await Promise.all([
         q,
         supabase.from('account_mappings').select('role, account_id'),

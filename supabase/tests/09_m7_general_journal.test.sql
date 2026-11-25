@@ -1,7 +1,7 @@
 -- M7: general journal — balance check, gap-free JV numbers, void by reversal (D3), no AR/AP (D9).
 -- Run: npm run db:test
 begin;
-select plan(20);
+select plan(21);
 
 create schema tests;
 grant usage on schema tests to authenticated, anon;
@@ -43,11 +43,12 @@ join (values ('staff@jv.test', 'staff'::public.member_role), ('viewer@jv.test', 
 call tests.login('owner@jv.test');
 
 -- Simulation: errors are data, OK returns enriched lines
-select is(public.simulate_manual_journal(tests.jv(jsonb_build_array(
-    tests.line('5230', 1000, 0), tests.line('2140', 0, 900)))) ->> 'error',
-  'JOURNAL_NOT_BALANCED', 'unbalanced entry is reported by the simulation');
-select is(public.simulate_manual_journal(tests.jv(jsonb_build_array(tests.line('5230', 1000, 0)))) ->> 'error',
-  'JOURNAL_TOO_FEW_LINES', 'a journal needs at least two lines');
+select is((public.simulate_manual_journal(tests.jv(jsonb_build_array(
+    tests.line('5230', 1000, 0), tests.line('2140', 0, 900)))) #>> '{totals,credit}')::numeric,
+  900.00, 'the preview shows an unbalanced entry as typed (posting still refuses it)');
+select is(jsonb_array_length(public.simulate_manual_journal(tests.jv(jsonb_build_array(
+    tests.line('5230', 1000, 0), tests.line('2140', 0, 0)))) -> 'lines'),
+  1, 'a line with an account but no amount yet is skipped');
 select is(public.simulate_manual_journal(tests.jv(jsonb_build_array(
     tests.line('5230', 1000, 1000), tests.line('2140', 0, 0)))) ->> 'error',
   'JOURNAL_LINE_ONE_SIDE', 'a line is either a debit or a credit');
@@ -89,6 +90,10 @@ do $$ begin perform set_config('test.jv3', public.save_manual_journal(tests.jv(j
   tests.line('5230', 10, 0), tests.line('2140', 0, 9))))::text, false); end $$;
 select throws_ok(format($$ select public.post_manual_journal('%s') $$, current_setting('test.jv3')),
   'P0001', 'JOURNAL_NOT_BALANCED', 'an unbalanced draft cannot be posted');
+do $$ begin perform set_config('test.jv4', public.save_manual_journal(tests.jv(jsonb_build_array(
+  tests.line('5230', 10, 0))))::text, false); end $$;
+select throws_ok(format($$ select public.post_manual_journal('%s') $$, current_setting('test.jv4')),
+  'P0001', 'JOURNAL_TOO_FEW_LINES', 'posting needs at least two lines');
 
 -- Void: reversal on the same date, ledger back to zero
 select lives_ok(format($$ select public.void_manual_journal('%s', 'posted twice') $$, current_setting('test.jv1')),
@@ -104,7 +109,7 @@ select throws_ok(format($$ select public.save_manual_journal(%L::jsonb) $$, test
     tests.line('5230', 1, 0), tests.line('2140', 0, 1)))),
   '42501', null, 'staff cannot create journal entries');
 call tests.login('viewer@jv.test');
-select is((select count(*)::int from public.manual_journals), 3, 'viewers can read journals');
+select is((select count(*)::int from public.manual_journals), 4, 'viewers can read journals');
 
 select * from finish();
 rollback;

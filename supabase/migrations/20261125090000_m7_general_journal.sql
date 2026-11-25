@@ -108,7 +108,8 @@ grant update (entry_date, memo, reference) on public.manual_journals to authenti
 -- payload: { company_id, entry_date, memo, lines: [{account_id, description, debit, credit, contact_id}] }
 -- returns { lines: [{account_id, debit, credit, role, sources}], totals: {debit, credit} }
 -- ---------------------------------------------------------------------------
-create or replace function private.build_manual_journal(p_company_id uuid, p_payload jsonb)
+create or replace function private.build_manual_journal(p_company_id uuid, p_payload jsonb,
+                                                        p_strict boolean default true)
 returns jsonb
 language plpgsql
 stable
@@ -129,8 +130,8 @@ begin
   loop
     v_dr := coalesce(nullif(l ->> 'debit', '')::numeric, 0);
     v_cr := coalesce(nullif(l ->> 'credit', '')::numeric, 0);
-    -- blank rows in the form are ignored
-    if nullif(l ->> 'account_id', '') is null and v_dr = 0 and v_cr = 0 then
+    -- rows without an amount (blank, or an account picked but no amount yet) are ignored
+    if v_dr = 0 and v_cr = 0 then
       continue;
     end if;
     if nullif(l ->> 'account_id', '') is null then
@@ -160,15 +161,20 @@ begin
     v_n := v_n + 1;
     v_sum_dr := v_sum_dr + v_dr;
     v_sum_cr := v_sum_cr + v_cr;
+    -- role (for plain-language sentences) and a per-line tag (to highlight the line being edited)
     v_out := v_out || jsonb_build_object('account_id', v_acc.id, 'debit', v_dr, 'credit', v_cr,
-      'role', null, 'sources', jsonb_build_array('manual'), 'line', v_n,
+      'role', (select m.role from public.account_mappings m
+               where m.company_id = p_company_id and m.account_id = v_acc.id order by m.role limit 1),
+      'sources', jsonb_build_array('manual', 'line:' || v_n), 'line', v_n,
       'description', nullif(l ->> 'description', ''), 'contact_id', nullif(l ->> 'contact_id', ''));
   end loop;
 
-  if v_n < 2 then
+  -- the live preview (p_strict = false) shows the entry as it is being typed;
+  -- posting always requires at least two lines and debit = credit
+  if p_strict and v_n < 2 then
     raise exception 'JOURNAL_TOO_FEW_LINES' using errcode = 'P0001';
   end if;
-  if v_sum_dr <> v_sum_cr then
+  if p_strict and v_sum_dr <> v_sum_cr then
     raise exception 'JOURNAL_NOT_BALANCED' using errcode = 'P0001',
       detail = format('debit %s, credit %s', v_sum_dr, v_sum_cr);
   end if;
@@ -194,7 +200,7 @@ begin
     raise exception 'permission denied' using errcode = '42501';
   end if;
   begin
-    v_built := private.build_manual_journal(v_company, p_payload);
+    v_built := private.build_manual_journal(v_company, p_payload, false);
   exception when sqlstate 'P0001' then
     get stacked diagnostics v_err = message_text, v_detail = pg_exception_detail;
     return jsonb_build_object('ok', false, 'error', v_err, 'detail', v_detail);

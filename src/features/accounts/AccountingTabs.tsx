@@ -6,20 +6,24 @@ const TABS = [
   { to: '/accounting/accounts', labelKey: 'accounts.title' },
   { to: '/accounting/mappings', labelKey: 'mappings.title' },
   { to: '/accounting/bank-accounts', labelKey: 'bankAccounts.title' },
+  { to: '/accounting/journal', labelKey: 'journal.title' },
 ]
 
 export function AccountingTabs() {
   const { t } = useTranslation()
   return (
-    <nav className="flex gap-1 border-b" aria-label={t('nav.accounting')}>
+    <nav
+      className="flex w-fit max-w-full gap-1 overflow-x-auto rounded-full bg-muted p-1"
+      aria-label={t('nav.accounting')}
+    >
       {TABS.map((tab) => (
         <NavLink
           key={tab.to}
           to={tab.to}
           className={({ isActive }) =>
             cn(
-              '-mb-px border-b-2 border-transparent px-3 py-2 text-sm text-muted-foreground hover:text-foreground',
-              isActive && 'border-primary font-medium text-foreground',
+              'flex h-9 shrink-0 items-center rounded-full px-4 text-sm font-medium whitespace-nowrap text-muted-foreground transition-colors hover:text-foreground',
+              isActive && 'bg-card text-foreground shadow-card',
             )
           }
         >

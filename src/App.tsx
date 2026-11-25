@@ -15,6 +15,8 @@ import { SharePage } from '@/pages/SharePage'
 import { NAV_ITEMS } from '@/components/layout/nav-items'
 import { RequireAuth, RequireCompany } from '@/features/auth/guards'
 import { LoginPage } from '@/features/auth/LoginPage'
+import { JournalEntryPage } from '@/features/journal/JournalEntryPage'
+import { JournalListPage } from '@/features/journal/JournalListPage'
 import { MembersPage } from '@/features/members/MembersPage'
 import { OnboardingPage } from '@/features/onboarding/OnboardingPage'
 import { WhtCertificatesPage } from '@/features/wht/WhtCertificatesPage'
@@ -63,6 +65,9 @@ export default function App() {
               <Route path="/accounting/accounts" element={<ChartOfAccountsPage />} />
               <Route path="/accounting/mappings" element={<MappingsPage />} />
               <Route path="/accounting/bank-accounts" element={<BankAccountsPage />} />
+              <Route path="/accounting/journal" element={<JournalListPage />} />
+              <Route path="/accounting/journal/new" element={<JournalEntryPage />} />
+              <Route path="/accounting/journal/:id" element={<JournalEntryPage />} />
               <Route path="/contacts" element={<ContactsPage />} />
               <Route path="/products" element={<ProductsPage />} />
               <Route path="/menu" element={<MenuPage />} />

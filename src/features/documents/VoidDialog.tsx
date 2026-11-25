@@ -19,7 +19,7 @@ import { supabase } from '@/lib/supabase'
 interface Props {
   open: boolean
   onOpenChange: (open: boolean) => void
-  target: { documentId: string } | { paymentId: string }
+  target: { documentId: string } | { paymentId: string } | { manualJournalId: string }
   number: string | null
   onVoided: () => void
 }
@@ -35,7 +35,15 @@ export function VoidDialog({ open, onOpenChange, target, number, onVoided }: Pro
               p_document_id: target.documentId,
               p_reason: reason,
             })
-          : await supabase.rpc('void_payment', { p_payment_id: target.paymentId, p_reason: reason })
+          : 'paymentId' in target
+            ? await supabase.rpc('void_payment', {
+                p_payment_id: target.paymentId,
+                p_reason: reason,
+              })
+            : await supabase.rpc('void_manual_journal', {
+                p_id: target.manualJournalId,
+                p_reason: reason,
+              })
       if (error) throw error
     },
     onSuccess: () => {
