@@ -268,7 +268,7 @@
     "JOURNAL_TOO_FEW_LINES": "A journal entry needs at least 2 lines",
     "MANUAL_JOURNAL_CONTROL_ACCOUNT": "Receivable/payable control accounts can only be posted through documents (invoices, credit notes, bills, payments)",
     "ACCOUNT_NOT_FOUND": "Account not found",
-    "DB_OUTDATED": "The database is not up to date — run npm run db:migrate in the project folder, then refresh this page",
+    "DB_OUTDATED": "The database is not up to date — locally run npm run db:migrate; online run npx supabase db push, then refresh this page",
     "REPORT_NO_COMPANY": "Select at least one company",
     "REPORT_PERIOD_INVALID": "Invalid date range",
     "REPORT_TOO_LARGE": "Too many entries for this period — pick one account or a shorter date range",

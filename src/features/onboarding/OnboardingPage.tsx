@@ -18,6 +18,7 @@ import { MyInvitations } from '@/features/company/MyInvitations'
 import { supabase, type BusinessType } from '@/lib/supabase'
 import { cn } from '@/lib/utils'
 import { BrandLogo } from '@/components/layout/BrandMark'
+import { dbErrorMessage } from '@/features/accounts/errors'
 import { companySchema, type CompanyFormInput, type CompanyFormValues } from './company-schema'
 
 const BUSINESS_TYPES: { value: BusinessType; icon: LucideIcon }[] = [
@@ -151,7 +152,7 @@ export function OnboardingPage() {
             >
               {create.error && (
                 <Alert variant="destructive">
-                  <AlertDescription>{create.error.message}</AlertDescription>
+                  <AlertDescription>{dbErrorMessage(t, create.error)}</AlertDescription>
                 </Alert>
               )}
               <div className="grid gap-2">
