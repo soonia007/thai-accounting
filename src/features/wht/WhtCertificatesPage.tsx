@@ -1,7 +1,7 @@
 import { useMutation, useQuery } from '@tanstack/react-query'
-import { ArrowLeft, FileDown } from 'lucide-react'
+import { FileDown } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
-import { Link } from 'react-router-dom'
+import { PageHeader } from '@/components/PageHeader'
 import { Button } from '@/components/ui/button'
 import { useCompany } from '@/features/company/CompanyProvider'
 import { formatDate, formatMoney } from '@/lib/format'
@@ -32,16 +32,12 @@ export function WhtCertificatesPage() {
 
   return (
     <div className="flex w-full flex-col gap-4">
-      <div className="flex items-center gap-2">
-        <Button variant="ghost" size="icon" asChild aria-label={t('common.back')}>
-          <Link to="/purchases">
-            <ArrowLeft className="size-4" />
-          </Link>
-        </Button>
-        <h1 className="text-2xl font-semibold tracking-tight md:text-[28px]">
-          {t('wht.certificates')}
-        </h1>
-      </div>
+      <PageHeader
+        backTo="/purchases"
+        section={t('sections.purchases')}
+        title={t('wht.certificates')}
+        description={t('pageInfo.whtCertificates')}
+      />
       {certs.data?.length === 0 && (
         <p className="text-sm text-muted-foreground">{t('wht.noCertificates')}</p>
       )}

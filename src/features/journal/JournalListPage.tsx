@@ -2,6 +2,7 @@ import { BookText, Plus, Search } from 'lucide-react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
+import { ActionGroup, PageHeader } from '@/components/PageHeader'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -27,22 +28,24 @@ export function JournalListPage() {
 
   return (
     <div className="flex w-full flex-col gap-4">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight md:text-[28px]">
-            {t('journal.title')}
-          </h1>
-          <p className="text-sm text-muted-foreground">{t('journal.subtitle')}</p>
-        </div>
-        {canEdit && (
-          <Button asChild>
-            <Link to="/accounting/journal/new">
-              <Plus className="size-4" />
-              {t('journal.new')}
-            </Link>
-          </Button>
-        )}
-      </div>
+      <PageHeader
+        icon={BookText}
+        section={t('nav.accounting')}
+        title={t('journal.title')}
+        description={t('journal.subtitle')}
+        actions={
+          canEdit && (
+            <ActionGroup label={t('actionGroups.create')}>
+              <Button size="sm" asChild>
+                <Link to="/accounting/journal/new">
+                  <Plus className="size-4" />
+                  {t('journal.new')}
+                </Link>
+              </Button>
+            </ActionGroup>
+          )
+        }
+      />
       <AccountingTabs />
 
       <div className="relative">

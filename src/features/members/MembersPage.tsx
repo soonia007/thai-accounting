@@ -1,6 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { Trash2 } from 'lucide-react'
+import { Trash2, UserCog } from 'lucide-react'
 import { useForm, useWatch } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
@@ -19,6 +19,7 @@ import {
 } from '@/components/ui/select'
 import { useAuth } from '@/features/auth/AuthProvider'
 import { canManageMembers, myCompaniesKey, useCompany } from '@/features/company/CompanyProvider'
+import { PageHeader } from '@/components/PageHeader'
 import { supabase, type MemberRole } from '@/lib/supabase'
 
 const ROLES: MemberRole[] = ['owner', 'admin', 'accountant', 'staff', 'viewer']
@@ -151,7 +152,12 @@ export function MembersPage() {
 
   return (
     <div className="flex w-full flex-col gap-4">
-      <h1 className="text-2xl font-semibold tracking-tight md:text-[28px]">{t('members.title')}</h1>
+      <PageHeader
+        icon={UserCog}
+        section={t('nav.settings')}
+        title={t('members.title')}
+        description={t('pageInfo.members')}
+      />
 
       {actionError && (
         <Alert variant="destructive">

@@ -940,7 +940,18 @@
     "empty": "No entries in this period yet",
     "emptyCta": "Create your first invoice",
     "showTable": "Show as table",
-    "month": "Month"
+    "month": "Month",
+    "quickActions": "Quick actions",
+    "groups": {
+      "sales": "Sales",
+      "purchases": "Purchases",
+      "books": "Books & data"
+    },
+    "groupsInfo": {
+      "sales": "Issue sales documents, collect cash",
+      "purchases": "Record purchases, pay vendors",
+      "books": "Journal entries and master data"
+    }
   },
   "sandbox": {
     "title": "Accounting sandbox",
@@ -1014,5 +1025,48 @@
       "prepaid": "Expense prepaid cost",
       "cashToBank": "Deposit cash to bank"
     }
+  },
+  "sections": {
+    "overview": "Overview",
+    "sales": "Sales",
+    "purchases": "Purchases",
+    "data": "Master data"
+  },
+  "actionGroups": {
+    "create": "Create",
+    "importExport": "Import / Export",
+    "documents": "Documents",
+    "money": "Payments",
+    "tax": "Tax",
+    "tools": "Tools",
+    "share": "Share & print",
+    "next": "Next step",
+    "manage": "Manage"
+  },
+  "pageInfo": {
+    "dashboard": "Revenue, expenses, cash and receivables/payables at a glance, in real time.",
+    "sales": "Quotations, invoices, cash sales, credit/debit notes and receipts — every one posts to the books automatically.",
+    "purchases": "Purchase orders, bills, cash purchases, payments and withholding-tax certificates.",
+    "contacts": "Every customer and vendor, with tax ID, address and credit terms.",
+    "products": "Products and services used on documents, with price, tax and linked accounts.",
+    "accounts": "Your company’s chart of accounts — the structure everything posts to.",
+    "members": "Invite your team and choose what each person can access.",
+    "settings": "Language, theme and your personal preferences.",
+    "companySettings": "Company details, logo, VAT and document numbering.",
+    "menu": "Everything in FINORA, in one place.",
+    "whtCertificates": "Withholding-tax certificates (50 Tawi) issued to vendors — download any as PDF.",
+    "journalEntry": "Record an adjusting entry by hand — debits must equal credits; the simulation panel shows the result live."
+  },
+  "docTypeInfo": {
+    "quotation": "Price offer to a customer — not posted",
+    "invoice": "Sell on credit — creates a receivable",
+    "cash_sale": "Sell and get paid at once",
+    "credit_note": "Reduce what a customer owes on an invoice",
+    "debit_note": "Increase what a customer owes on an invoice",
+    "purchase_order": "Order from a vendor — not posted",
+    "bill": "Buy on credit — creates a payable",
+    "cash_purchase": "Buy and pay at once",
+    "payment_sales": "Record money received against invoices",
+    "payment_purchases": "Record money paid against bills"
   }
 }

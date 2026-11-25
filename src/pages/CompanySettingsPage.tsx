@@ -1,3 +1,4 @@
+import { Building2 } from 'lucide-react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useEffect, useState } from 'react'
@@ -14,6 +15,7 @@ import { useAuth } from '@/features/auth/AuthProvider'
 import { CompanyLogoCard } from '@/features/company/CompanyLogoCard'
 import { canManageMembers, myCompaniesKey, useCompany } from '@/features/company/CompanyProvider'
 import { supabase } from '@/lib/supabase'
+import { PageHeader } from '@/components/PageHeader'
 import { isValidThaiTaxId, normalizeTaxId } from '@/lib/tax-id'
 
 const schema = z
@@ -136,9 +138,12 @@ export function CompanySettingsPage() {
 
   return (
     <div className="flex w-full flex-col gap-4">
-      <h1 className="text-2xl font-semibold tracking-tight md:text-[28px]">
-        {t('companySettings.title')}
-      </h1>
+      <PageHeader
+        icon={Building2}
+        section={t('nav.settings')}
+        title={t('companySettings.title')}
+        description={t('pageInfo.companySettings')}
+      />
       {company.data && (
         <CompanyLogoCard
           companyId={current!.id}

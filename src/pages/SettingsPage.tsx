@@ -1,13 +1,14 @@
-import { Building2, ChevronRight, Users } from 'lucide-react'
+import { Building2, ChevronRight, Settings, Users } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
+import { PageHeader } from '@/components/PageHeader'
 import { Card } from '@/components/ui/card'
 
 export function SettingsPage() {
   const { t } = useTranslation()
   return (
     <div className="flex w-full flex-col gap-4">
-      <h1 className="text-2xl font-semibold tracking-tight md:text-[28px]">{t('nav.settings')}</h1>
+      <PageHeader icon={Settings} title={t('nav.settings')} description={t('pageInfo.settings')} />
       <Card className="gap-0 divide-y py-0">
         <Link to="/settings/company" className="flex items-center gap-3 p-4 hover:bg-accent">
           <Building2 className="size-5" />

@@ -37,6 +37,7 @@ import { useCompany } from '@/features/company/CompanyProvider'
 import { canEditFinanceSetup } from '@/lib/permissions'
 import { supabase, type Enums, type Tables } from '@/lib/supabase'
 import { cn } from '@/lib/utils'
+import { ActionGroup, PageHeader } from '@/components/PageHeader'
 import { BANKS, bankName, suggestLedgerCode } from './banks'
 
 type BankAccount = Tables<'bank_accounts'>
@@ -98,20 +99,23 @@ export function BankAccountsPage() {
 
   return (
     <div className="flex w-full flex-col gap-4">
-      <h1 className="text-2xl font-semibold tracking-tight md:text-[28px]">
-        {t('nav.accounting')}
-      </h1>
+      <PageHeader
+        icon={Landmark}
+        section={t('nav.accounting')}
+        title={t('bankAccounts.title')}
+        description={t('bankAccounts.description')}
+        actions={
+          canEdit && (
+            <ActionGroup label={t('actionGroups.create')}>
+              <Button size="sm" onClick={() => setEditing(null)}>
+                <Plus className="size-4" />
+                {t('bankAccounts.add')}
+              </Button>
+            </ActionGroup>
+          )
+        }
+      />
       <AccountingTabs />
-
-      <div className="flex items-center justify-between gap-3">
-        <p className="text-sm text-muted-foreground">{t('bankAccounts.description')}</p>
-        {canEdit && (
-          <Button onClick={() => setEditing(null)}>
-            <Plus className="size-4" />
-            {t('bankAccounts.add')}
-          </Button>
-        )}
-      </div>
 
       {remove.error && (
         <Alert variant="destructive">

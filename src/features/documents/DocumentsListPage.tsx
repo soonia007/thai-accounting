@@ -1,4 +1,4 @@
-import { Plus, Search } from 'lucide-react'
+import { FileBadge, Plus, Receipt, Search, ShoppingCart } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
@@ -9,6 +9,8 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Input } from '@/components/ui/input'
@@ -24,6 +26,7 @@ import {
   type DocType,
   type Direction,
 } from './doc-types'
+import { ActionGroup, PageHeader } from '@/components/PageHeader'
 import { useDocumentList, usePaymentList } from './queries'
 
 const PAYMENTS_TAB = 'payments'
@@ -95,38 +98,68 @@ export function DocumentsListPage({ direction }: { direction: Direction }) {
 
   return (
     <div className="flex w-full flex-col gap-4">
-      <div className="flex items-center justify-between gap-3">
-        <h1 className="text-2xl font-semibold tracking-tight md:text-[28px]">
-          {t(`nav.${direction}`)}
-        </h1>
-        <div className="flex items-center gap-2">
-          {direction === 'purchases' && (
-            <Button variant="outline" asChild>
-              <Link to="/purchases/wht-certificates">{t('wht.certificatesShort')}</Link>
-            </Button>
-          )}
-          {canCreate && (
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button>
-                  <Plus className="size-4" />
-                  {t('docs.create')}
+      <PageHeader
+        icon={direction === 'sales' ? Receipt : ShoppingCart}
+        section={t(`sections.${direction}`)}
+        title={t(`nav.${direction}`)}
+        description={t(`pageInfo.${direction}`)}
+        actions={
+          <>
+            {direction === 'purchases' && (
+              <ActionGroup label={t('actionGroups.tax')}>
+                <Button variant="outline" size="sm" asChild>
+                  <Link to="/purchases/wht-certificates">
+                    <FileBadge className="size-4" />
+                    {t('wht.certificatesShort')}
+                  </Link>
                 </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                {CREATABLE[direction].map((type) => (
-                  <DropdownMenuItem key={type} onSelect={() => navigate(`${base}/new/${type}`)}>
-                    {t(`docTypes.${type}`)}
-                  </DropdownMenuItem>
-                ))}
-                <DropdownMenuItem onSelect={() => navigate(`${base}/payments/new`)}>
-                  {t(`docs.newPayment.${direction}`)}
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          )}
-        </div>
-      </div>
+              </ActionGroup>
+            )}
+            {canCreate && (
+              <ActionGroup label={t('actionGroups.create')}>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button size="sm">
+                      <Plus className="size-4" />
+                      {t('docs.create')}
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-72">
+                    <DropdownMenuLabel className="text-xs text-muted-foreground">
+                      {t('actionGroups.documents')}
+                    </DropdownMenuLabel>
+                    {CREATABLE[direction].map((type) => (
+                      <DropdownMenuItem
+                        key={type}
+                        onSelect={() => navigate(`${base}/new/${type}`)}
+                        className="flex-col items-start gap-0"
+                      >
+                        <span className="font-medium">{t(`docTypes.${type}`)}</span>
+                        <span className="text-xs text-muted-foreground">
+                          {t(`docTypeInfo.${type}`)}
+                        </span>
+                      </DropdownMenuItem>
+                    ))}
+                    <DropdownMenuSeparator />
+                    <DropdownMenuLabel className="text-xs text-muted-foreground">
+                      {t('actionGroups.money')}
+                    </DropdownMenuLabel>
+                    <DropdownMenuItem
+                      onSelect={() => navigate(`${base}/payments/new`)}
+                      className="flex-col items-start gap-0"
+                    >
+                      <span className="font-medium">{t(`docs.newPayment.${direction}`)}</span>
+                      <span className="text-xs text-muted-foreground">
+                        {t(`docTypeInfo.payment_${direction}`)}
+                      </span>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </ActionGroup>
+            )}
+          </>
+        }
+      />
 
       <nav
         className="flex w-fit max-w-full gap-1 overflow-x-auto rounded-full bg-muted p-1"

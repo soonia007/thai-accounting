@@ -1,10 +1,11 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { ArrowLeft, Ban, CircleDollarSign, Repeat } from 'lucide-react'
+import { Ban, CircleDollarSign, Repeat } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { Alert, AlertDescription } from '@/components/ui/alert'
+import { ActionGroup, PageHeader } from '@/components/PageHeader'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -238,19 +239,13 @@ function DocumentEditor({
 
   return (
     <div className="flex flex-col gap-4 pb-28 md:pb-0">
-      <div className="flex items-center gap-2">
-        <Button variant="ghost" size="icon" asChild aria-label={t('common.back')}>
-          <Link to={`${basePath(direction)}?tab=${type}`}>
-            <ArrowLeft className="size-4" />
-          </Link>
-        </Button>
-        <h1 className="text-2xl font-semibold tracking-tight md:text-[28px]">
-          {t(`docTypes.${type}`)}
-          <span className="ml-2 text-sm font-normal text-muted-foreground">
-            {t('docStatus.draft')}
-          </span>
-        </h1>
-      </div>
+      <PageHeader
+        backTo={`${basePath(direction)}?tab=${type}`}
+        section={t(`sections.${direction}`)}
+        title={t(`docTypes.${type}`)}
+        badges={<StatusBadge status="draft" />}
+        description={t(`docTypeInfo.${type}`)}
+      />
 
       <div className="grid gap-4 md:grid-cols-[minmax(0,1fr)_22rem] lg:grid-cols-[minmax(0,1fr)_26rem] xl:grid-cols-[minmax(0,1fr)_30rem] 2xl:grid-cols-[minmax(0,1fr)_36rem]">
         <form
@@ -532,56 +527,69 @@ function PostedDocument({ direction, id }: { direction: Direction; id: string })
 
   return (
     <div className="flex w-full flex-col gap-4">
-      <div className="flex flex-wrap items-center gap-2">
-        <Button variant="ghost" size="icon" asChild aria-label={t('common.back')}>
-          <Link to={`${base}?tab=${type}`}>
-            <ArrowLeft className="size-4" />
-          </Link>
-        </Button>
-        <h1 className="text-2xl font-semibold tracking-tight md:text-[28px]">
-          {t(`docTypes.${type}`)} <span className="font-mono">{doc.number}</span>
-        </h1>
-        <StatusBadge status={doc.status} />
-        <PaymentStatusBadge status={payStatus} />
-      </div>
-
-      <div className="flex flex-wrap gap-2">
-        <DocumentShareActions documentId={doc.id} number={doc.number} posted={posted} />
-        {type === 'cash_purchase' && <WhtCertificateActions documentId={doc.id} />}
-        {posted &&
-          canCreate &&
-          (CONVERSIONS[type] ?? []).map((to) => (
-            <Button
-              key={to}
-              variant="outline"
-              size="sm"
-              onClick={() => navigate(`${basePath(directionOf(to))}/new/${to}?from=${doc.id}`)}
-            >
-              <Repeat className="size-4" />
-              {t('docs.convertTo', { type: t(`docTypes.${to}`) })}
-            </Button>
-          ))}
-        {posted && canCreate && isCreditType(type) && outstanding > 0 && (
-          <Button
-            size="sm"
-            onClick={() => navigate(`${base}/payments/new?contact=${doc.contact_id}&doc=${doc.id}`)}
-          >
-            <CircleDollarSign className="size-4" />
-            {direction === 'sales' ? t('docs.receivePayment') : t('docs.makePayment')}
-          </Button>
-        )}
-        {canVoid && (
-          <Button
-            variant="ghost"
-            size="sm"
-            className="text-destructive"
-            onClick={() => setVoidOpen(true)}
-          >
-            <Ban className="size-4" />
-            {t('docs.void')}
-          </Button>
-        )}
-      </div>
+      <PageHeader
+        backTo={`${base}?tab=${type}`}
+        section={`${t(`sections.${direction}`)} · ${t(`docTypes.${type}`)}`}
+        title={<span className="font-mono">{doc.number}</span>}
+        badges={
+          <>
+            <StatusBadge status={doc.status} />
+            <PaymentStatusBadge status={payStatus} />
+          </>
+        }
+        description={contact?.name}
+        actions={
+          <>
+            <ActionGroup label={t('actionGroups.share')}>
+              <DocumentShareActions documentId={doc.id} number={doc.number} posted={posted} />
+              {type === 'cash_purchase' && <WhtCertificateActions documentId={doc.id} />}
+            </ActionGroup>
+            {posted &&
+              canCreate &&
+              ((CONVERSIONS[type] ?? []).length > 0 || (isCreditType(type) && outstanding > 0)) && (
+                <ActionGroup label={t('actionGroups.next')}>
+                  {(CONVERSIONS[type] ?? []).map((to) => (
+                    <Button
+                      key={to}
+                      variant="outline"
+                      size="sm"
+                      onClick={() =>
+                        navigate(`${basePath(directionOf(to))}/new/${to}?from=${doc.id}`)
+                      }
+                    >
+                      <Repeat className="size-4" />
+                      {t('docs.convertTo', { type: t(`docTypes.${to}`) })}
+                    </Button>
+                  ))}
+                  {isCreditType(type) && outstanding > 0 && (
+                    <Button
+                      size="sm"
+                      onClick={() =>
+                        navigate(`${base}/payments/new?contact=${doc.contact_id}&doc=${doc.id}`)
+                      }
+                    >
+                      <CircleDollarSign className="size-4" />
+                      {direction === 'sales' ? t('docs.receivePayment') : t('docs.makePayment')}
+                    </Button>
+                  )}
+                </ActionGroup>
+              )}
+            {canVoid && (
+              <ActionGroup label={t('actionGroups.manage')}>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-destructive"
+                  onClick={() => setVoidOpen(true)}
+                >
+                  <Ban className="size-4" />
+                  {t('docs.void')}
+                </Button>
+              </ActionGroup>
+            )}
+          </>
+        }
+      />
 
       {doc.status === 'voided' && (
         <Alert>

@@ -2,6 +2,7 @@ import { FlaskConical, RotateCcw } from 'lucide-react'
 import { useMemo, useState, type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import { AnimatedMoney } from '@/components/AnimatedNumber'
+import { ActionGroup, PageHeader } from '@/components/PageHeader'
 import { Button } from '@/components/ui/button'
 import { useCompany } from '@/features/company/CompanyProvider'
 import { useMoneyAccounts } from '@/features/documents/queries'
@@ -197,23 +198,20 @@ export function SandboxPage() {
 
   return (
     <div className="flex w-full flex-col gap-6">
-      <div className="flex flex-wrap items-end justify-between gap-3">
-        <div className="flex items-center gap-3">
-          <span className="flex size-11 items-center justify-center rounded-2xl bg-gradient-to-br from-finora-sky to-finora-cobalt text-white shadow-raised">
-            <FlaskConical className="size-5" />
-          </span>
-          <div>
-            <h1 className="text-2xl font-semibold tracking-tight md:text-[28px]">
-              {t('sandbox.title')}
-            </h1>
-            <p className="text-sm text-muted-foreground">{t('sandbox.subtitle')}</p>
-          </div>
-        </div>
-        <Button variant="outline" size="sm" onClick={() => setS(INITIAL)}>
-          <RotateCcw className="size-4" />
-          {t('sandbox.reset')}
-        </Button>
-      </div>
+      <PageHeader
+        icon={FlaskConical}
+        section={t('sections.overview')}
+        title={t('sandbox.title')}
+        description={t('sandbox.subtitle')}
+        actions={
+          <ActionGroup label={t('actionGroups.tools')}>
+            <Button variant="outline" size="sm" onClick={() => setS(INITIAL)}>
+              <RotateCcw className="size-4" />
+              {t('sandbox.reset')}
+            </Button>
+          </ActionGroup>
+        }
+      />
 
       <div className="grid gap-5 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
         {/* Controls */}

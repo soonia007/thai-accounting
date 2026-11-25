@@ -1,3 +1,4 @@
+import { Link2 } from 'lucide-react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
 import { Alert, AlertDescription } from '@/components/ui/alert'
@@ -13,6 +14,7 @@ import { useCompany } from '@/features/company/CompanyProvider'
 import { supabase } from '@/lib/supabase'
 import { AccountingTabs } from './AccountingTabs'
 import { dbErrorMessage } from './errors'
+import { PageHeader } from '@/components/PageHeader'
 import {
   ACCOUNT_ROLES,
   ROLE_ACCOUNT_TYPE,
@@ -47,11 +49,13 @@ export function MappingsPage() {
 
   return (
     <div className="flex w-full flex-col gap-4">
-      <h1 className="text-2xl font-semibold tracking-tight md:text-[28px]">
-        {t('nav.accounting')}
-      </h1>
+      <PageHeader
+        icon={Link2}
+        section={t('nav.accounting')}
+        title={t('mappings.title')}
+        description={t('mappings.description')}
+      />
       <AccountingTabs />
-      <p className="text-sm text-muted-foreground">{t('mappings.description')}</p>
 
       {save.error && (
         <Alert variant="destructive">

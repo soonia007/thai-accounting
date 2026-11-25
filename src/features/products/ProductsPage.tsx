@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { Download, Plus, Search, Trash2, Upload } from 'lucide-react'
+import { Download, Package, Plus, Search, Trash2, Upload } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ImportCsvDialog } from '@/components/ImportCsvDialog'
@@ -18,6 +18,7 @@ import { canDeleteMasterData, canEditMasterData } from '@/lib/permissions'
 import { supabase } from '@/lib/supabase'
 import { cn } from '@/lib/utils'
 import { ProductDialog } from './ProductDialog'
+import { ActionGroup, PageHeader } from '@/components/PageHeader'
 import {
   PRODUCT_COLUMNS,
   planProductImport,
@@ -99,9 +100,36 @@ export function ProductsPage() {
 
   return (
     <div className="flex w-full flex-col gap-4">
-      <h1 className="text-2xl font-semibold tracking-tight md:text-[28px]">
-        {t('products.title')}
-      </h1>
+      <PageHeader
+        icon={Package}
+        section={t('sections.data')}
+        title={t('products.title')}
+        description={t('pageInfo.products')}
+        actions={
+          <>
+            <ActionGroup label={t('actionGroups.importExport')}>
+              <Button variant="outline" size="sm" onClick={exportCsv}>
+                <Download className="size-4" />
+                {t('import.export')}
+              </Button>
+              {canEdit && (
+                <Button variant="outline" size="sm" onClick={() => setImportOpen(true)}>
+                  <Upload className="size-4" />
+                  {t('import.import')}
+                </Button>
+              )}
+            </ActionGroup>
+            {canEdit && (
+              <ActionGroup label={t('actionGroups.create')}>
+                <Button size="sm" onClick={() => setEditing(null)}>
+                  <Plus className="size-4" />
+                  {t('products.add')}
+                </Button>
+              </ActionGroup>
+            )}
+          </>
+        }
+      />
 
       <div className="flex flex-wrap items-center gap-3">
         <div className="relative min-w-48 flex-1">
@@ -120,24 +148,6 @@ export function ProductsPage() {
             {t('common.showInactive')}
           </Label>
         </div>
-        <div className="flex gap-1">
-          <Button variant="outline" size="sm" onClick={exportCsv}>
-            <Download className="size-4" />
-            {t('import.export')}
-          </Button>
-          {canEdit && (
-            <Button variant="outline" size="sm" onClick={() => setImportOpen(true)}>
-              <Upload className="size-4" />
-              {t('import.import')}
-            </Button>
-          )}
-        </div>
-        {canEdit && (
-          <Button onClick={() => setEditing(null)}>
-            <Plus className="size-4" />
-            {t('products.add')}
-          </Button>
-        )}
       </div>
 
       {remove.error && (

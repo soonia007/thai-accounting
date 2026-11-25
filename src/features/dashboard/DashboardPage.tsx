@@ -3,14 +3,21 @@ import {
   ArrowDownRight,
   ArrowRight,
   ArrowUpRight,
+  Banknote,
+  BookOpen,
+  BookText,
   CircleDollarSign,
   FilePlus2,
+  FileText,
   FlaskConical,
   Landmark,
+  LayoutDashboard,
+  Package,
   Receipt,
+  ShoppingCart,
+  type LucideIcon,
   Users,
   Wallet,
-  type LucideIcon,
 } from 'lucide-react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -28,6 +35,7 @@ import {
   YAxis,
 } from 'recharts'
 import { AnimatedMoney } from '@/components/AnimatedNumber'
+import { PageHeader } from '@/components/PageHeader'
 import { useCompany } from '@/features/company/CompanyProvider'
 import { MyInvitations } from '@/features/company/MyInvitations'
 import { formatMoney } from '@/lib/format'
@@ -261,39 +269,102 @@ export function DashboardPage() {
       maximumFractionDigits: 1,
     }).format(v)
 
-  const actions: { to: string; icon: LucideIcon; label: string }[] = [
-    { to: '/sales/new/invoice', icon: FilePlus2, label: t('docTypes.invoice') },
-    { to: '/sales/payments/new', icon: CircleDollarSign, label: t('docs.newPayment.sales') },
-    { to: '/purchases/new/bill', icon: Receipt, label: t('docTypes.bill') },
-    { to: '/contacts', icon: Users, label: t('nav.contacts') },
+  const quickGroups: {
+    key: 'sales' | 'purchases' | 'books'
+    icon: LucideIcon
+    tint: string
+    items: { to: string; icon: LucideIcon; label: string }[]
+  }[] = [
+    {
+      key: 'sales',
+      icon: Receipt,
+      tint: 'bg-accent text-brand',
+      items: [
+        { to: '/sales/new/quotation', icon: FileText, label: t('docTypes.quotation') },
+        { to: '/sales/new/invoice', icon: FilePlus2, label: t('docTypes.invoice') },
+        { to: '/sales/new/cash_sale', icon: Banknote, label: t('docTypes.cash_sale') },
+        { to: '/sales/payments/new', icon: CircleDollarSign, label: t('docs.newPayment.sales') },
+      ],
+    },
+    {
+      key: 'purchases',
+      icon: ShoppingCart,
+      tint: 'bg-finora-mint/15 text-[#0b8a7a]',
+      items: [
+        {
+          to: '/purchases/new/purchase_order',
+          icon: FileText,
+          label: t('docTypes.purchase_order'),
+        },
+        { to: '/purchases/new/bill', icon: FilePlus2, label: t('docTypes.bill') },
+        { to: '/purchases/new/cash_purchase', icon: Banknote, label: t('docTypes.cash_purchase') },
+        {
+          to: '/purchases/payments/new',
+          icon: CircleDollarSign,
+          label: t('docs.newPayment.purchases'),
+        },
+      ],
+    },
+    {
+      key: 'books',
+      icon: BookOpen,
+      tint: 'bg-muted text-brand-mid',
+      items: [
+        { to: '/accounting/journal/new', icon: BookText, label: t('journal.new') },
+        { to: '/contacts', icon: Users, label: t('nav.contacts') },
+        { to: '/products', icon: Package, label: t('nav.products') },
+      ],
+    },
   ]
 
   return (
     <div className="flex w-full flex-col gap-6">
       <MyInvitations />
-      <div className="flex flex-wrap items-end justify-between gap-3">
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight md:text-[28px]">
-            {t('hello.title')}
-          </h1>
-          <p className="mt-1 text-sm text-muted-foreground">
+      <PageHeader
+        icon={LayoutDashboard}
+        section={t('sections.overview')}
+        title={t('hello.title')}
+        description={
+          <>
             {t('hello.workingIn', { company: current?.name })} ·{' '}
-            {current && t(`roles.${current.role}`)}
-          </p>
-        </div>
-        <div className="flex flex-wrap gap-2">
-          {actions.map(({ to, icon: Icon, label }) => (
-            <Link
-              key={to}
-              to={to}
-              className="inline-flex h-9 items-center gap-1.5 rounded-full border bg-card px-3.5 text-sm font-medium shadow-xs transition-colors hover:bg-secondary"
-            >
-              <Icon className="size-4 text-brand" />
-              {label}
-            </Link>
-          ))}
-        </div>
-      </div>
+            {current && t(`roles.${current.role}`)} — {t('pageInfo.dashboard')}
+          </>
+        }
+      />
+
+      {/* Quick actions, grouped by area of work */}
+      <section aria-label={t('dashboard.quickActions')} className="grid gap-3 md:grid-cols-3">
+        {quickGroups.map((g) => (
+          <div
+            key={g.key}
+            className="flex flex-col gap-3 rounded-2xl border border-border/70 bg-card p-4 shadow-card"
+          >
+            <div className="flex items-center gap-2.5">
+              <span className={cn('flex size-8 items-center justify-center rounded-xl', g.tint)}>
+                <g.icon className="size-4" />
+              </span>
+              <div>
+                <div className="text-sm font-semibold">{t(`dashboard.groups.${g.key}`)}</div>
+                <div className="text-xs text-muted-foreground">
+                  {t(`dashboard.groupsInfo.${g.key}`)}
+                </div>
+              </div>
+            </div>
+            <div className="flex flex-wrap gap-1.5">
+              {g.items.map((a) => (
+                <Link
+                  key={a.to}
+                  to={a.to}
+                  className="inline-flex h-8 items-center gap-1.5 rounded-full border bg-card px-3 text-xs font-medium shadow-xs transition-all hover:-translate-y-px hover:border-brand hover:text-brand-strong"
+                >
+                  <a.icon className="size-3.5 text-brand" />
+                  {a.label}
+                </Link>
+              ))}
+            </div>
+          </div>
+        ))}
+      </section>
 
       {/* KPI tiles — numbers count up when loaded and when the data changes */}
       <section

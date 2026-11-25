@@ -345,3 +345,9 @@ esourcesin` — ถ้า terminal หา `docker` ไม่เจอให้�
   - กระทบ M5/M6/M7 และ M12–M15, M20, M22: ทุกฟอร์มที่ลงบัญชีต้องมี `<PostingPreview>`
 - **ข้อมูลที่ต้องได้ก่อน M17 (OCR):** OCR รันที่ไหน, เรียกใช้อย่างไร, ตัวอย่าง JSON จริง 3–5 ไฟล์ใน `samples/ocr/`, มี confidence ต่อ field หรือไม่
 - M11: ไฟล์ข้อความสำหรับยื่นออนไลน์ — ต้องถามรูปแบบก่อนทำ
+
+## หัวหน้าเพจแบบ global + ปุ่มจัดหมวด (2026-11-25)
+
+- `PageHeader` / `ActionGroup` ใช้ทุกหน้า: หมวด · ชื่อหน้า · คำอธิบาย · ปุ่มจัดกลุ่มมีป้าย (ดู docs/DESIGN_SYSTEM.md)
+- เมนูสร้างเอกสารมีหัวข้อและคำอธิบายแต่ละประเภท; Dashboard ทางลัดแบ่ง 3 กลุ่ม
+- แก้ "Could not find the function … / Bucket not found": ฐานข้อมูลเครื่องเจ้าของยังไม่ได้รัน migration ใหม่ → `npm run db:start` รัน `migration up` ให้แล้ว, มี `npm run db:migrate`, และแอปแสดงข้อความแนะนำแทน error ดิบ

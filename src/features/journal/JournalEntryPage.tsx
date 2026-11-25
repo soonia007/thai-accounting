@@ -1,10 +1,11 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { ArrowLeft, Ban, Plus, Scale, Sparkles, Trash2, Wand2 } from 'lucide-react'
+import { Ban, Plus, Scale, Sparkles, Trash2, Wand2 } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Link, useNavigate, useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { AnimatedMoney } from '@/components/AnimatedNumber'
 import { Alert, AlertDescription } from '@/components/ui/alert'
+import { ActionGroup, PageHeader } from '@/components/PageHeader'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -247,17 +248,13 @@ function JournalEditor({ id, initial }: { id?: string; initial: JournalForm }) {
 
   return (
     <div className="flex flex-col gap-4 pb-28 md:pb-0">
-      <div className="flex items-center gap-2">
-        <Button variant="ghost" size="icon" asChild aria-label={t('common.back')}>
-          <Link to="/accounting/journal">
-            <ArrowLeft className="size-4" />
-          </Link>
-        </Button>
-        <h1 className="text-2xl font-semibold tracking-tight md:text-[28px]">
-          {t('journal.entry')}
-        </h1>
-        <span className="text-sm text-muted-foreground">{t('docStatus.draft')}</span>
-      </div>
+      <PageHeader
+        backTo="/accounting/journal"
+        section={t('nav.accounting')}
+        title={t('journal.entry')}
+        badges={<StatusBadge status="draft" />}
+        description={t('pageInfo.journalEntry')}
+      />
 
       <div className="grid gap-4 md:grid-cols-[minmax(0,1fr)_22rem] lg:grid-cols-[minmax(0,1fr)_26rem] xl:grid-cols-[minmax(0,1fr)_30rem] 2xl:grid-cols-[minmax(0,1fr)_36rem]">
         <div className="flex min-w-0 flex-col gap-4" {...focusTracking}>
@@ -534,30 +531,29 @@ function PostedJournalView({ id }: { id: string }) {
 
   return (
     <div className="flex w-full flex-col gap-4">
-      <div className="flex flex-wrap items-center gap-2">
-        <Button variant="ghost" size="icon" asChild aria-label={t('common.back')}>
-          <Link to="/accounting/journal">
-            <ArrowLeft className="size-4" />
-          </Link>
-        </Button>
-        <h1 className="text-2xl font-semibold tracking-tight md:text-[28px]">
-          {t('journal.entry')} <span className="font-mono">{j.number}</span>
-        </h1>
-        <StatusBadge status={j.status} />
-      </div>
-      {j.status === 'posted' && canEditFinanceSetup(current?.role) && (
-        <div>
-          <Button
-            variant="ghost"
-            size="sm"
-            className="text-destructive"
-            onClick={() => setVoidOpen(true)}
-          >
-            <Ban className="size-4" />
-            {t('docs.void')}
-          </Button>
-        </div>
-      )}
+      <PageHeader
+        backTo="/accounting/journal"
+        section={`${t('nav.accounting')} · ${t('journal.entry')}`}
+        title={<span className="font-mono">{j.number}</span>}
+        badges={<StatusBadge status={j.status} />}
+        description={j.memo}
+        actions={
+          j.status === 'posted' &&
+          canEditFinanceSetup(current?.role) && (
+            <ActionGroup label={t('actionGroups.manage')}>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="text-destructive"
+                onClick={() => setVoidOpen(true)}
+              >
+                <Ban className="size-4" />
+                {t('docs.void')}
+              </Button>
+            </ActionGroup>
+          )
+        }
+      />
       {j.status === 'voided' && (
         <Alert>
           <AlertDescription>

@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import {
+  BookOpen,
   ChevronDown,
   ChevronRight,
   Lock,
@@ -40,6 +41,7 @@ import {
   useMappings,
   type AccountRole,
 } from './queries'
+import { ActionGroup, PageHeader } from '@/components/PageHeader'
 import { buildTree, filterTree, flattenTree, type Account } from './tree'
 
 type DialogTarget = { mode: 'edit'; account: Account } | { mode: 'add'; parent?: Account } | null
@@ -120,9 +122,22 @@ export function ChartOfAccountsPage() {
 
   return (
     <div className="flex w-full flex-col gap-4">
-      <h1 className="text-2xl font-semibold tracking-tight md:text-[28px]">
-        {t('nav.accounting')}
-      </h1>
+      <PageHeader
+        icon={BookOpen}
+        section={t('nav.accounting')}
+        title={t('accounts.title')}
+        description={t('pageInfo.accounts')}
+        actions={
+          canEdit && (
+            <ActionGroup label={t('actionGroups.create')}>
+              <Button size="sm" onClick={() => openDialog({ mode: 'add' })}>
+                <Plus className="size-4" />
+                {t('accounts.add')}
+              </Button>
+            </ActionGroup>
+          )
+        }
+      />
       <AccountingTabs />
 
       <div className="flex flex-wrap items-center gap-3">
@@ -150,12 +165,6 @@ export function ChartOfAccountsPage() {
             {t('accounts.collapseAll')}
           </Button>
         </div>
-        {canEdit && (
-          <Button onClick={() => openDialog({ mode: 'add' })}>
-            <Plus className="size-4" />
-            {t('accounts.add')}
-          </Button>
-        )}
       </div>
 
       {actionError && (

@@ -1,9 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { ArrowLeft, Ban } from 'lucide-react'
+import { Ban } from 'lucide-react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { Alert, AlertDescription } from '@/components/ui/alert'
+import { ActionGroup, PageHeader } from '@/components/PageHeader'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -218,16 +219,13 @@ function PaymentEditor({ direction }: { direction: Direction }) {
 
   return (
     <div className="flex flex-col gap-4 pb-28 md:pb-0">
-      <div className="flex items-center gap-2">
-        <Button variant="ghost" size="icon" asChild aria-label={t('common.back')}>
-          <Link to={`${basePath(direction)}?tab=payments`}>
-            <ArrowLeft className="size-4" />
-          </Link>
-        </Button>
-        <h1 className="text-2xl font-semibold tracking-tight md:text-[28px]">
-          {t(`docs.newPayment.${direction}`)}
-        </h1>
-      </div>
+      <PageHeader
+        backTo={`${basePath(direction)}?tab=payments`}
+        section={t(`sections.${direction}`)}
+        title={t(`docs.newPayment.${direction}`)}
+        badges={<StatusBadge status="draft" />}
+        description={t(`docTypeInfo.payment_${direction}`)}
+      />
 
       <div className="grid gap-4 md:grid-cols-[minmax(0,1fr)_22rem] lg:grid-cols-[minmax(0,1fr)_26rem] xl:grid-cols-[minmax(0,1fr)_30rem] 2xl:grid-cols-[minmax(0,1fr)_36rem]">
         <div className="flex min-w-0 flex-col gap-4" {...focusTracking}>
@@ -439,32 +437,37 @@ function PostedPayment({
 
   return (
     <div className="flex w-full flex-col gap-4">
-      <div className="flex flex-wrap items-center gap-2">
-        <Button variant="ghost" size="icon" asChild aria-label={t('common.back')}>
-          <Link to={`${base}?tab=payments`}>
-            <ArrowLeft className="size-4" />
-          </Link>
-        </Button>
-        <h1 className="text-2xl font-semibold tracking-tight md:text-[28px]">
-          {t(`docs.paymentTitle.${direction}`)} <span className="font-mono">{payment.number}</span>
-        </h1>
-        <StatusBadge status={payment.status} />
-      </div>
-      <div className="flex flex-wrap gap-2">
-        <DocumentShareActions paymentId={payment.id} number={payment.number} posted={posted} />
-        {direction === 'purchases' && <WhtCertificateActions paymentId={payment.id} />}
-        {posted && canEditFinanceSetup(current?.role) && (
-          <Button
-            variant="ghost"
-            size="sm"
-            className="text-destructive"
-            onClick={() => setVoidOpen(true)}
-          >
-            <Ban className="size-4" />
-            {t('docs.void')}
-          </Button>
-        )}
-      </div>
+      <PageHeader
+        backTo={`${base}?tab=payments`}
+        section={`${t(`sections.${direction}`)} · ${t(`docs.paymentTitle.${direction}`)}`}
+        title={<span className="font-mono">{payment.number}</span>}
+        badges={<StatusBadge status={payment.status} />}
+        actions={
+          <>
+            <ActionGroup label={t('actionGroups.share')}>
+              <DocumentShareActions
+                paymentId={payment.id}
+                number={payment.number}
+                posted={posted}
+              />
+              {direction === 'purchases' && <WhtCertificateActions paymentId={payment.id} />}
+            </ActionGroup>
+            {posted && canEditFinanceSetup(current?.role) && (
+              <ActionGroup label={t('actionGroups.manage')}>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-destructive"
+                  onClick={() => setVoidOpen(true)}
+                >
+                  <Ban className="size-4" />
+                  {t('docs.void')}
+                </Button>
+              </ActionGroup>
+            )}
+          </>
+        }
+      />
       {payment.status === 'voided' && (
         <Alert>
           <AlertDescription>
