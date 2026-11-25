@@ -138,3 +138,7 @@ npm run db:stop
 
 - E2E: เปิดฐานข้อมูล (`npm run db:start`) แล้วรัน `npm run e2e`
 - ขึ้น TestFlight / Google Play Internal testing: ดู [docs/RELEASE.md](docs/RELEASE.md)
+
+## เปิดออนไลน์
+
+ขั้นตอนขึ้น Supabase Cloud + Cloudflare Pages: ดู [docs/DEPLOY.md](docs/DEPLOY.md)
