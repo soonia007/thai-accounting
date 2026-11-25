@@ -1621,6 +1621,23 @@ export type Database = {
       print_document: { Args: { p_document_id?: string; p_payment_id?: string }; Returns: Json }
       print_wht_certificate: { Args: { p_certificate_id: string }; Returns: Json }
       remove_member: { Args: { p_company_id: string; p_user_id: string }; Returns: undefined }
+      report_balance_sheet: { Args: { p_as_of: string; p_company_ids: string[] }; Returns: Json }
+      report_general_ledger: {
+        Args: { p_account_code?: string; p_company_ids: string[]; p_from: string; p_to: string }
+        Returns: Json
+      }
+      report_income_statement: {
+        Args: { p_company_ids: string[]; p_from: string; p_to: string }
+        Returns: Json
+      }
+      report_receivable_payable: {
+        Args: { p_as_of: string; p_company_ids: string[]; p_kind: string }
+        Returns: Json
+      }
+      report_trial_balance: {
+        Args: { p_company_ids: string[]; p_from: string; p_to: string }
+        Returns: Json
+      }
       revoke_share_link: { Args: { p_token: string }; Returns: undefined }
       save_document: { Args: { p_doc: Json }; Returns: string }
       save_manual_journal: { Args: { p_payload: Json }; Returns: string }

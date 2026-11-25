@@ -31,6 +31,21 @@ const SandboxPage = lazy(() =>
 const LandingPage = lazy(() =>
   import('@/features/landing/LandingPage').then((m) => ({ default: m.LandingPage })),
 )
+const TrialBalancePage = lazy(() =>
+  import('@/features/reports/ReportPages').then((m) => ({ default: m.TrialBalancePage })),
+)
+const IncomeStatementPage = lazy(() =>
+  import('@/features/reports/ReportPages').then((m) => ({ default: m.IncomeStatementPage })),
+)
+const BalanceSheetPage = lazy(() =>
+  import('@/features/reports/ReportPages').then((m) => ({ default: m.BalanceSheetPage })),
+)
+const GeneralLedgerPage = lazy(() =>
+  import('@/features/reports/ReportPages').then((m) => ({ default: m.GeneralLedgerPage })),
+)
+const ReceivablePayablePage = lazy(() =>
+  import('@/features/reports/ReportPages').then((m) => ({ default: m.ReceivablePayablePage })),
+)
 
 export default function App() {
   return (
@@ -45,6 +60,12 @@ export default function App() {
             <Route element={<AppLayout />}>
               <Route index element={<DashboardPage />} />
               <Route path="/sandbox" element={<SandboxPage />} />
+              <Route path="/reports" element={<Navigate to="/reports/trial-balance" replace />} />
+              <Route path="/reports/trial-balance" element={<TrialBalancePage />} />
+              <Route path="/reports/income-statement" element={<IncomeStatementPage />} />
+              <Route path="/reports/balance-sheet" element={<BalanceSheetPage />} />
+              <Route path="/reports/general-ledger" element={<GeneralLedgerPage />} />
+              <Route path="/reports/receivables-payables" element={<ReceivablePayablePage />} />
               <Route path="/settings" element={<SettingsPage />} />
               <Route path="/settings/members" element={<MembersPage />} />
               <Route path="/accounting" element={<Navigate to="/accounting/accounts" replace />} />

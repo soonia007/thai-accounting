@@ -267,7 +267,10 @@
     "JOURNAL_TOO_FEW_LINES": "A journal entry needs at least 2 lines",
     "MANUAL_JOURNAL_CONTROL_ACCOUNT": "Receivable/payable control accounts can only be posted through documents (invoices, credit notes, bills, payments)",
     "ACCOUNT_NOT_FOUND": "Account not found",
-    "DB_OUTDATED": "The database is not up to date — run npm run db:migrate in the project folder, then refresh this page"
+    "DB_OUTDATED": "The database is not up to date — run npm run db:migrate in the project folder, then refresh this page",
+    "REPORT_NO_COMPANY": "Select at least one company",
+    "REPORT_PERIOD_INVALID": "Invalid date range",
+    "REPORT_TOO_LARGE": "Too many entries for this period — pick one account or a shorter date range"
   },
   "contacts": {
     "title": "Contacts",
@@ -1041,7 +1044,8 @@
     "tools": "Tools",
     "share": "Share & print",
     "next": "Next step",
-    "manage": "Manage"
+    "manage": "Manage",
+    "export": "Export"
   },
   "pageInfo": {
     "dashboard": "Revenue, expenses, cash and receivables/payables at a glance, in real time.",
@@ -1116,5 +1120,97 @@
       "members": "Members & roles"
     },
     "soon": "Not available yet — planned in {{m}}"
+  },
+  "reports": {
+    "filters": "Report filters",
+    "companies": "Companies",
+    "combinedCount": "{{count}} companies combined",
+    "combinedHint": "Select several companies for a combined report",
+    "combinedNote": "Combined report: amounts are summed by account code; intercompany transactions are not eliminated.",
+    "period": "Period",
+    "from": "From",
+    "to": "To",
+    "asOf": "As of",
+    "today": "Today",
+    "presets": {
+      "thisMonth": "This month",
+      "lastMonth": "Last month",
+      "thisQuarter": "This quarter",
+      "thisYear": "This year",
+      "lastYear": "Last year"
+    },
+    "empty": "Nothing to show for the selected filters",
+    "balanced": "Balanced — debits equal credits",
+    "unbalanced": "Figures do not balance — please contact your administrator",
+    "allAccounts": "All accounts",
+    "glNote": "Balances follow each account’s normal side (assets/expenses = debit; liabilities/equity/revenue = credit).",
+    "arApNote": "From the trade receivable / payable ledger accounts, per contact, as of the selected date.",
+    "pages": {
+      "trial-balance": {
+        "title": "Trial balance",
+        "info": "Debit/credit totals of every account: opening · movement in the period · closing — proves the books balance."
+      },
+      "income-statement": {
+        "title": "Income statement",
+        "info": "Revenue minus expenses in the selected period = net profit (loss)."
+      },
+      "balance-sheet": {
+        "title": "Balance sheet",
+        "info": "Assets, liabilities and equity as of the selected date."
+      },
+      "general-ledger": {
+        "title": "General ledger",
+        "info": "Every debit/credit of each account with a running balance."
+      },
+      "receivables": {
+        "title": "Receivables summary",
+        "info": "What each customer still owes, as of the selected date."
+      },
+      "payables": {
+        "title": "Payables summary",
+        "info": "What you still owe each vendor, as of the selected date."
+      }
+    },
+    "labels": {
+      "code": "Code",
+      "account": "Account",
+      "openingDr": "Opening Dr",
+      "openingCr": "Opening Cr",
+      "periodDr": "Period Dr",
+      "periodCr": "Period Cr",
+      "closingDr": "Closing Dr",
+      "closingCr": "Closing Cr",
+      "total": "Total",
+      "amount": "Amount",
+      "revenue": "Revenue",
+      "expenses": "Expenses",
+      "totalRevenue": "Total revenue",
+      "totalExpenses": "Total expenses",
+      "netProfit": "Net profit",
+      "netLoss": "Net loss",
+      "assets": "Assets",
+      "liabilities": "Liabilities",
+      "equity": "Equity",
+      "totalAssets": "Total assets",
+      "totalLiabilities": "Total liabilities",
+      "totalEquity": "Total equity",
+      "totalLiabilitiesEquity": "Total liabilities and equity",
+      "unclosedProfit": "Net profit (loss) not yet closed",
+      "date": "Date",
+      "ref": "Reference",
+      "description": "Description",
+      "company": "Company",
+      "debit": "Debit",
+      "credit": "Credit",
+      "balance": "Balance",
+      "openingBalance": "Opening balance",
+      "periodTotal": "Total / carried forward",
+      "contact": "Contact",
+      "taxId": "Tax ID",
+      "unassigned": "No contact",
+      "receivable": "Receivables",
+      "payable": "Payables",
+      "kind": "Type"
+    }
   }
 }

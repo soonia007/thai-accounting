@@ -99,9 +99,13 @@ describe('App routing', () => {
     expect(reports).toHaveAttribute('aria-expanded', 'false')
     await userEvent.click(reports)
     expect(reports).toHaveAttribute('aria-expanded', 'true')
-    const tb = screen.getByText('งบทดลอง').closest('[aria-disabled]')
-    expect(tb).toHaveAttribute('aria-disabled', 'true')
-    expect(tb).toHaveTextContent('M8')
+    expect(screen.getByRole('link', { name: 'งบทดลอง' })).toHaveAttribute(
+      'href',
+      '/reports/trial-balance',
+    )
+    const vat = screen.getByText('ภาษีขาย-ซื้อ (ภ.พ.30)').closest('[aria-disabled]')
+    expect(vat).toHaveAttribute('aria-disabled', 'true')
+    expect(vat).toHaveTextContent('M10')
     expect(screen.getByText('ภาษีหัก ณ ที่จ่าย (ภ.ง.ด.)').closest('[aria-disabled]')).toHaveTextContent(
       'M11',
     )
