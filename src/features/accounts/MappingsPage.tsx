@@ -46,8 +46,10 @@ export function MappingsPage() {
   })
 
   return (
-    <div className="flex max-w-5xl flex-col gap-4">
-      <h1 className="text-xl font-semibold">{t('nav.accounting')}</h1>
+    <div className="flex w-full flex-col gap-4">
+      <h1 className="text-2xl font-semibold tracking-tight md:text-[28px]">
+        {t('nav.accounting')}
+      </h1>
       <AccountingTabs />
       <p className="text-sm text-muted-foreground">{t('mappings.description')}</p>
 

@@ -31,14 +31,16 @@ export function WhtCertificatesPage() {
   const download = useMutation({ mutationFn: downloadWhtCertificate })
 
   return (
-    <div className="flex max-w-4xl flex-col gap-4">
+    <div className="flex w-full flex-col gap-4">
       <div className="flex items-center gap-2">
         <Button variant="ghost" size="icon" asChild aria-label={t('common.back')}>
           <Link to="/purchases">
             <ArrowLeft className="size-4" />
           </Link>
         </Button>
-        <h1 className="text-xl font-semibold">{t('wht.certificates')}</h1>
+        <h1 className="text-2xl font-semibold tracking-tight md:text-[28px]">
+          {t('wht.certificates')}
+        </h1>
       </div>
       {certs.data?.length === 0 && (
         <p className="text-sm text-muted-foreground">{t('wht.noCertificates')}</p>
@@ -58,7 +60,7 @@ export function WhtCertificatesPage() {
               </div>
             </div>
             {c.voided_at && (
-              <span className="rounded bg-red-100 px-2 py-0.5 text-xs text-red-800">
+              <span className="rounded-full bg-destructive/10 px-2.5 py-0.5 text-xs font-medium text-destructive-foreground">
                 {t('docStatus.voided')}
               </span>
             )}

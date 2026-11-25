@@ -91,7 +91,7 @@ export function ImportCsvDialog<T>({
             <Download className="size-4" />
             {t('import.template')}
           </Button>
-          <label className="inline-flex cursor-pointer items-center gap-2 rounded-md border px-3 py-1.5 text-sm hover:bg-accent">
+          <label className="inline-flex cursor-pointer items-center gap-2 rounded-xl border px-3 py-1.5 text-sm hover:bg-accent">
             <Upload className="size-4" />
             {fileName ?? t('import.chooseFile')}
             <input
@@ -131,7 +131,7 @@ export function ImportCsvDialog<T>({
               {t('import.summary', { valid: result.valid.length, errors: result.errors.length })}
             </p>
             {result.errors.length > 0 && (
-              <div className="max-h-60 overflow-auto rounded-md border">
+              <div className="max-h-60 overflow-auto rounded-xl border">
                 <table className="w-full text-left text-xs">
                   <thead className="sticky top-0 bg-muted">
                     <tr>

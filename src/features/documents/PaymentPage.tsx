@@ -217,10 +217,12 @@ function PaymentEditor({ direction }: { direction: Direction }) {
             <ArrowLeft className="size-4" />
           </Link>
         </Button>
-        <h1 className="text-xl font-semibold">{t(`docs.newPayment.${direction}`)}</h1>
+        <h1 className="text-2xl font-semibold tracking-tight md:text-[28px]">
+          {t(`docs.newPayment.${direction}`)}
+        </h1>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-[minmax(0,1fr)_22rem] lg:grid-cols-[minmax(0,1fr)_26rem]">
+      <div className="grid gap-4 md:grid-cols-[minmax(0,1fr)_22rem] lg:grid-cols-[minmax(0,1fr)_26rem] xl:grid-cols-[minmax(0,1fr)_30rem] 2xl:grid-cols-[minmax(0,1fr)_36rem]">
         <div className="flex min-w-0 flex-col gap-4">
           {post.error && (
             <Alert variant="destructive">
@@ -235,7 +237,7 @@ function PaymentEditor({ direction }: { direction: Direction }) {
                 </Label>
                 <select
                   id="p-contact"
-                  className="h-9 rounded-md border bg-background px-3 text-sm"
+                  className="h-10 rounded-xl border bg-card pr-9 pl-3.5 text-sm shadow-xs"
                   value={contactId}
                   onChange={(e) => setContactId(e.target.value)}
                 >
@@ -262,7 +264,7 @@ function PaymentEditor({ direction }: { direction: Direction }) {
                 </Label>
                 <select
                   id="p-account"
-                  className="h-9 rounded-md border bg-background px-3 text-sm"
+                  className="h-10 rounded-xl border bg-card pr-9 pl-3.5 text-sm shadow-xs"
                   value={effectiveAccount}
                   onChange={(e) => setAccountId(e.target.value)}
                 >
@@ -317,7 +319,7 @@ function PaymentEditor({ direction }: { direction: Direction }) {
                 return (
                   <div
                     key={d.id}
-                    className="grid grid-cols-[auto_minmax(0,1fr)] items-center gap-x-3 gap-y-2 rounded-md border p-2 text-sm sm:grid-cols-[auto_minmax(0,1fr)_8rem_7rem]"
+                    className="grid grid-cols-[auto_minmax(0,1fr)] items-center gap-x-3 gap-y-2 rounded-xl border p-2 text-sm sm:grid-cols-[auto_minmax(0,1fr)_8rem_7rem]"
                   >
                     <input
                       type="checkbox"
@@ -427,14 +429,14 @@ function PostedPayment({
   const base = basePath(direction)
 
   return (
-    <div className="flex max-w-5xl flex-col gap-4">
+    <div className="flex w-full flex-col gap-4">
       <div className="flex flex-wrap items-center gap-2">
         <Button variant="ghost" size="icon" asChild aria-label={t('common.back')}>
           <Link to={`${base}?tab=payments`}>
             <ArrowLeft className="size-4" />
           </Link>
         </Button>
-        <h1 className="text-xl font-semibold">
+        <h1 className="text-2xl font-semibold tracking-tight md:text-[28px]">
           {t(`docs.paymentTitle.${direction}`)} <span className="font-mono">{payment.number}</span>
         </h1>
         <StatusBadge status={payment.status} />
@@ -461,7 +463,7 @@ function PostedPayment({
           </AlertDescription>
         </Alert>
       )}
-      <div className="grid gap-4 md:grid-cols-[minmax(0,1fr)_22rem] lg:grid-cols-[minmax(0,1fr)_26rem]">
+      <div className="grid gap-4 md:grid-cols-[minmax(0,1fr)_22rem] lg:grid-cols-[minmax(0,1fr)_26rem] xl:grid-cols-[minmax(0,1fr)_30rem] 2xl:grid-cols-[minmax(0,1fr)_36rem]">
         <Card className="py-4">
           <CardContent className="flex flex-col gap-3 px-4 text-sm">
             <dl className="grid grid-cols-2 gap-x-4 gap-y-2">
@@ -478,7 +480,7 @@ function PostedPayment({
               <dt className="text-muted-foreground">{t('docs.whtAmount')}</dt>
               <dd>{formatMoney(payment.wht_amount, i18n.language)}</dd>
             </dl>
-            <ul className="divide-y rounded-md border">
+            <ul className="divide-y rounded-xl border">
               {(allocs.data ?? []).map((a) => (
                 <li key={a.documents.id} className="flex justify-between px-3 py-2">
                   <Link

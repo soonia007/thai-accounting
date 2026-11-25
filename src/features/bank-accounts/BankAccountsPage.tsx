@@ -97,8 +97,10 @@ export function BankAccountsPage() {
   })
 
   return (
-    <div className="flex max-w-5xl flex-col gap-4">
-      <h1 className="text-xl font-semibold">{t('nav.accounting')}</h1>
+    <div className="flex w-full flex-col gap-4">
+      <h1 className="text-2xl font-semibold tracking-tight md:text-[28px]">
+        {t('nav.accounting')}
+      </h1>
       <AccountingTabs />
 
       <div className="flex items-center justify-between gap-3">
@@ -324,7 +326,7 @@ function BankAccountFormDialog({
         }
       }}
     >
-      <DialogContent className="max-h-[90dvh] overflow-y-auto sm:max-w-lg">
+      <DialogContent className="sm:max-w-lg">
         <DialogHeader>
           <DialogTitle>{bank ? t('bankAccounts.edit') : t('bankAccounts.add')}</DialogTitle>
         </DialogHeader>
@@ -398,7 +400,7 @@ function BankAccountFormDialog({
             </div>
 
             {!bank && (
-              <fieldset className="grid gap-3 rounded-md border p-3">
+              <fieldset className="grid gap-3 rounded-xl border p-3">
                 <legend className="px-1 text-sm font-medium">{t('bankAccounts.ledger')}</legend>
                 <label className="flex items-center gap-2 text-sm">
                   <input

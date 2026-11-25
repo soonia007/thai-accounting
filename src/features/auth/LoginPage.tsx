@@ -7,11 +7,12 @@ import { z } from 'zod'
 import { LanguageSwitcher } from '@/components/layout/LanguageSwitcher'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { isSupabaseConfigured, supabase } from '@/lib/supabase'
 import { authErrorMessage } from './auth-errors'
+import { BrandMark } from '@/components/layout/BrandMark'
 import { useAuth } from './AuthProvider'
 
 const schema = z.object({
@@ -64,16 +65,27 @@ export function LoginPage() {
   }
 
   return (
-    <div className="pt-safe pb-safe flex min-h-dvh flex-col items-center justify-center gap-4 p-4">
-      <div className="flex w-full max-w-sm justify-end">
+    <div className="relative flex min-h-dvh flex-col items-center justify-center gap-6 overflow-hidden px-4 pt-[calc(1rem+env(safe-area-inset-top))] pb-[calc(1rem+env(safe-area-inset-bottom))]">
+      {/* soft brand glow */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(60rem_40rem_at_50%_-10%,rgb(38_144_207/0.16),transparent_60%),radial-gradient(40rem_30rem_at_100%_110%,rgb(11_86_164/0.10),transparent_60%)]"
+      />
+      <div className="absolute top-[calc(1rem+env(safe-area-inset-top))] right-4">
         <LanguageSwitcher />
       </div>
-      <Card className="w-full max-w-sm">
+      <div className="flex flex-col items-center gap-3 text-center">
+        <BrandMark className="size-14" />
+        <div>
+          <div className="text-3xl font-bold tracking-[0.08em]">{t('app.name')}</div>
+          <div className="mt-1 text-sm text-muted-foreground">{t('app.tagline')}</div>
+        </div>
+      </div>
+      <Card className="w-full max-w-sm gap-5 shadow-raised">
         <CardHeader>
-          <CardTitle className="text-2xl">{t('app.name')}</CardTitle>
-          <CardDescription>
+          <CardTitle className="text-xl">
             {mode === 'signIn' ? t('auth.signInTitle') : t('auth.signUpTitle')}
-          </CardDescription>
+          </CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col gap-4">
           {!isSupabaseConfigured && (

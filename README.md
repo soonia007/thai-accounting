@@ -1,4 +1,4 @@
-# Thai Accounting — ระบบบัญชีออนไลน์
+# FINORA — ระบบบัญชีออนไลน์
 
 Web + iOS + Android accounting app for Thai SMEs (multi-company, VAT, withholding tax).
 

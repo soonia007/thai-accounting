@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">Thai Accounting</string>
-    <string name="title_activity_main">Thai Accounting</string>
+    <string name="app_name">FINORA</string>
+    <string name="title_activity_main">FINORA</string>
     <string name="package_name">com.thaiaccounting.app</string>
     <string name="custom_url_scheme">com.thaiaccounting.app</string>
 </resources>

@@ -119,8 +119,10 @@ export function ChartOfAccountsPage() {
   }
 
   return (
-    <div className="flex max-w-5xl flex-col gap-4">
-      <h1 className="text-xl font-semibold">{t('nav.accounting')}</h1>
+    <div className="flex w-full flex-col gap-4">
+      <h1 className="text-2xl font-semibold tracking-tight md:text-[28px]">
+        {t('nav.accounting')}
+      </h1>
       <AccountingTabs />
 
       <div className="flex flex-wrap items-center gap-3">

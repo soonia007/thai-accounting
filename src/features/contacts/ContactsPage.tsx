@@ -104,8 +104,10 @@ export function ContactsPage() {
     )
 
   return (
-    <div className="flex max-w-6xl flex-col gap-4">
-      <h1 className="text-xl font-semibold">{t('contacts.title')}</h1>
+    <div className="flex w-full flex-col gap-4">
+      <h1 className="text-2xl font-semibold tracking-tight md:text-[28px]">
+        {t('contacts.title')}
+      </h1>
 
       <div className="flex flex-wrap items-center gap-3">
         <div className="relative min-w-48 flex-1">

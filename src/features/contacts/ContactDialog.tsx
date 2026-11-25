@@ -155,7 +155,7 @@ export function ContactDialog({ companyId, contact, onClose }: Props) {
         }
       }}
     >
-      <DialogContent className="max-h-[90dvh] overflow-y-auto sm:max-w-2xl">
+      <DialogContent className="sm:max-w-2xl">
         <DialogHeader>
           <DialogTitle>{contact ? t('contacts.edit') : t('contacts.add')}</DialogTitle>
         </DialogHeader>

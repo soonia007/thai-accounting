@@ -177,7 +177,7 @@ export function AttachmentsPanel({
         )}
         <ul className="flex flex-col gap-1">
           {(list.data ?? []).map((a) => (
-            <li key={a.id} className="flex items-center gap-2 rounded-md border px-2 py-1.5">
+            <li key={a.id} className="flex items-center gap-2 rounded-xl border px-2 py-1.5">
               <FileText className="size-4 shrink-0 text-muted-foreground" />
               <button
                 type="button"

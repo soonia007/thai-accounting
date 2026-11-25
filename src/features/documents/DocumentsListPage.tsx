@@ -32,8 +32,8 @@ export function StatusBadge({ status }: { status: string }) {
   const { t } = useTranslation()
   return (
     <Badge
-      variant={status === 'posted' ? 'secondary' : 'outline'}
-      className={cn('font-normal', status === 'voided' && 'text-muted-foreground line-through')}
+      variant={status === 'posted' ? 'default' : status === 'voided' ? 'danger' : 'neutral'}
+      className={cn(status === 'voided' && 'line-through')}
     >
       {t(`docStatus.${status}`)}
     </Badge>
@@ -43,13 +43,19 @@ export function StatusBadge({ status }: { status: string }) {
 export function PaymentStatusBadge({ status }: { status: string | null }) {
   const { t } = useTranslation()
   if (!status || status === 'none') return null
-  const tone: Record<string, string> = {
-    paid: 'bg-green-100 text-green-800',
-    partial: 'bg-amber-100 text-amber-800',
-    unpaid: 'bg-slate-100 text-slate-700',
-    overdue: 'bg-red-100 text-red-800',
-  }
-  return <Badge className={cn('font-normal', tone[status])}>{t(`payStatus.${status}`)}</Badge>
+  const tone = {
+    paid: { variant: 'success', dot: 'bg-success' },
+    partial: { variant: 'warning', dot: 'bg-warning' },
+    unpaid: { variant: 'neutral', dot: 'bg-muted-foreground' },
+    overdue: { variant: 'danger', dot: 'bg-destructive' },
+  } as const
+  const k = (status in tone ? status : 'unpaid') as keyof typeof tone
+  return (
+    <Badge variant={tone[k].variant} className="gap-1.5">
+      <span className={cn('size-1.5 rounded-full', tone[k].dot)} />
+      {t(`payStatus.${status}`)}
+    </Badge>
+  )
 }
 
 export function DocumentsListPage({ direction }: { direction: Direction }) {
@@ -88,9 +94,11 @@ export function DocumentsListPage({ direction }: { direction: Direction }) {
   const tabs = [...types, PAYMENTS_TAB]
 
   return (
-    <div className="flex max-w-6xl flex-col gap-4">
+    <div className="flex w-full flex-col gap-4">
       <div className="flex items-center justify-between gap-3">
-        <h1 className="text-xl font-semibold">{t(`nav.${direction}`)}</h1>
+        <h1 className="text-2xl font-semibold tracking-tight md:text-[28px]">
+          {t(`nav.${direction}`)}
+        </h1>
         <div className="flex items-center gap-2">
           {direction === 'purchases' && (
             <Button variant="outline" asChild>
@@ -121,7 +129,7 @@ export function DocumentsListPage({ direction }: { direction: Direction }) {
       </div>
 
       <nav
-        className="-mx-1 flex gap-1 overflow-x-auto border-b px-1"
+        className="flex w-fit max-w-full gap-1 overflow-x-auto rounded-full bg-muted p-1"
         aria-label={t(`nav.${direction}`)}
       >
         {tabs.map((k) => (
@@ -130,8 +138,8 @@ export function DocumentsListPage({ direction }: { direction: Direction }) {
             type="button"
             onClick={() => setParams({ tab: k })}
             className={cn(
-              '-mb-px shrink-0 border-b-2 border-transparent px-3 py-2 text-sm whitespace-nowrap text-muted-foreground hover:text-foreground',
-              tab === k && 'border-primary font-medium text-foreground',
+              'h-9 shrink-0 cursor-pointer rounded-full px-4 text-sm font-medium whitespace-nowrap text-muted-foreground transition-colors hover:text-foreground',
+              tab === k && 'bg-card text-foreground shadow-card',
             )}
           >
             {k === PAYMENTS_TAB ? t(`docs.paymentsTab.${direction}`) : t(`docTypes.${k}`)}
@@ -140,9 +148,9 @@ export function DocumentsListPage({ direction }: { direction: Direction }) {
       </nav>
 
       <div className="relative">
-        <Search className="absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-muted-foreground" />
+        <Search className="absolute top-1/2 left-3.5 size-4 -translate-y-1/2 text-muted-foreground" />
         <Input
-          className="pl-8"
+          className="rounded-full pl-10"
           placeholder={t('docs.search')}
           aria-label={t('docs.search')}
           value={query}
@@ -162,9 +170,9 @@ export function DocumentsListPage({ direction }: { direction: Direction }) {
                 <li key={d.id}>
                   <Link
                     to={`${base}/${d.id}`}
-                    className="flex items-center gap-3 px-3 py-2.5 text-sm hover:bg-accent"
+                    className="flex items-center gap-4 px-4 py-3.5 text-sm transition-colors hover:bg-secondary/70 md:px-5"
                   >
-                    <span className="w-32 shrink-0 font-mono text-xs">
+                    <span className="w-36 shrink-0 font-mono text-xs text-muted-foreground">
                       {d.number ?? t('docStatus.draft')}
                     </span>
                     <span className="min-w-0 flex-1">
@@ -178,8 +186,10 @@ export function DocumentsListPage({ direction }: { direction: Direction }) {
                       <StatusBadge status={d.status} />
                       <PaymentStatusBadge status={d.payment_status} />
                     </span>
-                    <span className="w-28 shrink-0 text-right tabular-nums">
-                      <span className="block">{formatMoney(d.total, i18n.language)}</span>
+                    <span className="w-32 shrink-0 text-right tabular-nums">
+                      <span className="block font-semibold">
+                        {formatMoney(d.total, i18n.language)}
+                      </span>
                       {d.payment_status !== 'none' && d.status === 'posted' && (
                         <span className="block text-xs text-muted-foreground">
                           {t('docs.outstanding')} {formatMoney(d.outstanding, i18n.language)}
@@ -202,9 +212,9 @@ export function DocumentsListPage({ direction }: { direction: Direction }) {
                 <li key={p.id}>
                   <Link
                     to={`${base}/payments/${p.id}`}
-                    className="flex items-center gap-3 px-3 py-2.5 text-sm hover:bg-accent"
+                    className="flex items-center gap-4 px-4 py-3.5 text-sm transition-colors hover:bg-secondary/70 md:px-5"
                   >
-                    <span className="w-32 shrink-0 font-mono text-xs">
+                    <span className="w-36 shrink-0 font-mono text-xs text-muted-foreground">
                       {p.number ?? t('docStatus.draft')}
                     </span>
                     <span className="min-w-0 flex-1">

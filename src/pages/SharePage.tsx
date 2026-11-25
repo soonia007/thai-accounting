@@ -29,7 +29,7 @@ export function SharePage() {
   })
 
   return (
-    <div className="pt-safe pb-safe mx-auto flex min-h-dvh max-w-xl flex-col gap-4 p-4">
+    <div className="mx-auto flex min-h-dvh max-w-xl flex-col gap-4 px-4 pt-[calc(1rem+env(safe-area-inset-top))] pb-[calc(1rem+env(safe-area-inset-bottom))]">
       <div className="flex justify-end">
         <LanguageSwitcher />
       </div>

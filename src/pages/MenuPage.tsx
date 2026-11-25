@@ -9,7 +9,7 @@ export function MenuPage() {
   const { t } = useTranslation()
   return (
     <div className="flex flex-col gap-4">
-      <h1 className="text-xl font-semibold">{t('nav.menu')}</h1>
+      <h1 className="text-2xl font-semibold tracking-tight md:text-[28px]">{t('nav.menu')}</h1>
       <Card className="gap-0 divide-y py-0">
         {NAV_ITEMS.map(({ to, labelKey, icon: Icon }) => (
           <Link key={to} to={to} className="flex items-center gap-3 p-4 hover:bg-accent">

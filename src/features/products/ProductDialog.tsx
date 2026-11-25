@@ -186,7 +186,7 @@ export function ProductDialog({ companyId, vatRegistered, accounts, product, onC
         }
       }}
     >
-      <DialogContent className="max-h-[90dvh] overflow-y-auto sm:max-w-2xl">
+      <DialogContent className="sm:max-w-2xl">
         <DialogHeader>
           <DialogTitle>{product ? t('products.edit') : t('products.add')}</DialogTitle>
         </DialogHeader>
@@ -297,7 +297,7 @@ export function ProductDialog({ companyId, vatRegistered, accounts, product, onC
             <Label htmlFor="p-wht">{t('wht.defaultIncomeType')}</Label>
             <select
               id="p-wht"
-              className="h-9 rounded-md border bg-background px-3 text-sm"
+              className="h-10 rounded-xl border bg-card pr-9 pl-3.5 text-sm shadow-xs"
               {...register('wht_income_type')}
             >
               <option value="">{t('wht.noWithholding')}</option>

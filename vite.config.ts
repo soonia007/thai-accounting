@@ -14,12 +14,12 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.svg', 'favicon.ico', 'apple-touch-icon-180x180.png'],
       manifest: {
-        name: 'Thai Accounting',
-        short_name: 'Accounting',
-        description: 'ระบบบัญชีออนไลน์',
+        name: 'FINORA',
+        short_name: 'FINORA',
+        description: 'FINORA — ระบบบัญชีออนไลน์ / Online accounting',
         lang: 'th',
-        theme_color: '#0f172a',
-        background_color: '#ffffff',
+        theme_color: '#0B56A4',
+        background_color: '#F5F8FA',
         display: 'standalone',
         start_url: '/',
         icons: [

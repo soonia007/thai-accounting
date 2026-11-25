@@ -278,6 +278,16 @@ esourcesin` — ถ้า terminal หา `docker` ไม่เจอให้�
 
 ### ถัดไป: M7 — สมุดรายวันทั่วไป
 
+## Redesign + แบรนด์ FINORA (2026-11-25)
+
+- ชื่อแบรนด์ **FINORA** (แอป, แท็บเบราว์เซอร์, PWA, Capacitor, Android/iOS display name) + โลโก้ใหม่ (`BrandMark`, `public/favicon.svg`, ไอคอน PWA)
+- ธีมใหม่ตามสีที่เจ้าของกำหนด — รายละเอียด/กฎการใช้สีอยู่ใน [docs/DESIGN_SYSTEM.md](docs/DESIGN_SYSTEM.md)
+- ฟอนต์ Inter + Noto Sans Thai, ปุ่มแคปซูล, การ์ดมน, segmented control, ป้ายสถานะตามโทนสี
+- ทุกหน้าใช้ความกว้างเต็มจอ, แผงจำลองบัญชีมีโหมด **เต็มจอ** (desktop + มือถือ), dialog เต็มจอบนมือถือ
+- หน้าแรก: ปุ่มลัด (ใบแจ้งหนี้, รับชำระ, ค่าใช้จ่าย, ผู้ติดต่อ) จนกว่าจะทำ dashboard ใน M8
+- แก้บั๊กเดิม: `.pt-safe` ทับ padding ด้านบน (หัวหน้าจอชิดขอบ)
+- ค้าง: ไอคอนแอป native (Android mipmap / iOS AppIcon) ยังเป็นของเดิม → ทำใน M9; ยังไม่มี dark mode
+
 ## การเปลี่ยนแปลงขอบเขต (2026-11-25)
 
 - เพิ่ม Phase 2+3 (M10–M22) ตาม `docs/PHASE2-3_SPEC.md`

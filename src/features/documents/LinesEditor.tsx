@@ -87,7 +87,7 @@ export function LinesEditor({
             <div className="col-span-2 flex flex-col gap-1 @3xl:col-span-1">
               <select
                 aria-label={t('lines.product')}
-                className="h-8 rounded-md border bg-background px-2 text-sm"
+                className="h-10 rounded-xl border bg-card pr-9 pl-3.5 text-sm shadow-xs"
                 value={line?.product_id ?? ''}
                 onChange={(e) => pickProduct(i, e.target.value)}
               >
@@ -115,7 +115,7 @@ export function LinesEditor({
                 {incomeTypes && (
                   <select
                     aria-label={t('wht.incomeType')}
-                    className="max-w-56 rounded border bg-background px-1"
+                    className="h-7 max-w-60 rounded-lg border bg-card [background-position:right_0.4rem_center] py-0 pr-7 pl-2 text-xs"
                     value={line?.wht_income_type ?? ''}
                     onChange={(e) => pickIncomeType(i, e.target.value)}
                   >
@@ -130,7 +130,7 @@ export function LinesEditor({
                 {vatRegistered && (
                   <select
                     aria-label={t('products.vatType')}
-                    className="rounded border bg-background px-1"
+                    className="h-7 rounded-lg border bg-card [background-position:right_0.4rem_center] py-0 pr-7 pl-2 text-xs"
                     {...register(`lines.${i}.vat_type`)}
                   >
                     {(['standard', 'zero', 'exempt'] as const).map((v) => (
@@ -167,7 +167,7 @@ export function LinesEditor({
             <label className="flex flex-col gap-1 text-xs text-muted-foreground @3xl:block">
               <span className="@3xl:sr-only">{t('lines.wht')}</span>
               <select
-                className="h-9 w-full rounded-md border bg-background px-2 text-right text-sm text-foreground"
+                className="h-10 w-full rounded-xl border bg-card pr-8 pl-2 text-right text-sm text-foreground shadow-xs"
                 {...register(`lines.${i}.wht_rate`)}
               >
                 {WHT_RATES.map((r) => (

@@ -150,8 +150,8 @@ export function MembersPage() {
   const actionError = invite.error ?? changeRole.error ?? remove.error ?? cancelInvite.error
 
   return (
-    <div className="flex max-w-3xl flex-col gap-4">
-      <h1 className="text-xl font-semibold">{t('members.title')}</h1>
+    <div className="flex w-full flex-col gap-4">
+      <h1 className="text-2xl font-semibold tracking-tight md:text-[28px]">{t('members.title')}</h1>
 
       {actionError && (
         <Alert variant="destructive">

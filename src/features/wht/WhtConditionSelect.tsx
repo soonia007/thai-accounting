@@ -20,7 +20,7 @@ export function WhtConditionSelect({
       <Label htmlFor={id}>{t('wht.condition')}</Label>
       <select
         id={id}
-        className="h-9 rounded-md border bg-background px-3 text-sm"
+        className="h-10 rounded-xl border bg-card pr-9 pl-3.5 text-sm shadow-xs"
         value={value}
         onChange={(e) => onChange(e.target.value as WhtCondition)}
       >

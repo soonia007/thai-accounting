@@ -239,7 +239,7 @@ function DocumentEditor({
             <ArrowLeft className="size-4" />
           </Link>
         </Button>
-        <h1 className="text-xl font-semibold">
+        <h1 className="text-2xl font-semibold tracking-tight md:text-[28px]">
           {t(`docTypes.${type}`)}
           <span className="ml-2 text-sm font-normal text-muted-foreground">
             {t('docStatus.draft')}
@@ -247,7 +247,7 @@ function DocumentEditor({
         </h1>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-[minmax(0,1fr)_22rem] lg:grid-cols-[minmax(0,1fr)_26rem]">
+      <div className="grid gap-4 md:grid-cols-[minmax(0,1fr)_22rem] lg:grid-cols-[minmax(0,1fr)_26rem] xl:grid-cols-[minmax(0,1fr)_30rem] 2xl:grid-cols-[minmax(0,1fr)_36rem]">
         <form
           className="flex min-w-0 flex-col gap-4"
           noValidate
@@ -265,7 +265,7 @@ function DocumentEditor({
                 <Label htmlFor="d-contact">{isSale ? t('docs.customer') : t('docs.vendor')}</Label>
                 <select
                   id="d-contact"
-                  className="h-9 rounded-md border bg-background px-3 text-sm"
+                  className="h-10 rounded-xl border bg-card pr-9 pl-3.5 text-sm shadow-xs"
                   {...register('contact_id')}
                 >
                   <option value="">{t('docs.chooseContact')}</option>
@@ -303,7 +303,7 @@ function DocumentEditor({
                   </Label>
                   <select
                     id="d-money"
-                    className="h-9 rounded-md border bg-background px-3 text-sm"
+                    className="h-10 rounded-xl border bg-card pr-9 pl-3.5 text-sm shadow-xs"
                     {...register('payment_account_id')}
                   >
                     {moneyAccounts.map((a) => (
@@ -320,7 +320,7 @@ function DocumentEditor({
                   <Label htmlFor="d-ref">{t('docs.refInvoice')}</Label>
                   <select
                     id="d-ref"
-                    className="h-9 rounded-md border bg-background px-3 text-sm"
+                    className="h-10 rounded-xl border bg-card pr-9 pl-3.5 text-sm shadow-xs"
                     {...register('ref_document_id')}
                   >
                     <option value="">{t('docs.chooseInvoice')}</option>
@@ -338,7 +338,7 @@ function DocumentEditor({
                   <Label htmlFor="d-vat">{t('docs.vatMode')}</Label>
                   <select
                     id="d-vat"
-                    className="h-9 rounded-md border bg-background px-3 text-sm"
+                    className="h-10 rounded-xl border bg-card pr-9 pl-3.5 text-sm shadow-xs"
                     {...register('vat_mode')}
                   >
                     {(['exclusive', 'inclusive', 'none'] as const).map((m) => (
@@ -386,7 +386,7 @@ function DocumentEditor({
               <textarea
                 id="d-notes"
                 rows={3}
-                className="rounded-md border bg-background px-3 py-2 text-sm"
+                className="rounded-xl border bg-card px-3.5 py-2.5 text-sm shadow-xs"
                 {...register('notes')}
               />
             </div>
@@ -476,7 +476,7 @@ function TotalsBox({
     </div>
   )
   return (
-    <div className="flex flex-col gap-1.5 rounded-lg border p-3 text-sm">
+    <div className="flex flex-col gap-1.5 rounded-2xl border bg-card p-4 text-sm shadow-card">
       {row(t('totals.subtotal'), totals.subtotal)}
       {vatRegistered && row(t('totals.vat'), totals.vatTotal)}
       {row(t('totals.total'), totals.total, true)}
@@ -523,14 +523,14 @@ function PostedDocument({ direction, id }: { direction: Direction; id: string })
             : 'unpaid'
 
   return (
-    <div className="flex max-w-5xl flex-col gap-4">
+    <div className="flex w-full flex-col gap-4">
       <div className="flex flex-wrap items-center gap-2">
         <Button variant="ghost" size="icon" asChild aria-label={t('common.back')}>
           <Link to={`${base}?tab=${type}`}>
             <ArrowLeft className="size-4" />
           </Link>
         </Button>
-        <h1 className="text-xl font-semibold">
+        <h1 className="text-2xl font-semibold tracking-tight md:text-[28px]">
           {t(`docTypes.${type}`)} <span className="font-mono">{doc.number}</span>
         </h1>
         <StatusBadge status={doc.status} />
@@ -583,7 +583,7 @@ function PostedDocument({ direction, id }: { direction: Direction; id: string })
         </Alert>
       )}
 
-      <div className="grid gap-4 md:grid-cols-[minmax(0,1fr)_22rem] lg:grid-cols-[minmax(0,1fr)_26rem]">
+      <div className="grid gap-4 md:grid-cols-[minmax(0,1fr)_22rem] lg:grid-cols-[minmax(0,1fr)_26rem] xl:grid-cols-[minmax(0,1fr)_30rem] 2xl:grid-cols-[minmax(0,1fr)_36rem]">
         <Card className="py-4">
           <CardContent className="flex flex-col gap-4 px-4 text-sm">
             <dl className="grid grid-cols-2 gap-x-4 gap-y-2">

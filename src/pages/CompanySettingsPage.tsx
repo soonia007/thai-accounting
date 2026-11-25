@@ -119,8 +119,10 @@ export function CompanySettingsPage() {
     ) : null
 
   return (
-    <div className="flex max-w-2xl flex-col gap-4">
-      <h1 className="text-xl font-semibold">{t('companySettings.title')}</h1>
+    <div className="flex w-full flex-col gap-4">
+      <h1 className="text-2xl font-semibold tracking-tight md:text-[28px]">
+        {t('companySettings.title')}
+      </h1>
       <Card>
         <CardHeader>
           <CardTitle className="text-base">{t('companySettings.printed')}</CardTitle>
@@ -220,7 +222,7 @@ export function CompanySettingsPage() {
                 <Label htmlFor="cs-era">{t('companySettings.dateEra')}</Label>
                 <select
                   id="cs-era"
-                  className="h-9 rounded-md border bg-background px-3 text-sm"
+                  className="h-10 rounded-xl border bg-card pr-9 pl-3.5 text-sm shadow-xs"
                   {...register('date_era')}
                 >
                   <option value="BE">{t('companySettings.eraBE')}</option>

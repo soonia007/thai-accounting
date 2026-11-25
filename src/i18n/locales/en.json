@@ -1,6 +1,7 @@
 {
   "app": {
-    "name": "Online Accounting"
+    "name": "FINORA",
+    "tagline": "Online accounting for business"
   },
   "nav": {
     "dashboard": "Dashboard",
@@ -421,7 +422,9 @@
       "invoice": "Next: when converted to an invoice",
       "bill": "Next: when recorded as a bill"
     },
-    "posted": "Recorded journal"
+    "posted": "Recorded journal",
+    "expand": "Full screen",
+    "close": "Close"
   },
   "plain": {
     "role": {

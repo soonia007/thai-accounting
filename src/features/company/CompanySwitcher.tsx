@@ -26,14 +26,26 @@ export function CompanySwitcher({ className }: { className?: string }) {
       <DropdownMenuTrigger asChild>
         <Button
           variant="ghost"
-          className={cn('h-auto justify-between gap-2 px-2 py-1.5', className)}
+          className={cn(
+            'h-auto justify-between gap-2.5 rounded-xl px-2 py-1.5 hover:bg-muted',
+            className,
+          )}
           aria-label={t('company.switch')}
         >
-          <span className="flex min-w-0 items-center gap-2">
-            <Building2 className="size-4 shrink-0" />
-            <span className="truncate font-semibold">{current?.name}</span>
+          <span className="flex min-w-0 items-center gap-2.5">
+            <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-accent text-sm font-semibold text-brand-strong">
+              {current?.name?.trim().charAt(0) || <Building2 className="size-4" />}
+            </span>
+            <span className="flex min-w-0 flex-col items-start leading-tight">
+              <span className="max-w-full truncate text-sm font-semibold">{current?.name}</span>
+              {current && (
+                <span className="text-xs font-normal text-muted-foreground">
+                  {t(`roles.${current.role}`)}
+                </span>
+              )}
+            </span>
           </span>
-          <ChevronsUpDown className="size-4 shrink-0 opacity-50" />
+          <ChevronsUpDown className="size-4 shrink-0 text-muted-foreground" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="w-64">

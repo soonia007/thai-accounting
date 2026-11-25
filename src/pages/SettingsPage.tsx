@@ -6,8 +6,8 @@ import { Card } from '@/components/ui/card'
 export function SettingsPage() {
   const { t } = useTranslation()
   return (
-    <div className="flex max-w-3xl flex-col gap-4">
-      <h1 className="text-xl font-semibold">{t('nav.settings')}</h1>
+    <div className="flex w-full flex-col gap-4">
+      <h1 className="text-2xl font-semibold tracking-tight md:text-[28px]">{t('nav.settings')}</h1>
       <Card className="gap-0 divide-y py-0">
         <Link to="/settings/company" className="flex items-center gap-3 p-4 hover:bg-accent">
           <Building2 className="size-5" />
