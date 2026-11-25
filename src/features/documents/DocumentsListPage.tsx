@@ -91,26 +91,33 @@ export function DocumentsListPage({ direction }: { direction: Direction }) {
     <div className="flex max-w-6xl flex-col gap-4">
       <div className="flex items-center justify-between gap-3">
         <h1 className="text-xl font-semibold">{t(`nav.${direction}`)}</h1>
-        {canCreate && (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button>
-                <Plus className="size-4" />
-                {t('docs.create')}
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              {CREATABLE[direction].map((type) => (
-                <DropdownMenuItem key={type} onSelect={() => navigate(`${base}/new/${type}`)}>
-                  {t(`docTypes.${type}`)}
+        <div className="flex items-center gap-2">
+          {direction === 'purchases' && (
+            <Button variant="outline" asChild>
+              <Link to="/purchases/wht-certificates">{t('wht.certificatesShort')}</Link>
+            </Button>
+          )}
+          {canCreate && (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button>
+                  <Plus className="size-4" />
+                  {t('docs.create')}
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                {CREATABLE[direction].map((type) => (
+                  <DropdownMenuItem key={type} onSelect={() => navigate(`${base}/new/${type}`)}>
+                    {t(`docTypes.${type}`)}
+                  </DropdownMenuItem>
+                ))}
+                <DropdownMenuItem onSelect={() => navigate(`${base}/payments/new`)}>
+                  {t(`docs.newPayment.${direction}`)}
                 </DropdownMenuItem>
-              ))}
-              <DropdownMenuItem onSelect={() => navigate(`${base}/payments/new`)}>
-                {t(`docs.newPayment.${direction}`)}
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        )}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
+        </div>
       </div>
 
       <nav

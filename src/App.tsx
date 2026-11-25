@@ -16,11 +16,20 @@ import { RequireAuth, RequireCompany } from '@/features/auth/guards'
 import { LoginPage } from '@/features/auth/LoginPage'
 import { MembersPage } from '@/features/members/MembersPage'
 import { OnboardingPage } from '@/features/onboarding/OnboardingPage'
+import { WhtCertificatesPage } from '@/features/wht/WhtCertificatesPage'
 import { ComingSoonPage } from '@/pages/ComingSoonPage'
 import { HelloPage } from '@/pages/HelloPage'
 import { SettingsPage } from '@/pages/SettingsPage'
 
-const BUILT_ROUTES = ['/', '/settings', '/accounting', '/contacts', '/products', '/sales']
+const BUILT_ROUTES = [
+  '/',
+  '/settings',
+  '/accounting',
+  '/contacts',
+  '/products',
+  '/sales',
+  '/purchases',
+]
 const PLACEHOLDER_ROUTES = NAV_ITEMS.filter((i) => !BUILT_ROUTES.includes(i.to))
 
 export default function App() {
@@ -48,6 +57,12 @@ export default function App() {
             <Route path="/sales/payments/new" element={<PaymentPage direction="sales" />} />
             <Route path="/sales/payments/:id" element={<PaymentPage direction="sales" />} />
             <Route path="/sales/:id" element={<DocumentPage direction="sales" />} />
+            <Route path="/purchases" element={<DocumentsListPage direction="purchases" />} />
+            <Route path="/purchases/new/:type" element={<DocumentPage direction="purchases" />} />
+            <Route path="/purchases/payments/new" element={<PaymentPage direction="purchases" />} />
+            <Route path="/purchases/payments/:id" element={<PaymentPage direction="purchases" />} />
+            <Route path="/purchases/wht-certificates" element={<WhtCertificatesPage />} />
+            <Route path="/purchases/:id" element={<DocumentPage direction="purchases" />} />
             {PLACEHOLDER_ROUTES.map((i) => (
               <Route key={i.to} path={i.to} element={<ComingSoonPage titleKey={i.labelKey} />} />
             ))}

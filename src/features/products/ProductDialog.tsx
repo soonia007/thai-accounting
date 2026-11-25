@@ -28,6 +28,7 @@ import { accountName } from '@/features/accounts/queries'
 import type { Account } from '@/features/accounts/tree'
 import { parseMoney } from '@/lib/csv'
 import { supabase } from '@/lib/supabase'
+import { useWhtIncomeTypes } from '@/features/wht/queries'
 import type { Product } from './product-csv'
 
 const DEFAULT = '__default__'
@@ -50,6 +51,7 @@ const schema = z.object({
   vat_type: z.enum(['standard', 'zero', 'exempt']),
   income_account_id: z.string(),
   expense_account_id: z.string(),
+  wht_income_type: z.string(),
   description: z.string().trim(),
   is_active: z.boolean(),
 })
@@ -68,6 +70,7 @@ function defaults(p: Product | null): FormValues {
     vat_type: p?.vat_type ?? 'standard',
     income_account_id: p?.income_account_id ?? DEFAULT,
     expense_account_id: p?.expense_account_id ?? DEFAULT,
+    wht_income_type: p?.wht_income_type ?? '',
     description: p?.description ?? '',
     is_active: p?.is_active ?? true,
   }
@@ -85,6 +88,7 @@ export function ProductDialog({ companyId, vatRegistered, accounts, product, onC
   const { t, i18n } = useTranslation()
   const queryClient = useQueryClient()
   const open = product !== undefined
+  const incomeTypes = useWhtIncomeTypes(open)
 
   const {
     register,
@@ -128,6 +132,7 @@ export function ProductDialog({ companyId, vatRegistered, accounts, product, onC
         vat_type: v.vat_type,
         income_account_id: v.income_account_id === DEFAULT ? null : v.income_account_id,
         expense_account_id: v.expense_account_id === DEFAULT ? null : v.expense_account_id,
+        wht_income_type: v.wht_income_type || null,
         description: v.description || null,
         is_active: v.is_active,
       }
@@ -287,6 +292,24 @@ export function ProductDialog({ companyId, vatRegistered, accounts, product, onC
             expenseOptions,
             t('products.useMapping', { role: t('accountRoles.DEFAULT_EXPENSE') }),
           )}
+
+          <div className="grid gap-2 sm:col-span-2">
+            <Label htmlFor="p-wht">{t('wht.defaultIncomeType')}</Label>
+            <select
+              id="p-wht"
+              className="h-9 rounded-md border bg-background px-3 text-sm"
+              {...register('wht_income_type')}
+            >
+              <option value="">{t('wht.noWithholding')}</option>
+              {(incomeTypes.data ?? []).map((x) => (
+                <option key={x.code} value={x.code}>
+                  {i18n.language === 'en' ? x.name_en : x.name_th} {x.section}
+                  {x.default_rate ? ` ${x.default_rate}%` : ''}
+                </option>
+              ))}
+            </select>
+            <p className="text-xs text-muted-foreground">{t('wht.defaultIncomeTypeHelp')}</p>
+          </div>
 
           <div className="grid gap-2 sm:col-span-2">
             <Label htmlFor="p-desc">{t('products.description')}</Label>

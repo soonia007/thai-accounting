@@ -22,7 +22,18 @@ import { canEditFinanceSetup, canEditMasterData } from '@/lib/permissions'
 import { supabase } from '@/lib/supabase'
 import { basePath, type Direction } from './doc-types'
 import { StatusBadge } from './DocumentsListPage'
-import { defaultWht, paymentAmount, totalWht, type OpenDoc } from './payment-math'
+import { AttachmentsPanel } from '@/features/attachments/AttachmentsPanel'
+import { WhtCertificateActions } from '@/features/wht/WhtCertificateActions'
+import { WhtConditionSelect } from '@/features/wht/WhtConditionSelect'
+import {
+  defaultWht,
+  paidAmount,
+  settlementWht,
+  totalWht,
+  type OpenDoc,
+  type WhtCondition,
+  type WhtLine,
+} from './payment-math'
 import { documentsKey, useContacts, useMoneyAccounts } from './queries'
 import { VoidDialog } from './VoidDialog'
 
@@ -74,6 +85,7 @@ function PaymentEditor({ direction }: { direction: Direction }) {
   const [accountId, setAccountId] = useState('')
   const [reference, setReference] = useState('')
   const [edits, setEdits] = useState<Record<string, Partial<AllocRow>>>({})
+  const [whtCondition, setWhtCondition] = useState<WhtCondition>('withhold')
   const preselect = params.get('doc')
 
   const openDocs = useQuery({
@@ -95,17 +107,50 @@ function PaymentEditor({ direction }: { direction: Direction }) {
     },
   })
 
-  // Rows = defaults from the open documents (pre-select ?doc=) + the user's edits
+  // Purchases: WHT per income type, so the suggestion matches the 50 ทวิ certificate (D6–D8)
+  const openIds = (openDocs.data ?? []).map((d) => d.id)
+  const whtLines = useQuery({
+    queryKey: ['open-doc-wht-lines', openIds],
+    enabled: dir === 'paid' && openIds.length > 0,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('document_lines')
+        .select('document_id, base_amount, wht_rate, wht_income_type')
+        .in('document_id', openIds)
+        .gt('wht_rate', 0)
+      if (error) throw error
+      const byDoc: Record<string, WhtLine[]> = {}
+      for (const l of data) {
+        ;(byDoc[l.document_id] ??= []).push({
+          base_amount: Number(l.base_amount),
+          wht_rate: Number(l.wht_rate),
+          wht_income_type: l.wht_income_type,
+        })
+      }
+      return byDoc
+    },
+  })
+  const suggestWht = (d: OpenDoc, settle: number) =>
+    dir === 'paid'
+      ? settlementWht(whtLines.data?.[d.id] ?? [], d.total, settle, whtCondition)
+      : defaultWht(d, settle)
+  const hasWht = (openDocs.data ?? []).some((d) => d.wht_total > 0)
+
+  // Rows = defaults from the open documents (pre-select ?doc=) + the user's edits.
+  // Tax follows the settled amount until the user types a tax of their own.
   const rows: Record<string, AllocRow> = Object.fromEntries(
-    (openDocs.data ?? []).map((d) => [
-      d.id,
-      {
-        selected: d.id === preselect,
-        amount: d.outstanding.toFixed(2),
-        wht: defaultWht(d as OpenDoc, d.outstanding).toFixed(2),
-        ...edits[d.id],
-      },
-    ]),
+    (openDocs.data ?? []).map((d) => {
+      const e = edits[d.id] ?? {}
+      const amount = e.amount ?? d.outstanding.toFixed(2)
+      return [
+        d.id,
+        {
+          selected: e.selected ?? d.id === preselect,
+          amount,
+          wht: e.wht ?? suggestWht(d as OpenDoc, num(amount)).toFixed(2),
+        },
+      ]
+    }),
   )
 
   const effectiveAccount = accountId || moneyAccounts[0]?.id || ''
@@ -116,7 +161,7 @@ function PaymentEditor({ direction }: { direction: Direction }) {
       amount: num(rows[d.id].amount),
       wht_amount: num(rows[d.id].wht),
     }))
-  const amount = paymentAmount(allocations)
+  const amount = paidAmount(allocations, dir === 'paid' ? whtCondition : 'withhold')
   const wht = totalWht(allocations)
 
   // usePostingSimulation serialises + debounces, so a fresh object each render is fine
@@ -130,6 +175,7 @@ function PaymentEditor({ direction }: { direction: Direction }) {
           payment_account_id: effectiveAccount,
           amount,
           wht_amount: wht,
+          wht_condition: dir === 'paid' ? whtCondition : 'withhold',
           reference: reference || null,
           allocations,
         }
@@ -228,6 +274,23 @@ function PaymentEditor({ direction }: { direction: Direction }) {
                   ))}
                 </select>
               </div>
+              {dir === 'paid' && hasWht && (
+                <div className="sm:col-span-2">
+                  <WhtConditionSelect
+                    id="p-wht-condition"
+                    value={whtCondition}
+                    onChange={(c) => {
+                      setWhtCondition(c)
+                      // re-suggest tax for rows the user has not typed a tax into
+                      setEdits((e) =>
+                        Object.fromEntries(
+                          Object.entries(e).map(([k, v]) => [k, { ...v, wht: undefined }]),
+                        ),
+                      )
+                    }}
+                  />
+                </div>
+              )}
               <div className="grid gap-2 sm:col-span-2">
                 <Label htmlFor="p-ref">{t('docs.reference')}</Label>
                 <Input
@@ -276,12 +339,7 @@ function PaymentEditor({ direction }: { direction: Direction }) {
                         className="text-right"
                         disabled={!r.selected}
                         value={r.amount}
-                        onChange={(e) =>
-                          setRow(d.id, {
-                            amount: e.target.value,
-                            wht: defaultWht(d as OpenDoc, num(e.target.value)).toFixed(2),
-                          })
-                        }
+                        onChange={(e) => setRow(d.id, { amount: e.target.value, wht: undefined })}
                       />
                     </label>
                     <label className="col-start-2 flex items-center gap-2 text-xs text-muted-foreground sm:col-start-auto sm:block">
@@ -383,6 +441,7 @@ function PostedPayment({
       </div>
       <div className="flex flex-wrap gap-2">
         <DocumentShareActions paymentId={payment.id} number={payment.number} posted={posted} />
+        {direction === 'purchases' && <WhtCertificateActions paymentId={payment.id} />}
         {posted && canEditFinanceSetup(current?.role) && (
           <Button
             variant="ghost"
@@ -436,6 +495,7 @@ function PostedPayment({
         </Card>
         <div>{journal.data && <PostedJournal entries={journal.data} />}</div>
       </div>
+      <AttachmentsPanel paymentId={payment.id} />
       <VoidDialog
         open={voidOpen}
         onOpenChange={setVoidOpen}

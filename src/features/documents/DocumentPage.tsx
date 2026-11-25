@@ -44,6 +44,11 @@ import {
   useProducts,
 } from './queries'
 import { VoidDialog } from './VoidDialog'
+import { AttachmentsPanel } from '@/features/attachments/AttachmentsPanel'
+import { useWhtIncomeTypes } from '@/features/wht/queries'
+import { WhtCertificateActions } from '@/features/wht/WhtCertificateActions'
+import { WhtConditionSelect } from '@/features/wht/WhtConditionSelect'
+import { settlementWht } from './payment-math'
 
 const blankForm = (): DocForm => ({
   contact_id: '',
@@ -54,6 +59,7 @@ const blankForm = (): DocForm => ({
   ref_document_id: '',
   reference: '',
   notes: '',
+  wht_condition: 'withhold',
   lines: [emptyLine()],
 })
 
@@ -167,6 +173,18 @@ function DocumentEditor({
   }, [moneyAccounts, type, getValues, setValue])
 
   const totals = useMemo(() => formTotals(form, co), [form, co])
+  const incomeTypes = useWhtIncomeTypes(!isSale)
+  // D8: on a cash purchase the payer may bear the tax (pay_always grosses it up)
+  const borne = type === 'cash_purchase' && form.wht_condition !== 'withhold'
+  const borneTax = useMemo(() => {
+    if (!borne || !totals) return 0
+    const whtLines = form.lines.map((l, i) => ({
+      base_amount: totals.lines[i]?.base ?? 0,
+      wht_rate: Number(l.wht_rate) || 0,
+      wht_income_type: l.wht_income_type || null,
+    }))
+    return settlementWht(whtLines, totals.total, totals.total, form.wht_condition)
+  }, [borne, totals, form.lines, form.wht_condition])
   const payload = useMemo(
     () => toPayload(companyId, type, form, co, id),
     [form, companyId, type, co, id],
@@ -331,6 +349,15 @@ function DocumentEditor({
                   </select>
                 </div>
               )}
+              {type === 'cash_purchase' && (totals?.whtTotal ?? 0) > 0 && (
+                <div className="sm:col-span-2">
+                  <WhtConditionSelect
+                    id="d-wht-condition"
+                    value={form.wht_condition}
+                    onChange={(c) => setValue('wht_condition', c)}
+                  />
+                </div>
+              )}
               <div className="grid gap-2">
                 <Label htmlFor="d-ref-text">{t('docs.reference')}</Label>
                 <Input id="d-ref-text" {...register('reference')} />
@@ -348,6 +375,7 @@ function DocumentEditor({
                 isSale={isSale}
                 vatRegistered={co.vat_registered}
                 lineAmounts={totals?.lines}
+                incomeTypes={isSale ? undefined : incomeTypes.data}
               />
             </CardContent>
           </Card>
@@ -366,8 +394,11 @@ function DocumentEditor({
               totals={totals}
               vatRegistered={co.vat_registered}
               isCash={isCashType(type)}
+              borneTax={borne ? borneTax : null}
             />
           </div>
+
+          {id && <AttachmentsPanel documentId={id} />}
 
           {canPost && (
             <div className="flex flex-wrap justify-end gap-2">
@@ -422,10 +453,13 @@ function TotalsBox({
   totals,
   vatRegistered,
   isCash,
+  borneTax,
 }: {
   totals: ReturnType<typeof formTotals>
   vatRegistered: boolean
   isCash: boolean
+  /** D8: tax the payer bears on top (null = normal withholding) */
+  borneTax: number | null
 }) {
   const { t, i18n } = useTranslation()
   if (!totals) {
@@ -446,7 +480,8 @@ function TotalsBox({
       {row(t('totals.subtotal'), totals.subtotal)}
       {vatRegistered && row(t('totals.vat'), totals.vatTotal)}
       {row(t('totals.total'), totals.total, true)}
-      {totals.whtTotal > 0 && (
+      {borneTax !== null && totals.whtTotal > 0 && row(t('wht.borneTax'), borneTax)}
+      {borneTax === null && totals.whtTotal > 0 && (
         <>
           {row(isCash ? t('totals.whtNow') : t('totals.whtLater'), -totals.whtTotal)}
           {row(isCash ? t('totals.net') : t('totals.netExpected'), totals.netTotal, true)}
@@ -504,6 +539,7 @@ function PostedDocument({ direction, id }: { direction: Direction; id: string })
 
       <div className="flex flex-wrap gap-2">
         <DocumentShareActions documentId={doc.id} number={doc.number} posted={posted} />
+        {type === 'cash_purchase' && <WhtCertificateActions documentId={doc.id} />}
         {posted &&
           canCreate &&
           (CONVERSIONS[type] ?? []).map((to) => (
@@ -617,9 +653,18 @@ function PostedDocument({ direction, id }: { direction: Direction; id: string })
               </div>
               {Number(doc.wht_total) > 0 && (
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">{t('totals.whtLater')}</span>
+                  <span className="text-muted-foreground">
+                    {doc.wht_condition !== 'withhold'
+                      ? t('wht.borneTax')
+                      : isCashType(type)
+                        ? t('totals.whtNow')
+                        : t('totals.whtLater')}
+                  </span>
                   <span className="tabular-nums">
-                    {formatMoney(-Number(doc.wht_total), i18n.language)}
+                    {formatMoney(
+                      (doc.wht_condition !== 'withhold' ? 1 : -1) * Number(doc.wht_total),
+                      i18n.language,
+                    )}
                   </span>
                 </div>
               )}
@@ -637,6 +682,8 @@ function PostedDocument({ direction, id }: { direction: Direction; id: string })
           )}
         </div>
       </div>
+
+      <AttachmentsPanel documentId={doc.id} />
 
       <VoidDialog
         open={voidOpen}

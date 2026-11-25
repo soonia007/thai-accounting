@@ -9,6 +9,7 @@ import {
 import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import type { WhtIncomeType } from '@/features/wht/queries'
 import { formatMoney } from '@/lib/format'
 import type { LineAmounts } from '@/lib/money/calc'
 import { emptyLine, type DocForm } from './payload'
@@ -22,6 +23,8 @@ interface Props {
   isSale: boolean
   vatRegistered: boolean
   lineAmounts: LineAmounts[] | undefined
+  /** Purchases: WHT income types (D6); omitted on sales */
+  incomeTypes?: WhtIncomeType[]
 }
 
 const WHT_RATES = ['0', '1', '1.5', '2', '3', '5', '10']
@@ -34,6 +37,7 @@ export function LinesEditor({
   isSale,
   vatRegistered,
   lineAmounts,
+  incomeTypes,
 }: Props) {
   const { t, i18n } = useTranslation()
   const { fields, append, remove } = useFieldArray({ control, name: 'lines' })
@@ -48,7 +52,17 @@ export function LinesEditor({
     setValue(`lines.${index}.vat_type`, p.vat_type)
     const price = isSale ? p.sale_price : p.purchase_price
     if (price !== null) setValue(`lines.${index}.unit_price`, String(Number(price)))
+    if (!isSale && p.wht_income_type) pickIncomeType(index, p.wht_income_type)
   }
+
+  const pickIncomeType = (index: number, code: string) => {
+    setValue(`lines.${index}.wht_income_type`, code)
+    const type = incomeTypes?.find((x) => x.code === code)
+    if (!code) setValue(`lines.${index}.wht_rate`, '0')
+    else if (type?.default_rate) setValue(`lines.${index}.wht_rate`, String(type.default_rate))
+  }
+  const incomeTypeLabel = (x: WhtIncomeType) =>
+    `${i18n.language === 'en' ? x.name_en : x.name_th} ${x.section}`
 
   return (
     // Container query: the form column is narrow when the preview panel is open
@@ -98,6 +112,21 @@ export function LinesEditor({
                     {t(`products.kinds.${k}`)}
                   </label>
                 ))}
+                {incomeTypes && (
+                  <select
+                    aria-label={t('wht.incomeType')}
+                    className="max-w-56 rounded border bg-background px-1"
+                    value={line?.wht_income_type ?? ''}
+                    onChange={(e) => pickIncomeType(i, e.target.value)}
+                  >
+                    <option value="">{t('wht.noWithholding')}</option>
+                    {incomeTypes.map((x) => (
+                      <option key={x.code} value={x.code}>
+                        {incomeTypeLabel(x)}
+                      </option>
+                    ))}
+                  </select>
+                )}
                 {vatRegistered && (
                   <select
                     aria-label={t('products.vatType')}

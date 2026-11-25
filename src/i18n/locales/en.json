@@ -141,7 +141,8 @@
     "SALES_RETURNS": "Sales returns",
     "DEFAULT_EXPENSE": "Default expense",
     "OUTPUT_VAT_DEFERRED": "Deferred output VAT",
-    "INPUT_VAT_DEFERRED": "Deferred input VAT"
+    "INPUT_VAT_DEFERRED": "Deferred input VAT",
+    "WHT_BORNE_EXPENSE": "Income tax borne for payees"
   },
   "accounts": {
     "title": "Chart of accounts",
@@ -182,7 +183,8 @@
     "notMapped": "Not mapped",
     "help": {
       "OUTPUT_VAT_DEFERRED": "VAT on services sold on credit, until paid",
-      "INPUT_VAT_DEFERRED": "VAT on services bought on credit, until paid"
+      "INPUT_VAT_DEFERRED": "VAT on services bought on credit, until paid",
+      "WHT_BORNE_EXPENSE": "Withholding tax you pay on the payee's behalf (not deducted from them)"
     }
   },
   "dbErrors": {
@@ -244,7 +246,10 @@
     "JOURNAL_INACTIVE_ACCOUNT": "Cannot post to an inactive account",
     "IMMUTABLE_RECORD": "Journal entries cannot be changed. Use a reversing entry instead.",
     "ACCOUNT_HAS_ENTRIES": "This account has entries; its type and group flag can no longer change",
-    "SHARE_NOT_POSTED": "Only posted documents can be shared"
+    "SHARE_NOT_POSTED": "Only posted documents can be shared",
+    "WHT_INCOME_TYPE_REQUIRED": "Choose an income type for each line with withholding tax",
+    "WHT_INCOME_TYPE_INVALID": "Unknown withholding income type",
+    "WHT_CONDITION_INVALID": "Only purchases can have the tax paid by us"
   },
   "contacts": {
     "title": "Contacts",
@@ -462,6 +467,10 @@
       "CASH": {
         "dr": "Cash received {{amount}}",
         "cr": "Cash paid {{amount}}"
+      },
+      "WHT_BORNE_EXPENSE": {
+        "dr": "Tax borne for the payee {{amount}} (an expense)",
+        "cr": "Borne tax expense down {{amount}}"
       }
     },
     "money": {
@@ -624,5 +633,41 @@
     "eraCE": "Common Era (A.D.)",
     "saved": "Saved",
     "vatNote": "Changing VAT registration or the VAT rate affects tax reports; it will come with period locking (M15)."
+  },
+  "wht": {
+    "condition": "Who bears the withholding tax",
+    "conditions": {
+      "withhold": "(1) Withhold from the payee",
+      "pay_always": "(2) We pay it — always",
+      "pay_once": "(3) We pay it — this time only"
+    },
+    "conditionHelp": {
+      "pay_always": "The payee receives the full amount; tax is grossed up: base × rate ÷ (100 − rate), booked as an expense",
+      "pay_once": "The payee receives the full amount; tax = base × rate, booked as an expense"
+    },
+    "forms": {
+      "pnd3": "PND 3",
+      "pnd53": "PND 53"
+    },
+    "incomeType": "Income type (withholding tax)",
+    "noWithholding": "No withholding",
+    "defaultIncomeType": "Withholding tax when buying",
+    "defaultIncomeTypeHelp": "Pre-selects the income type and rate on purchase lines",
+    "borneTax": "Tax we pay for the payee",
+    "certificates": "Withholding tax certificates (50 Tawi)",
+    "certificatesShort": "50 Tawi certificates",
+    "certificateButton": "50 Tawi {{number}}",
+    "noCertificates": "No certificates yet — they are created when you pay a bill or record a cash purchase with withholding tax",
+    "income": "Income"
+  },
+  "attachments": {
+    "title": "Attachments",
+    "takePhoto": "Take photo",
+    "addFile": "Attach file",
+    "uploading": "Uploading…",
+    "none": "No files attached",
+    "delete": "Delete attachment",
+    "confirmDelete": "Delete {{name}}?",
+    "tooLarge": "File is larger than 20 MB"
   }
 }

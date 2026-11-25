@@ -5,6 +5,7 @@ import {
   type VatMode,
 } from '@/lib/money/calc'
 import type { DocType } from './doc-types'
+import type { WhtCondition } from './payment-math'
 import type { DocumentLine, DocumentRow } from './queries'
 
 export interface LineForm {
@@ -16,6 +17,8 @@ export interface LineForm {
   discount: string
   vat_type: 'standard' | 'zero' | 'exempt'
   wht_rate: string
+  /** D6: income type for the 50 ทวิ certificate (purchases) */
+  wht_income_type: string
   account_id: string
 }
 
@@ -28,6 +31,8 @@ export interface DocForm {
   ref_document_id: string
   reference: string
   notes: string
+  /** D8: who bears the WHT (cash purchases; bills choose it when paying) */
+  wht_condition: WhtCondition
   lines: LineForm[]
 }
 
@@ -40,6 +45,7 @@ export const emptyLine = (): LineForm => ({
   discount: '',
   vat_type: 'standard',
   wht_rate: '0',
+  wht_income_type: '',
   account_id: '',
 })
 
@@ -79,6 +85,7 @@ export function toPayload(
     ref_document_id: orNull(form.ref_document_id),
     reference: orNull(form.reference),
     notes: orNull(form.notes),
+    wht_condition: form.wht_condition,
     lines: form.lines
       .filter((l) => l.description.trim() || l.product_id || num(l.unit_price) > 0)
       .map((l) => ({
@@ -90,6 +97,7 @@ export function toPayload(
         discount: num(l.discount),
         vat_type: l.vat_type,
         wht_rate: num(l.wht_rate),
+        wht_income_type: num(l.wht_rate) > 0 ? orNull(l.wht_income_type) : null,
         account_id: orNull(l.account_id),
       })),
   }
@@ -130,6 +138,7 @@ export function docToForm(doc: DocumentRow, lines: DocumentLine[]): DocForm {
     ref_document_id: doc.ref_document_id ?? '',
     reference: doc.reference ?? '',
     notes: doc.notes ?? '',
+    wht_condition: doc.wht_condition,
     lines: lines.map((l) => ({
       product_id: l.product_id ?? '',
       description: l.description,
@@ -139,6 +148,7 @@ export function docToForm(doc: DocumentRow, lines: DocumentLine[]): DocForm {
       discount: Number(l.discount) ? str(l.discount) : '',
       vat_type: l.vat_type,
       wht_rate: str(l.wht_rate),
+      wht_income_type: l.wht_income_type ?? '',
       account_id: l.account_id ?? '',
     })),
   }

@@ -8,6 +8,7 @@ const form = (over: Partial<DocForm> = {}): DocForm => ({
   vat_mode: 'exclusive',
   payment_account_id: '',
   ref_document_id: '',
+  wht_condition: 'withhold',
   reference: '',
   notes: '',
   lines: [{ ...emptyLine(), description: 'ออกแบบ', unit_price: '10,000', wht_rate: '3' }],

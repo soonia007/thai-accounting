@@ -73,6 +73,7 @@ const ROLE_ICONS: Record<string, string> = {
   SALES_REVENUE: 'trending-up',
   SALES_RETURNS: 'undo',
   DEFAULT_EXPENSE: 'trending-down',
+  WHT_BORNE_EXPENSE: 'receipt',
   BANK: 'banknote',
   CASH: 'banknote',
 }
