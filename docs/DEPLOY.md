@@ -1,7 +1,7 @@
 # DEPLOY — เปิด FINORA ออนไลน์ (Supabase Cloud + Cloudflare Pages)
 
 ทำครั้งเดียว ~20 นาที หลังจากนั้นทุกครั้งที่ push ขึ้น GitHub เว็บจะอัปเดตเอง
-(ฐานข้อมูลต้องรัน `npx supabase db push` เองเมื่อมี migration ใหม่ — ดูข้อ 4)
+(ฐานข้อมูลต้องรัน `npx supabase db push --remote` เองเมื่อมี migration ใหม่ — ดูข้อ 4)
 
 ## 1. สร้างฐานข้อมูลออนไลน์ (Supabase — ฟรี)
 
@@ -20,7 +20,7 @@
 git pull
 npx supabase login                       # เปิดเบราว์เซอร์ให้ยืนยัน
 npx supabase link --project-ref <Reference ID>   # ถามรหัสผ่านฐานข้อมูลจากข้อ 1
-npx supabase db push                     # ส่ง supabase/migrations ทั้งหมดขึ้นไป
+npx supabase db push --remote                     # ส่ง supabase/migrations ทั้งหมดขึ้นไป
 ```
 
 ตรวจ: Supabase → Table Editor ต้องเห็นตาราง `companies`, `documents`, … และ Storage มี bucket `company-logos`
@@ -36,7 +36,7 @@ npx supabase db push                     # ส่ง supabase/migrations ทั�
 ## 4. เมื่อมี migration ใหม่ในอนาคต
 
 ```bash
-git pull && npx supabase db push
+git pull && npx supabase db push --remote
 ```
 
 ทำ **ก่อน** หรือพร้อมกับการ push โค้ดเว็บ ไม่งั้นเว็บจะขึ้นข้อความ "ฐานข้อมูลยังไม่ได้อัปเดต"
