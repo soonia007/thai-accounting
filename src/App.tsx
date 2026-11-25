@@ -14,6 +14,7 @@ import { SharePage } from '@/pages/SharePage'
 import { NAV_ITEMS } from '@/components/layout/nav-items'
 import { RequireAuth, RequireCompany } from '@/features/auth/guards'
 import { LoginPage } from '@/features/auth/LoginPage'
+import { LandingPage } from '@/features/landing/LandingPage'
 import { MembersPage } from '@/features/members/MembersPage'
 import { OnboardingPage } from '@/features/onboarding/OnboardingPage'
 import { WhtCertificatesPage } from '@/features/wht/WhtCertificatesPage'
@@ -35,6 +36,7 @@ const PLACEHOLDER_ROUTES = NAV_ITEMS.filter((i) => !BUILT_ROUTES.includes(i.to))
 export default function App() {
   return (
     <Routes>
+      <Route path="/welcome" element={<LandingPage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/share/:token" element={<SharePage />} />
       <Route element={<RequireAuth />}>

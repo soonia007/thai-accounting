@@ -58,6 +58,16 @@ describe('App routing', () => {
     expect(screen.getByRole('button', { name: 'เข้าสู่ระบบ' })).toBeInTheDocument()
   })
 
+  it('shows the product page to signed-out visitors of the home page', () => {
+    auth.session = null
+    renderApp('/')
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('แล้วบัญชีลงให้เอง')
+    expect(screen.getAllByRole('link', { name: /เริ่มใช้งาน/ })[0]).toHaveAttribute(
+      'href',
+      '/login?mode=signUp',
+    )
+  })
+
   it('sends users without a company to onboarding', () => {
     company.companies = []
     company.current = null

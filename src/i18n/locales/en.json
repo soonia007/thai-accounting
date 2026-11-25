@@ -681,5 +681,194 @@
     "delete": "Delete attachment",
     "confirmDelete": "Delete {{name}}?",
     "tooLarge": "File is larger than 20 MB"
+  },
+  "landing": {
+    "backHome": "Home",
+    "nav": {
+      "features": "Features",
+      "how": "How it works",
+      "trust": "Accuracy",
+      "compare": "Compare",
+      "roadmap": "Roadmap"
+    },
+    "signIn": "Sign in",
+    "getStarted": "Get started",
+    "openApp": "Open app",
+    "hero": {
+      "eyebrow": "Automated accounting · Thai / English",
+      "title1": "Fill in the document.",
+      "title2": "The books take care of themselves.",
+      "subtitle": "FINORA posts a double-entry journal for every document, with Thai VAT, withholding tax and 50 Tawi certificates — and shows you exactly what will be recorded before you post. On the web, iOS and Android.",
+      "primary": "Get started",
+      "secondary": "See how it works",
+      "note": "Multiple companies in one account · invite your team and accountant",
+      "chipBalanced": "Debit = Credit",
+      "chipVat": "Service VAT, deferred until paid",
+      "chipWht": "50 Tawi issued automatically"
+    },
+    "stats": [
+      {
+        "value": "100%",
+        "label": "of entries balance"
+      },
+      {
+        "value": "3 platforms",
+        "label": "Web · iOS · Android"
+      },
+      {
+        "value": "Multi-company",
+        "label": "strictly separated data"
+      },
+      {
+        "value": "2 languages",
+        "label": "Thai / English"
+      }
+    ],
+    "features": {
+      "eyebrow": "Features",
+      "title": "Everything your business needs, in one place",
+      "subtitle": "Simple enough for non-accountants on day one — rigorous enough for your accountant to trust every number.",
+      "items": [
+        {
+          "title": "Live posting simulation",
+          "body": "See what a document will record — in plain language, as a journal and as T-accounts. Expand it to full screen."
+        },
+        {
+          "title": "Automatic double entry",
+          "body": "Invoices, receipts, expenses, credit and debit notes — posted with the same rules, every time."
+        },
+        {
+          "title": "Thai VAT done right",
+          "body": "VAT-exclusive or inclusive, deferred output/input VAT for services, released automatically as you get paid or pay."
+        },
+        {
+          "title": "Withholding tax + 50 Tawi",
+          "body": "Pick the income type per line, support payer-borne tax, and get the 50 Tawi certificate as a PDF instantly."
+        },
+        {
+          "title": "Tax invoice PDFs + share links",
+          "body": "Original and copy in proper Thai. Email it or share a link your customer can open without an account."
+        },
+        {
+          "title": "Snap bills on your phone",
+          "body": "Attach photos or files to any document, so every piece of evidence is in one place."
+        }
+      ]
+    },
+    "how": {
+      "eyebrow": "How it works",
+      "title": "From document to books in 3 steps",
+      "steps": [
+        {
+          "title": "Create documents the way you're used to",
+          "body": "Choose a customer, add lines — VAT, withholding tax and the net amount are calculated as you type. No debits or credits needed."
+        },
+        {
+          "title": "See the result before you post",
+          "body": "The simulation explains how receivables, revenue and tax will change — and what happens when you're paid. It uses the very same rules as real posting."
+        },
+        {
+          "title": "Post, share and follow up",
+          "body": "Get gap-free document numbers, send a PDF or link, track unpaid and overdue invoices, and record partial payments."
+        }
+      ]
+    },
+    "trust": {
+      "eyebrow": "Accuracy, enforced",
+      "title": "Numbers you can trust from the first entry",
+      "subtitle": "The key accounting rules live in the database, not just the screen — so every channel follows the same rules.",
+      "items": [
+        {
+          "title": "Double entry, always",
+          "body": "The database rejects any entry where debits don't equal credits."
+        },
+        {
+          "title": "Posted means final",
+          "body": "Posted documents can only be voided with a reversal. Numbers never repeat or skip."
+        },
+        {
+          "title": "Full audit trail",
+          "body": "An audit log records who did what, and when."
+        },
+        {
+          "title": "Isolated per company",
+          "body": "Row-Level Security on every table, plus owner / admin / accountant / staff / viewer roles."
+        }
+      ]
+    },
+    "compare": {
+      "eyebrow": "Compare",
+      "title": "Why FINORA",
+      "manual": "Spreadsheets / manual",
+      "finora": "FINORA",
+      "rows": [
+        {
+          "label": "Automatic double-entry posting",
+          "manual": "no"
+        },
+        {
+          "label": "Debit = credit checked every time",
+          "manual": "no"
+        },
+        {
+          "label": "See the posting before you save",
+          "manual": "no"
+        },
+        {
+          "label": "Deferred VAT for services",
+          "manual": "partial"
+        },
+        {
+          "label": "Automatic 50 Tawi certificates",
+          "manual": "no"
+        },
+        {
+          "label": "Gap-free numbers, no deleting",
+          "manual": "no"
+        },
+        {
+          "label": "Multiple companies + user roles",
+          "manual": "partial"
+        },
+        {
+          "label": "Mobile app + bill photos",
+          "manual": "no"
+        }
+      ],
+      "partial": "Partly, by hand"
+    },
+    "roadmap": {
+      "eyebrow": "Roadmap",
+      "title": "What's coming next",
+      "soon": "Soon",
+      "items": [
+        "General journal",
+        "Financial statements + dashboard",
+        "VAT reports / PP.30",
+        "WHT reports PND 3 / 53",
+        "Bank reconciliation",
+        "Inventory",
+        "Fixed assets",
+        "Period close",
+        "AI bill reading (OCR)"
+      ]
+    },
+    "cta": {
+      "title": "Ready to let the books post themselves?",
+      "subtitle": "Set up your first company in minutes — with a chart of accounts ready for your business type.",
+      "primary": "Get started",
+      "secondary": "Sign in"
+    },
+    "footer": {
+      "tagline": "Online accounting for business",
+      "rights": "© 2026 FINORA"
+    },
+    "imageAlt": {
+      "list": "FINORA invoice list with paid, unpaid and overdue statuses",
+      "invoice": "Invoice form with the live posting simulation",
+      "simulation": "Full-screen posting simulation with T-accounts",
+      "posted": "Posted invoice with PDF and share-link actions",
+      "mobile": "FINORA on a phone"
+    }
   }
 }

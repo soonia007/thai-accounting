@@ -1,5 +1,5 @@
 import { Loader2 } from 'lucide-react'
-import { Navigate, Outlet } from 'react-router-dom'
+import { Navigate, Outlet, useLocation } from 'react-router-dom'
 import { useCompany } from '@/features/company/CompanyProvider'
 import { useAuth } from './AuthProvider'
 
@@ -14,8 +14,10 @@ function FullPageSpinner() {
 /** Signed-in users only. */
 export function RequireAuth() {
   const { session, loading } = useAuth()
+  const { pathname } = useLocation()
   if (loading) return <FullPageSpinner />
-  if (!session) return <Navigate to="/login" replace />
+  // Visitors opening the home page see the product page; deep links go straight to sign-in
+  if (!session) return <Navigate to={pathname === '/' ? '/welcome' : '/login'} replace />
   return <Outlet />
 }
 

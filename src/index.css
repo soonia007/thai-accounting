@@ -8,6 +8,14 @@
   --brand-strong: #0b56a4; /* Deep Blue — filled buttons, links (7.3:1 on white) */
   --brand-mid: #3e77bb; /* Mid Blue — secondary accents, charts */
 
+  /* Logo colours (owner's FINORA mark) — marketing pages, illustrations */
+  --finora-cobalt: #0443a8;
+  --finora-blue: #015bd3;
+  --finora-sky: #1488ee;
+  --finora-mint: #2de2c5;
+  --finora-mint-soft: #57ddce;
+  --finora-obsidian: #071022;
+
   --radius: 0.875rem;
   --background: #f5f8fa;
   --foreground: #231f20;
@@ -71,6 +79,12 @@
   --color-brand: var(--brand);
   --color-brand-strong: var(--brand-strong);
   --color-brand-mid: var(--brand-mid);
+  --color-finora-cobalt: var(--finora-cobalt);
+  --color-finora-blue: var(--finora-blue);
+  --color-finora-sky: var(--finora-sky);
+  --color-finora-mint: var(--finora-mint);
+  --color-finora-mint-soft: var(--finora-mint-soft);
+  --color-finora-obsidian: var(--finora-obsidian);
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
@@ -151,6 +165,42 @@
 }
 @media (prefers-reduced-motion: reduce) {
   .animate-overlay-in {
+    animation: none;
+  }
+}
+
+/* Landing page — scroll reveal (see src/features/landing/motion.ts) */
+[data-reveal] {
+  opacity: 0;
+  transform: translate3d(0, 28px, 0);
+  transition:
+    opacity 0.8s cubic-bezier(0.2, 0.7, 0.2, 1),
+    transform 0.8s cubic-bezier(0.2, 0.7, 0.2, 1);
+  transition-delay: var(--d, 0ms);
+}
+[data-reveal][data-shown] {
+  opacity: 1;
+  transform: none;
+}
+@keyframes float-y {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(0, -10px, 0);
+  }
+}
+.animate-float {
+  animation: float-y 6s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-reveal] {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .animate-float {
     animation: none;
   }
 }

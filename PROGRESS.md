@@ -288,6 +288,13 @@ esourcesin` — ถ้า terminal หา `docker` ไม่เจอให้�
 - แก้บั๊กเดิม: `.pt-safe` ทับ padding ด้านบน (หัวหน้าจอชิดขอบ)
 - ค้าง: ไอคอนแอป native (Android mipmap / iOS AppIcon) ยังเป็นของเดิม → ทำใน M9; ยังไม่มี dark mode
 
+## หน้าโปรโมท + โลโก้ FINORA (2026-11-25)
+
+- โลโก้ "F" ของเจ้าของ → SVG (`public/brand/finora-mark.svg`) ใช้ทั้งแอป, favicon, ไอคอน PWA
+- หน้าโปรโมท `/welcome` (ผู้ที่ยังไม่ login เปิด `/` จะมาที่นี่; ลิงก์ตรงไปหน้าอื่นยังไป `/login`) — ไทย/อังกฤษ, scroll reveal, parallax, sticky showcase, glassmorphism, ตารางเปรียบเทียบ, CTA ทรงมน
+- `/login?mode=signUp` เปิดหน้าสมัครเลย, หน้า login มีปุ่มกลับหน้าแรก
+- ค้าง: ไอคอนแอป native (Android/iOS) ยังเป็นของเดิม → M9; ฟอร์ม "ติดต่อ/นัดเดโม" ยังไม่มี (ต้องตัดสินใจว่าส่งไปที่ไหน)
+
 ## การเปลี่ยนแปลงขอบเขต (2026-11-25)
 
 - เพิ่ม Phase 2+3 (M10–M22) ตาม `docs/PHASE2-3_SPEC.md`

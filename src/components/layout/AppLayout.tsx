@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next'
 import { NavLink, Outlet } from 'react-router-dom'
 import { CompanySwitcher } from '@/features/company/CompanySwitcher'
 import { cn } from '@/lib/utils'
-import { BrandMark } from './BrandMark'
+import { BrandLogo } from './BrandMark'
 import { LanguageSwitcher } from './LanguageSwitcher'
 import { MENU_ITEM, NAV_ITEMS } from './nav-items'
 
@@ -13,8 +13,7 @@ export function AppLayout() {
       {/* Desktop sidebar */}
       <aside className="sticky top-0 hidden h-dvh w-64 shrink-0 flex-col border-r border-border/70 bg-card md:flex">
         <div className="flex items-center gap-2.5 px-5 pt-5 pb-4">
-          <BrandMark />
-          <span className="text-[17px] font-bold tracking-[0.08em]">{t('app.name')}</span>
+          <BrandLogo className="text-[17px]" />
         </div>
         <div className="px-3 pb-3">
           <CompanySwitcher className="w-full" />

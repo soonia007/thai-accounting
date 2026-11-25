@@ -17,7 +17,7 @@ import { myCompaniesKey, useCompany } from '@/features/company/CompanyProvider'
 import { MyInvitations } from '@/features/company/MyInvitations'
 import { supabase, type BusinessType } from '@/lib/supabase'
 import { cn } from '@/lib/utils'
-import { BrandMark } from '@/components/layout/BrandMark'
+import { BrandLogo } from '@/components/layout/BrandMark'
 import { companySchema, type CompanyFormInput, type CompanyFormValues } from './company-schema'
 
 const BUSINESS_TYPES: { value: BusinessType; icon: LucideIcon }[] = [
@@ -83,8 +83,7 @@ export function OnboardingPage() {
     <div className="mx-auto flex min-h-dvh max-w-2xl flex-col gap-4 px-4 pt-[calc(1rem+env(safe-area-inset-top))] pb-[calc(1rem+env(safe-area-inset-bottom))]">
       <div className="flex items-center justify-between">
         <span className="flex items-center gap-2.5">
-          <BrandMark className="size-8" />
-          <span className="text-lg font-bold tracking-[0.08em]">{t('app.name')}</span>
+          <BrandLogo className="text-lg" />
         </span>
         <div className="flex items-center gap-2">
           <LanguageSwitcher />

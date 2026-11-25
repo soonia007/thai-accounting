@@ -1,8 +1,9 @@
+import { ArrowLeft } from 'lucide-react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import { Navigate } from 'react-router-dom'
+import { Link, Navigate, useSearchParams } from 'react-router-dom'
 import { z } from 'zod'
 import { LanguageSwitcher } from '@/components/layout/LanguageSwitcher'
 import { Alert, AlertDescription } from '@/components/ui/alert'
@@ -26,7 +27,8 @@ type Mode = 'signIn' | 'signUp'
 export function LoginPage() {
   const { t } = useTranslation()
   const { session } = useAuth()
-  const [mode, setMode] = useState<Mode>('signIn')
+  const [params] = useSearchParams()
+  const [mode, setMode] = useState<Mode>(params.get('mode') === 'signUp' ? 'signUp' : 'signIn')
   const [error, setError] = useState<string | null>(null)
   const [info, setInfo] = useState<string | null>(null)
   const {
@@ -65,7 +67,7 @@ export function LoginPage() {
   }
 
   return (
-    <div className="relative flex min-h-dvh flex-col items-center justify-center gap-6 overflow-hidden px-4 pt-[calc(1rem+env(safe-area-inset-top))] pb-[calc(1rem+env(safe-area-inset-bottom))]">
+    <div className="relative flex min-h-dvh flex-col items-center justify-center gap-6 overflow-hidden px-4 pt-[calc(4.5rem+env(safe-area-inset-top))] pb-[calc(1rem+env(safe-area-inset-bottom))]">
       {/* soft brand glow */}
       <div
         aria-hidden
@@ -74,10 +76,19 @@ export function LoginPage() {
       <div className="absolute top-[calc(1rem+env(safe-area-inset-top))] right-4">
         <LanguageSwitcher />
       </div>
+      <Link
+        to="/welcome"
+        className="absolute top-[calc(1rem+env(safe-area-inset-top))] left-4 inline-flex h-8 items-center gap-1.5 rounded-full px-3 text-sm text-muted-foreground transition-colors hover:bg-card hover:text-foreground"
+      >
+        <ArrowLeft className="size-4" />
+        {t('landing.backHome')}
+      </Link>
       <div className="flex flex-col items-center gap-3 text-center">
-        <BrandMark className="size-14" />
+        <BrandMark className="size-16" />
         <div>
-          <div className="text-3xl font-bold tracking-[0.08em]">{t('app.name')}</div>
+          <div className="text-3xl font-extrabold tracking-[0.06em] text-finora-cobalt">
+            {t('app.name')}
+          </div>
           <div className="mt-1 text-sm text-muted-foreground">{t('app.tagline')}</div>
         </div>
       </div>
