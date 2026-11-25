@@ -102,6 +102,14 @@
   * {
     @apply border-border outline-ring/50;
   }
+  /* A long <option> must not stretch its grid column past the phone screen */
+  select {
+    max-width: 100%;
+    min-width: 0;
+  }
+  .grid > * {
+    min-width: 0;
+  }
   html {
     -webkit-text-size-adjust: 100%;
     accent-color: var(--brand-strong); /* native checkbox / radio / range */

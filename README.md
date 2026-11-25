@@ -133,3 +133,8 @@ npm run db:stop
 - **Android:** ติดตั้ง Android Studio + Android SDK → เสียบมือถือ/เปิด emulator → `npm run cap:android`
 - **iOS:** ต้องใช้ Mac + Xcode → `npm run cap:ios` แล้วกด Run ใน Xcode
 - แอปบนมือถือ/emulator ต่อฐานข้อมูลบนคอมผ่าน `127.0.0.1` ไม่ได้ — ต้องเปลี่ยน `VITE_SUPABASE_URL` เป็น IP ของคอมในวง LAN (เช่น `http://192.168.1.10:54321`) หรือใช้ Supabase บน cloud
+
+## ทดสอบ E2E / ขึ้นมือถือ
+
+- E2E: เปิดฐานข้อมูล (`npm run db:start`) แล้วรัน `npm run e2e`
+- ขึ้น TestFlight / Google Play Internal testing: ดู [docs/RELEASE.md](docs/RELEASE.md)

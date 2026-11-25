@@ -35,3 +35,7 @@ dev-dist
 supabase/.temp
 supabase/.branches
 supabase/.env
+
+# Playwright
+test-results
+playwright-report

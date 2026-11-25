@@ -15,7 +15,7 @@ export function ReportTableView({ table, era }: { table: ReportTable; era: 'BE' 
   }
   return (
     <div className="overflow-x-auto rounded-2xl border border-border/70 bg-card shadow-card">
-      <table className="w-full min-w-max text-sm">
+      <table className="w-full text-sm">
         <thead>
           <tr className="border-b bg-muted/60 text-xs text-muted-foreground">
             {table.columns.map((c) => (

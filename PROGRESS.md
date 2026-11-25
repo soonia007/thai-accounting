@@ -7,31 +7,31 @@ Spec (อ่านก่อนเริ่มงานทุกครั้ง):
 - [docs/DESIGN_SIMULATION.md](docs/DESIGN_SIMULATION.md) — แผงจำลองบัญชีระหว่างกรอก (ใช้ตั้งแต่ M4 เป็นต้นไป)
 - [docs/DECISIONS.md](docs/DECISIONS.md) — การตัดสินใจเรื่อง logic บัญชีจากเจ้าของ (D1–D5) — engine ทำตามนี้
 
-| Milestone                           | สถานะ                |
-| ----------------------------------- | -------------------- |
-| M0 — Project setup                  | ✅ เสร็จ              |
-| M1 — Auth + Multi-company           | ✅ เสร็จ              |
-| M2 — ผังบัญชี                          | ✅ เสร็จ              |
-| M3 — ข้อมูลหลัก                        | ✅ เสร็จ              |
-| M4 — Posting engine                 | ✅ เสร็จ              |
-| M5 — ฝั่งขาย                          | ✅ เสร็จ              |
-| M6 — ฝั่งซื้อ/ค่าใช้จ่าย                   | ✅ เสร็จ              |
-| M7 — สมุดรายวันทั่วไป                   | ✅ เสร็จ              |
-| M8 — รายงาน                         | ✅ เสร็จ              |
-| M9 — Mobile polish + Release prep   | ⏳                   |
-| M10 — รายงาน VAT                    | ⏳                   |
-| M11 — รายงานภาษีหัก ณ ที่จ่าย            | ⏳                   |
-| M12 — กระทบยอดธนาคาร                | ⏳                   |
-| M13 — สต็อกสินค้า                      | ⏳                   |
-| M14 — สินทรัพย์ถาวร                    | ⏳                   |
-| M15 — ปิดงวดบัญชี                      | ⏳                   |
-| M16 — Dashboard การเงินฉบับเต็ม        | ⏳                   |
-| M17 — OCR JSON contract + ingestion | ⏳ ต้องได้ข้อมูล OCR ก่อน |
-| M18 — ช่องทางนำเข้าไฟล์                | ⏳                   |
-| M19 — Validation + เอกสารร่าง        | ⏳                   |
-| M20 — คิวตรวจทาน                     | ⏳                   |
-| M21 — เรียนรู้จากการแก้ไข               | ⏳                   |
-| M22 — Auto-post + รายงานความแม่นยำ   | ⏳                   |
+| Milestone                           | สถานะ                                                          |
+| ----------------------------------- | -------------------------------------------------------------- |
+| M0 — Project setup                  | ✅ เสร็จ                                                        |
+| M1 — Auth + Multi-company           | ✅ เสร็จ                                                        |
+| M2 — ผังบัญชี                          | ✅ เสร็จ                                                        |
+| M3 — ข้อมูลหลัก                        | ✅ เสร็จ                                                        |
+| M4 — Posting engine                 | ✅ เสร็จ                                                        |
+| M5 — ฝั่งขาย                          | ✅ เสร็จ                                                        |
+| M6 — ฝั่งซื้อ/ค่าใช้จ่าย                   | ✅ เสร็จ                                                        |
+| M7 — สมุดรายวันทั่วไป                   | ✅ เสร็จ                                                        |
+| M8 — รายงาน                         | ✅ เสร็จ                                                        |
+| M9 — Mobile polish + Release prep   | ✅ เสร็จ (build ไบนารีจริงต้องทำบนเครื่องเจ้าของ — ดู docs/RELEASE.md) |
+| M10 — รายงาน VAT                    | ⏳                                                             |
+| M11 — รายงานภาษีหัก ณ ที่จ่าย            | ⏳                                                             |
+| M12 — กระทบยอดธนาคาร                | ⏳                                                             |
+| M13 — สต็อกสินค้า                      | ⏳                                                             |
+| M14 — สินทรัพย์ถาวร                    | ⏳                                                             |
+| M15 — ปิดงวดบัญชี                      | ⏳                                                             |
+| M16 — Dashboard การเงินฉบับเต็ม        | ⏳                                                             |
+| M17 — OCR JSON contract + ingestion | ⏳ ต้องได้ข้อมูล OCR ก่อน                                           |
+| M18 — ช่องทางนำเข้าไฟล์                | ⏳                                                             |
+| M19 — Validation + เอกสารร่าง        | ⏳                                                             |
+| M20 — คิวตรวจทาน                     | ⏳                                                             |
+| M21 — เรียนรู้จากการแก้ไข               | ⏳                                                             |
+| M22 — Auto-post + รายงานความแม่นยำ   | ⏳                                                             |
 
 ## M0 — Project setup (2026-11-25)
 
@@ -44,7 +44,7 @@ Spec (อ่านก่อนเริ่มงานทุกครั้ง):
 - Layout: sidebar (desktop ≥ md) / top bar + bottom nav 5 ปุ่ม (mobile), safe-area iOS (`pt-safe`/`pb-safe`, `viewport-fit=cover`), ตัวสลับภาษา
 - Android back button (`src/lib/native.ts`)
 - PWA: `vite-plugin-pwa` (manifest + service worker auto-update) + ไอคอนสร้างจาก `public/favicon.svg`
-- Capacitor 8: appId `com.thaiaccounting.app`, โฟลเดอร์ `android/` และ `ios/`
+- Capacitor 8: appId `com.finora.app` (เดิม com.thaiaccounting.app), โฟลเดอร์ `android/` และ `ios/`
 - Supabase CLI: `supabase/config.jsonc`, migration แรก `supabase/migrations/20261125000000_baseline.sql` (timezone Asia/Bangkok, schema `private`, trigger `set_updated_at`), pgTAP test ใน `supabase/tests/`
 
 ### คำสั่ง
@@ -67,7 +67,7 @@ Spec (อ่านก่อนเริ่มงานทุกครั้ง):
 - ~~ยังไม่ได้รัน migration / pgTAP~~ → ติดตั้ง Docker Desktop แล้ว (M1) และรันผ่าน
 - ใช้ TypeScript 6.0 (ไม่ใช่ 7) เพราะ typescript-eslint ยังรองรับแค่ < 6.1
 - `npm audit` แจ้ง moderate 4 รายการใน `workbox-build` (dependency ของ vite-plugin-pwa ตอน build เท่านั้น ไม่เข้า bundle)
-- appId `com.thaiaccounting.app` เป็นค่าชั่วคราว เปลี่ยนได้ก่อน M9 (ต้องเปลี่ยนก่อนขึ้น store)
+- (เดิม) appId `com.thaiaccounting.app` เป็นค่าชั่วคราว — เปลี่ยนเป็น `com.finora.app` แล้วใน M9 เปลี่ยนได้ก่อน M9 (ต้องเปลี่ยนก่อนขึ้น store)
 
 ## M1 — Auth + Multi-company (2026-11-25)
 
@@ -369,3 +369,14 @@ esourcesin` — ถ้า terminal หา `docker` ไม่เจอให้�
 - ค้าง: ลูกหนี้/เจ้าหนี้ตามอายุ (aging) → M16
 - ทดสอบ: pgTAP รวม 269 tests, Vitest รวม ~135 tests; ในเบราว์เซอร์: ทุกรายงาน + ดาวน์โหลด PDF/Excel + มือถือ
 - ถัดไป: M9 (Mobile polish + Release prep + E2E)
+
+## M9 — Mobile polish + Release prep (2026-11-25)
+
+- ตรวจ responsive ทุกหน้า (25 เส้นทาง × จอ 390 และ 360px): เจอล้นจอ 1 จุด (dropdown ยาวในฟอร์มใบค่าใช้จ่าย) → แก้ด้วย CSS กลาง; ตารางรายงานเลื่อนแนวนอนในการ์ด
+- Safe area iOS (viewport-fit=cover + env(safe-area-*) ในแถบบน/ล่าง/dialog/แผงจำลอง) และปุ่ม Back ของ Android (`src/lib/native.ts`) มีอยู่แล้ว ตรวจใช้งานครบ
+- **bundle id = `com.finora.app`** (เจ้าของเลือก): capacitor.config, Android applicationId/namespace/MainActivity, iOS PRODUCT_BUNDLE_IDENTIFIER
+- ไอคอน Android (legacy/round/adaptive) + ไอคอน iOS 1024 + splash ทุกขนาด สร้างจากโลโก้ด้วย `scripts/gen-native-assets.mjs`
+- E2E Playwright (`npm run e2e`, `e2e/core-flow.spec.ts`): สมัคร → สร้างบริษัท → ผู้ติดต่อ → ใบแจ้งหนี้ 1,000+VAT → รับชำระ → งบทดลองสมดุล (เงินฝาก 1,070 / รายได้ 1,000 / ภาษีขาย 70) — ผ่าน
+- คู่มือขึ้น TestFlight / Play Internal testing + เช็กลิสต์เครื่องจริง: [docs/RELEASE.md](docs/RELEASE.md)
+- **ยังไม่ได้ทำ (ต้องใช้เครื่องเจ้าของ):** build .aab/.ipa จริงและทดสอบบนเครื่องจริง — ไม่มี Android SDK/Xcode ในสภาพแวดล้อมนี้ (`cap sync android` ผ่าน)
+- ถัดไป: Phase 2 (M10 รายงาน VAT) — เริ่มได้เมื่อ M0–M9 ผ่านครบ + e2e เขียว ✔

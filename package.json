@@ -22,7 +22,8 @@
     "cap:sync": "npm run build && cap sync",
     "cap:android": "npm run build && cap sync android && cap run android",
     "cap:ios": "npm run build && cap sync ios && cap open ios",
-    "db:types": "supabase gen types typescript --local > src/lib/database.types.ts && prettier --write src/lib/database.types.ts"
+    "db:types": "supabase gen types typescript --local > src/lib/database.types.ts && prettier --write src/lib/database.types.ts",
+    "e2e": "playwright test --trace off"
   },
   "dependencies": {
     "@capacitor/app": "^8.1.2",
@@ -58,6 +59,7 @@
     "@capacitor/cli": "^8.6.2",
     "@capacitor/ios": "^8.6.2",
     "@eslint/js": "^10.0.1",
+    "@playwright/test": "^1.63.0",
     "@tailwindcss/vite": "^4.3.5",
     "@testing-library/jest-dom": "^8.0.0",
     "@testing-library/react": "^16.3.3",
@@ -76,6 +78,7 @@
     "jsdom": "^31.0.1",
     "prettier": "^3.10.1",
     "prettier-plugin-tailwindcss": "^0.8.1",
+    "sharp": "^0.35.5",
     "supabase": "^3.4.0",
     "tailwindcss": "^4.3.5",
     "typescript": "~6.0.0",

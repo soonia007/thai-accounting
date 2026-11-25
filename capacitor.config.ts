@@ -1,7 +1,7 @@
 import type { CapacitorConfig } from '@capacitor/cli'
 
 const config: CapacitorConfig = {
-  appId: 'com.thaiaccounting.app',
+  appId: 'com.finora.app',
   appName: 'FINORA',
   webDir: 'dist',
 }
