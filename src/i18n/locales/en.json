@@ -870,5 +870,36 @@
       "posted": "Posted invoice with PDF and share-link actions",
       "mobile": "FINORA on a phone"
     }
+  },
+  "focus": {
+    "editing": "Editing: {{field}}",
+    "onLine": "{{field}} (line {{line}})",
+    "affects": "Affects: {{accounts}}",
+    "affectsLater": "Takes effect at payment",
+    "noEffect": "Doesn't affect the books",
+    "lineBadge": "Editing line {{line}}",
+    "fields": {
+      "qty": "Quantity",
+      "unit_price": "Unit price",
+      "discount": "Discount",
+      "product_id": "Product/service",
+      "description": "Description",
+      "vat_type": "VAT type",
+      "item_kind": "Service/product",
+      "wht_rate": "WHT rate",
+      "wht_income_type": "Income type",
+      "account_id": "Account",
+      "alloc_amount": "Amount settled",
+      "alloc_wht": "Withholding tax",
+      "contact_id": "Contact",
+      "ref_document_id": "Referenced document",
+      "vat_mode": "VAT mode",
+      "payment_account_id": "Cash/bank account",
+      "wht_condition": "Who bears the tax",
+      "doc_date": "Date",
+      "due_date": "Due date",
+      "reference": "Reference",
+      "notes": "Notes"
+    }
   }
 }

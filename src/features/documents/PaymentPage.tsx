@@ -35,6 +35,8 @@ import {
   type WhtLine,
 } from './payment-math'
 import { documentsKey, useContacts, useMoneyAccounts } from './queries'
+import { useFocusTracking } from '@/features/posting/focus'
+import { PreviewFocusProvider } from '@/features/posting/PreviewFocusProvider'
 import { VoidDialog } from './VoidDialog'
 
 interface AllocRow {
@@ -64,7 +66,11 @@ export function PaymentPage({ direction }: { direction: Direction }) {
     return <PostedPayment direction={direction} payment={payment.data} />
   }
   // Drafts are created and posted in one go from this form; an existing draft is re-opened as new.
-  return <PaymentEditor direction={direction} />
+  return (
+    <PreviewFocusProvider>
+      <PaymentEditor direction={direction} />
+    </PreviewFocusProvider>
+  )
 }
 
 function PaymentEditor({ direction }: { direction: Direction }) {
@@ -77,6 +83,7 @@ function PaymentEditor({ direction }: { direction: Direction }) {
   const era = current!.date_era
   const dir = direction === 'sales' ? 'received' : 'paid'
   const canPost = canEditMasterData(current?.role)
+  const focusTracking = useFocusTracking()
 
   const { data: contacts = [] } = useContacts(companyId)
   const { data: moneyAccounts = [] } = useMoneyAccounts(companyId)
@@ -223,13 +230,13 @@ function PaymentEditor({ direction }: { direction: Direction }) {
       </div>
 
       <div className="grid gap-4 md:grid-cols-[minmax(0,1fr)_22rem] lg:grid-cols-[minmax(0,1fr)_26rem] xl:grid-cols-[minmax(0,1fr)_30rem] 2xl:grid-cols-[minmax(0,1fr)_36rem]">
-        <div className="flex min-w-0 flex-col gap-4">
+        <div className="flex min-w-0 flex-col gap-4" {...focusTracking}>
           {post.error && (
             <Alert variant="destructive">
               <AlertDescription>{dbErrorMessage(t, post.error)}</AlertDescription>
             </Alert>
           )}
-          <Card className="py-4">
+          <Card className="py-4 transition-shadow duration-300 focus-within:ring-2 focus-within:ring-finora-mint/60">
             <CardContent className="grid gap-4 px-4 sm:grid-cols-2">
               <div className="grid gap-2 sm:col-span-2">
                 <Label htmlFor="p-contact">
@@ -304,7 +311,7 @@ function PaymentEditor({ direction }: { direction: Direction }) {
             </CardContent>
           </Card>
 
-          <Card className="py-4">
+          <Card className="py-4 transition-shadow duration-300 focus-within:ring-2 focus-within:ring-finora-mint/60">
             <CardContent className="flex flex-col gap-2 px-4">
               <h2 className="text-sm font-medium">{t('docs.openDocuments')}</h2>
               {!contactId && (
@@ -313,13 +320,13 @@ function PaymentEditor({ direction }: { direction: Direction }) {
               {contactId && openDocs.data?.length === 0 && (
                 <p className="text-sm text-muted-foreground">{t('docs.nothingOpen')}</p>
               )}
-              {(openDocs.data ?? []).map((d) => {
+              {(openDocs.data ?? []).map((d, idx) => {
                 const r = rows[d.id]
                 if (!r) return null
                 return (
                   <div
                     key={d.id}
-                    className="grid grid-cols-[auto_minmax(0,1fr)] items-center gap-x-3 gap-y-2 rounded-xl border p-2 text-sm sm:grid-cols-[auto_minmax(0,1fr)_8rem_7rem]"
+                    className="grid grid-cols-[auto_minmax(0,1fr)] items-center gap-x-3 gap-y-2 rounded-xl border p-2 text-sm transition-all duration-300 focus-within:border-finora-mint focus-within:ring-2 focus-within:ring-finora-mint/40 sm:grid-cols-[auto_minmax(0,1fr)_8rem_7rem]"
                   >
                     <input
                       type="checkbox"
@@ -341,6 +348,7 @@ function PaymentEditor({ direction }: { direction: Direction }) {
                         className="text-right"
                         disabled={!r.selected}
                         value={r.amount}
+                        data-field={`alloc.${idx}.amount`}
                         onChange={(e) => setRow(d.id, { amount: e.target.value, wht: undefined })}
                       />
                     </label>
@@ -351,6 +359,7 @@ function PaymentEditor({ direction }: { direction: Direction }) {
                         className="text-right"
                         disabled={!r.selected}
                         value={r.wht}
+                        data-field={`alloc.${idx}.wht`}
                         onChange={(e) => setRow(d.id, { wht: e.target.value })}
                         aria-label={t('docs.whtAmount')}
                       />

@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next'
 import { NavLink, Outlet } from 'react-router-dom'
 import { CompanySwitcher } from '@/features/company/CompanySwitcher'
 import { cn } from '@/lib/utils'
-import { BrandLogo } from './BrandMark'
+import { BrandLogo, BrandMark } from './BrandMark'
 import { LanguageSwitcher } from './LanguageSwitcher'
 import { MENU_ITEM, NAV_ITEMS } from './nav-items'
 
@@ -52,7 +52,12 @@ export function AppLayout() {
       <div className="flex min-w-0 flex-1 flex-col">
         {/* Mobile top bar */}
         <header className="sticky top-0 z-20 flex items-center justify-between gap-2 border-b border-border/60 bg-card/80 px-3 pt-[calc(0.5rem+env(safe-area-inset-top))] pb-2 backdrop-blur-xl backdrop-saturate-150 md:hidden">
-          <CompanySwitcher className="min-w-0" />
+          <div className="flex min-w-0 items-center gap-1.5">
+            <NavLink to="/" aria-label={t('app.name')} className="shrink-0 p-1">
+              <BrandMark className="size-7" />
+            </NavLink>
+            <CompanySwitcher className="min-w-0" />
+          </div>
           <LanguageSwitcher />
         </header>
 

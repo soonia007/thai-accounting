@@ -82,11 +82,15 @@ export function LinesEditor({
         return (
           <div
             key={field.id}
-            className="grid grid-cols-2 gap-2 rounded-lg border p-2 @3xl:grid-cols-[minmax(0,3fr)_5rem_7rem_6rem_5rem_7rem_2rem] @3xl:items-start @3xl:rounded-none @3xl:border-0 @3xl:border-b @3xl:p-1"
+            className="group relative grid grid-cols-2 gap-2 rounded-xl border p-2 transition-all duration-300 focus-within:border-finora-mint focus-within:bg-finora-mint/[0.04] focus-within:ring-2 focus-within:ring-finora-mint/40 @3xl:grid-cols-[minmax(0,3fr)_5rem_7rem_6rem_5rem_7rem_2rem] @3xl:items-start @3xl:rounded-none @3xl:border-0 @3xl:border-b @3xl:p-1"
           >
+            <span className="pointer-events-none absolute -top-2.5 right-3 z-10 hidden rounded-full bg-finora-mint px-2 py-px text-[11px] font-semibold text-[#003d35] shadow-card group-focus-within:inline-flex">
+              {t('focus.lineBadge', { line: i + 1 })}
+            </span>
             <div className="col-span-2 flex flex-col gap-1 @3xl:col-span-1">
               <select
                 aria-label={t('lines.product')}
+                data-field={`lines.${i}.product_id`}
                 className="h-10 rounded-xl border bg-card pr-9 pl-3.5 text-sm shadow-xs"
                 value={line?.product_id ?? ''}
                 onChange={(e) => pickProduct(i, e.target.value)}
@@ -115,6 +119,7 @@ export function LinesEditor({
                 {incomeTypes && (
                   <select
                     aria-label={t('wht.incomeType')}
+                    data-field={`lines.${i}.wht_income_type`}
                     className="h-7 max-w-60 rounded-lg border bg-card [background-position:right_0.4rem_center] py-0 pr-7 pl-2 text-xs"
                     value={line?.wht_income_type ?? ''}
                     onChange={(e) => pickIncomeType(i, e.target.value)}

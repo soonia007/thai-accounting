@@ -48,6 +48,8 @@ import { AttachmentsPanel } from '@/features/attachments/AttachmentsPanel'
 import { useWhtIncomeTypes } from '@/features/wht/queries'
 import { WhtCertificateActions } from '@/features/wht/WhtCertificateActions'
 import { WhtConditionSelect } from '@/features/wht/WhtConditionSelect'
+import { useFocusTracking } from '@/features/posting/focus'
+import { PreviewFocusProvider } from '@/features/posting/PreviewFocusProvider'
 import { settlementWht } from './payment-math'
 
 const blankForm = (): DocForm => ({
@@ -96,13 +98,15 @@ export function DocumentPage({ direction }: { direction: Direction }) {
   }
 
   return (
-    <DocumentEditor
-      key={id ?? `${type}-${fromId ?? 'new'}`}
-      direction={direction}
-      type={type}
-      id={id}
-      initial={initial}
-    />
+    <PreviewFocusProvider>
+      <DocumentEditor
+        key={id ?? `${type}-${fromId ?? 'new'}`}
+        direction={direction}
+        type={type}
+        id={id}
+        initial={initial}
+      />
+    </PreviewFocusProvider>
   )
 }
 
@@ -173,6 +177,7 @@ function DocumentEditor({
   }, [moneyAccounts, type, getValues, setValue])
 
   const totals = useMemo(() => formTotals(form, co), [form, co])
+  const focusTracking = useFocusTracking()
   const incomeTypes = useWhtIncomeTypes(!isSale)
   // D8: on a cash purchase the payer may bear the tax (pay_always grosses it up)
   const borne = type === 'cash_purchase' && form.wht_condition !== 'withhold'
@@ -251,6 +256,7 @@ function DocumentEditor({
         <form
           className="flex min-w-0 flex-col gap-4"
           noValidate
+          {...focusTracking}
           onSubmit={handleSubmit(() => save.mutate({ post: false }))}
         >
           {save.error && (
@@ -259,7 +265,7 @@ function DocumentEditor({
             </Alert>
           )}
 
-          <Card className="py-4">
+          <Card className="py-4 transition-shadow duration-300 focus-within:ring-2 focus-within:ring-finora-mint/60">
             <CardContent className="grid gap-4 px-4 sm:grid-cols-2">
               <div className="grid gap-2 sm:col-span-2">
                 <Label htmlFor="d-contact">{isSale ? t('docs.customer') : t('docs.vendor')}</Label>
@@ -365,7 +371,7 @@ function DocumentEditor({
             </CardContent>
           </Card>
 
-          <Card className="py-4">
+          <Card className="py-4 transition-shadow duration-300 focus-within:ring-2 focus-within:ring-finora-mint/60">
             <CardContent className="px-4">
               <LinesEditor
                 control={control}

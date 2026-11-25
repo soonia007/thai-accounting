@@ -3,10 +3,10 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  /* Brand palette (owner-approved) */
-  --brand: #2690cf; /* Mermaid Blue — brand accents, focus, active state */
-  --brand-strong: #0b56a4; /* Deep Blue — filled buttons, links (7.3:1 on white) */
-  --brand-mid: #3e77bb; /* Mid Blue — secondary accents, charts */
+  /* Brand palette = FINORA logo colours (owner, 2026-11-25) */
+  --brand: #1488ee; /* Sky — accents, focus ring, active state, charts */
+  --brand-strong: #0443a8; /* Cobalt — filled buttons, links, wordmark (8.9:1 on white) */
+  --brand-mid: #015bd3; /* Blue — secondary accents, chart series */
 
   /* Logo colours (owner's FINORA mark) — marketing pages, illustrations */
   --finora-cobalt: #0443a8;
@@ -15,35 +15,38 @@
   --finora-mint: #2de2c5;
   --finora-mint-soft: #57ddce;
   --finora-obsidian: #071022;
+  /* Chart series — validated with dataviz validate_palette.js (light, CVD-safe) */
+  --chart-1: #1488ee;
+  --chart-2: #0fa594;
 
   --radius: 0.875rem;
-  --background: #f5f8fa;
-  --foreground: #231f20;
+  --background: #f4f7fc;
+  --foreground: #0e1a33;
   --card: #ffffff;
-  --card-foreground: #231f20;
+  --card-foreground: #0e1a33;
   --popover: #ffffff;
-  --popover-foreground: #231f20;
+  --popover-foreground: #0e1a33;
   --primary: var(--brand-strong);
   --primary-foreground: #ffffff;
-  --secondary: #eef3f8;
-  --secondary-foreground: #0b56a4;
-  --muted: #eef2f6;
-  --muted-foreground: #657786;
-  --accent: #e9f3fa;
-  --accent-foreground: #0b56a4;
+  --secondary: #edf3fc;
+  --secondary-foreground: #0443a8;
+  --muted: #edf1f8;
+  --muted-foreground: #5b6b82;
+  --accent: #e7f2fd;
+  --accent-foreground: #0443a8;
   --destructive: #d64545;
   --destructive-foreground: #b3302f;
   --success: #2e9d68;
   --success-foreground: #1d6e48;
   --warning: #e5a52b;
   --warning-foreground: #8a5a00;
-  --border: #dce5ec;
-  --input: #dce5ec;
+  --border: #dbe4f0;
+  --input: #dbe4f0;
   --ring: var(--brand);
 
-  --shadow-card: 0 1px 2px rgb(35 31 32 / 0.04), 0 1px 3px rgb(35 31 32 / 0.04);
-  --shadow-raised: 0 4px 12px -2px rgb(35 31 32 / 0.06), 0 2px 4px -2px rgb(35 31 32 / 0.04);
-  --shadow-overlay: 0 24px 48px -12px rgb(35 31 32 / 0.18), 0 8px 16px -8px rgb(35 31 32 / 0.08);
+  --shadow-card: 0 1px 2px rgb(14 26 51 / 0.04), 0 1px 3px rgb(14 26 51 / 0.05);
+  --shadow-raised: 0 6px 16px -4px rgb(4 67 168 / 0.1), 0 2px 4px -2px rgb(14 26 51 / 0.05);
+  --shadow-overlay: 0 24px 48px -12px rgb(4 67 168 / 0.2), 0 8px 16px -8px rgb(14 26 51 / 0.08);
 }
 
 @theme inline {
@@ -85,6 +88,8 @@
   --color-finora-mint: var(--finora-mint);
   --color-finora-mint-soft: var(--finora-mint-soft);
   --color-finora-obsidian: var(--finora-obsidian);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
@@ -120,7 +125,7 @@
   /* Native selects: consistent chevron + focus ring (used for fast, accessible pickers on mobile) */
   select {
     appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' stroke='%23657786' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' viewBox='0 0 24 24'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' stroke='%235b6b82' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' viewBox='0 0 24 24'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right 0.7rem center;
     background-size: 1rem;
@@ -201,6 +206,27 @@
     transition: none;
   }
   .animate-float {
+    animation: none;
+  }
+}
+
+/* Micro-interactions: a changed amount glows mint, then settles */
+@keyframes value-flash {
+  0% {
+    background-color: color-mix(in srgb, var(--finora-mint) 45%, transparent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--finora-mint) 45%, transparent);
+  }
+  100% {
+    background-color: transparent;
+    box-shadow: 0 0 0 3px transparent;
+  }
+}
+.animate-value-flash {
+  border-radius: 4px;
+  animation: value-flash 0.9s ease-out;
+}
+@media (prefers-reduced-motion: reduce) {
+  .animate-value-flash {
     animation: none;
   }
 }

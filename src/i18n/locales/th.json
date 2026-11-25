@@ -870,5 +870,36 @@
       "posted": "ใบแจ้งหนี้ที่ลงบัญชีแล้ว พร้อมปุ่ม PDF และลิงก์แชร์",
       "mobile": "FINORA บนมือถือ"
     }
+  },
+  "focus": {
+    "editing": "กำลังแก้: {{field}}",
+    "onLine": "{{field}} (บรรทัด {{line}})",
+    "affects": "มีผลกับ: {{accounts}}",
+    "affectsLater": "มีผลตอนรับ/จ่ายชำระ",
+    "noEffect": "ไม่กระทบการลงบัญชี",
+    "lineBadge": "กำลังแก้บรรทัด {{line}}",
+    "fields": {
+      "qty": "จำนวน",
+      "unit_price": "ราคาต่อหน่วย",
+      "discount": "ส่วนลด",
+      "product_id": "สินค้า/บริการ",
+      "description": "คำอธิบาย",
+      "vat_type": "ประเภท VAT",
+      "item_kind": "บริการ/สินค้า",
+      "wht_rate": "อัตราหัก ณ ที่จ่าย",
+      "wht_income_type": "ประเภทเงินได้",
+      "account_id": "บัญชี",
+      "alloc_amount": "ยอดที่ชำระ",
+      "alloc_wht": "ภาษีหัก ณ ที่จ่าย",
+      "contact_id": "คู่ค้า",
+      "ref_document_id": "เอกสารอ้างอิง",
+      "vat_mode": "วิธีคิด VAT",
+      "payment_account_id": "บัญชีเงินสด/ธนาคาร",
+      "wht_condition": "ผู้จ่ายภาษี",
+      "doc_date": "วันที่",
+      "due_date": "วันครบกำหนด",
+      "reference": "เลขที่อ้างอิง",
+      "notes": "หมายเหตุ"
+    }
   }
 }

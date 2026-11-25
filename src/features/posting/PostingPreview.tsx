@@ -24,6 +24,7 @@ import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { AnimatedMoney } from '@/components/AnimatedNumber'
 import { formatMoney } from '@/lib/format'
 import { cn } from '@/lib/utils'
 import {
@@ -33,6 +34,7 @@ import {
   type SimLine,
   type SimResult,
 } from './simulation'
+import { isAffected, usePreviewFocus, type PreviewFocus } from './focus'
 
 const ICONS: Record<string, LucideIcon> = {
   user: User,
@@ -84,8 +86,17 @@ function BalanceBadge({ lines }: { lines: SimLine[] }) {
   )
 }
 
+/** Row look when a form field is focused: affected lines glow mint, others step back. */
+const focusRow = (focus: PreviewFocus | null, l: SimLine) =>
+  !focus || focus.sources.length === 0
+    ? ''
+    : isAffected(focus, l.sources)
+      ? 'bg-finora-mint/12 shadow-[inset_3px_0_0_var(--finora-mint)]'
+      : 'opacity-45'
+
 function PlainSummary({ lines }: { lines: SimLine[] }) {
   const { t, i18n } = useTranslation()
+  const focus = usePreviewFocus()
   return (
     <ul className="flex flex-col gap-2 rounded-xl bg-accent/60 p-3.5 text-sm leading-snug">
       {lines.map((l) => {
@@ -94,7 +105,13 @@ function PlainSummary({ lines }: { lines: SimLine[] }) {
         const amount = formatMoney(Number(l.debit) || Number(l.credit), i18n.language)
         const name = i18n.language === 'en' ? l.name_en || l.name_th : l.name_th
         return (
-          <li key={`${l.account_id}-${l.debit > 0 ? 'd' : 'c'}`} className="flex gap-2">
+          <li
+            key={`${l.account_id}-${l.debit > 0 ? 'd' : 'c'}`}
+            className={cn(
+              '-mx-1.5 flex gap-2 rounded-lg px-1.5 py-0.5 transition-all duration-300',
+              focusRow(focus, l),
+            )}
+          >
             <Icon className="mt-0.5 size-4 shrink-0 text-brand" aria-hidden />
             <span>{t(key, { amount, name, defaultValue: `${name} ${amount}` })}</span>
           </li>
@@ -106,6 +123,7 @@ function PlainSummary({ lines }: { lines: SimLine[] }) {
 
 function JournalView({ lines }: { lines: SimLine[] }) {
   const { t, i18n } = useTranslation()
+  const focus = usePreviewFocus()
   return (
     <table className="w-full table-fixed text-sm">
       <thead>
@@ -119,27 +137,30 @@ function JournalView({ lines }: { lines: SimLine[] }) {
         {lines.map((l) => (
           <tr
             key={`${l.account_id}-${l.debit > 0 ? 'd' : 'c'}`}
-            className="border-b border-border/60"
+            className={cn(
+              'border-b border-border/60 transition-all duration-300',
+              focusRow(focus, l),
+            )}
           >
             <td className={cn('truncate py-2', l.credit > 0 && 'pl-5')}>
               <span className="font-mono text-xs text-muted-foreground">{l.code}</span>{' '}
               {i18n.language === 'en' ? l.name_en || l.name_th : l.name_th}
             </td>
             <td className="py-2 text-right tabular-nums">
-              {l.debit > 0 ? formatMoney(l.debit, i18n.language) : ''}
+              {l.debit > 0 ? <AnimatedMoney value={Number(l.debit)} lang={i18n.language} /> : ''}
             </td>
             <td className="py-2 text-right tabular-nums">
-              {l.credit > 0 ? formatMoney(l.credit, i18n.language) : ''}
+              {l.credit > 0 ? <AnimatedMoney value={Number(l.credit)} lang={i18n.language} /> : ''}
             </td>
           </tr>
         ))}
         <tr className="font-semibold">
           <td className="py-2">{t('preview.total')}</td>
           <td className="py-2 text-right tabular-nums">
-            {formatMoney(sum(lines, 'debit'), i18n.language)}
+            <AnimatedMoney value={sum(lines, 'debit')} lang={i18n.language} />
           </td>
           <td className="py-2 text-right tabular-nums">
-            {formatMoney(sum(lines, 'credit'), i18n.language)}
+            <AnimatedMoney value={sum(lines, 'credit')} lang={i18n.language} />
           </td>
         </tr>
       </tbody>
@@ -205,6 +226,42 @@ function TAccountView({ lines, wide }: { lines: SimLine[]; wide?: boolean }) {
   )
 }
 
+/** "Editing: Unit price (line 1) → affects Revenue, Output VAT, Receivables" */
+function FocusCallout({ result }: { result: SimResult | undefined }) {
+  const { t, i18n } = useTranslation()
+  const focus = usePreviewFocus()
+  if (!focus) return null
+  const field = t(`focus.fields.${focus.field}`, { defaultValue: focus.field })
+  const label = focus.line ? t('focus.onLine', { field, line: focus.line }) : field
+  const all = result?.ok ? [...result.lines, ...(result.next?.lines ?? [])] : []
+  const names = [
+    ...new Set(
+      all
+        .filter((l) => isAffected(focus, l.sources))
+        .map((l) => (i18n.language === 'en' ? l.name_en || l.name_th : l.name_th)),
+    ),
+  ]
+  return (
+    <div
+      role="status"
+      aria-live="polite"
+      className="animate-overlay-in mb-3 flex items-start gap-2.5 rounded-xl border border-finora-mint/60 bg-finora-mint/10 p-3 text-sm"
+    >
+      <span className="mt-1 size-2 shrink-0 animate-pulse rounded-full bg-finora-mint" />
+      <span className="min-w-0">
+        <span className="font-semibold">{t('focus.editing', { field: label })}</span>
+        <span className="block text-muted-foreground">
+          {focus.sources.length === 0
+            ? t('focus.noEffect')
+            : names.length > 0
+              ? t('focus.affects', { accounts: names.join(', ') })
+              : t('focus.affectsLater')}
+        </span>
+      </span>
+    </div>
+  )
+}
+
 function PanelBody({
   result,
   isFetching,
@@ -220,7 +277,12 @@ function PanelBody({
   const [view, setView] = useView()
 
   if (!result) {
-    return <p className="text-sm text-muted-foreground">{t('preview.fillForm')}</p>
+    return (
+      <>
+        <FocusCallout result={result} />
+        <p className="text-sm text-muted-foreground">{t('preview.fillForm')}</p>
+      </>
+    )
   }
   if (!result.ok) {
     return (
@@ -263,6 +325,7 @@ function PanelBody({
 
   return (
     <div className={cn('flex flex-col gap-3', isFetching && 'opacity-70 transition-opacity')}>
+      <FocusCallout result={result} />
       {result.lines.length === 0 ? (
         <p className="text-sm text-muted-foreground">
           {noPostingNote ? t('preview.noPosting') : t('preview.fillForm')}
@@ -434,8 +497,13 @@ export function PostingPreviewSheet({ result, isFetching, noPosting }: Props) {
   const { t, i18n } = useTranslation()
   const [open, setOpen] = useState(false)
   const [full, setFull] = useState(false)
-  const headline =
-    result?.ok && result.lines.length > 0
+  const focus = usePreviewFocus()
+  const focusField = focus ? t(`focus.fields.${focus.field}`, { defaultValue: focus.field }) : ''
+  const headline = focus
+    ? t('focus.editing', {
+        field: focus.line ? t('focus.onLine', { field: focusField, line: focus.line }) : focusField,
+      })
+    : result?.ok && result.lines.length > 0
       ? (() => {
           const first = result.lines[0]
           const name = i18n.language === 'en' ? first.name_en || first.name_th : first.name_th

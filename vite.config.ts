@@ -18,8 +18,8 @@ export default defineConfig({
         short_name: 'FINORA',
         description: 'FINORA — ระบบบัญชีออนไลน์ / Online accounting',
         lang: 'th',
-        theme_color: '#0B56A4',
-        background_color: '#F5F8FA',
+        theme_color: '#0443A8',
+        background_color: '#F4F7FC',
         display: 'standalone',
         start_url: '/',
         icons: [
