@@ -39,3 +39,6 @@ supabase/.env
 # Playwright
 test-results
 playwright-report
+
+# Cloudflare
+.wrangler

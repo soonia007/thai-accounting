@@ -65,11 +65,17 @@ git pull && npx supabase db push
 ## 6. ทดสอบหลังขึ้น
 
 - เปิด URL → หน้าโปรโมท → สมัครสมาชิก → ยืนยันอีเมล → สร้างบริษัท → ออกใบแจ้งหนี้ → เปิดรายงานงบทดลอง
-- รีเฟรชหน้าลึก ๆ เช่น `/reports/vat` ต้องไม่ขึ้น 404 (มี `public/_redirects` จัดการให้แล้ว)
+- รีเฟรชหน้าลึก ๆ เช่น `/reports/vat` ต้องไม่ขึ้น 404 (มี `wrangler.jsonc` จัดการให้แล้ว)
 - อัปโหลดโลโก้บริษัทใน ตั้งค่า → ข้อมูลบริษัท
 
 ## สิ่งที่ repo เตรียมไว้ให้แล้ว
 
-- `public/_redirects` — ทุกเส้นทางกลับไปที่ `index.html` (SPA)
+- `wrangler.jsonc` — ตั้งค่า Cloudflare Workers: ใช้โฟลเดอร์ `dist` และทุกเส้นทางที่ไม่ใช่ไฟล์กลับไปที่ `index.html` (SPA)
+  (ไม่ใช้ `_redirects` แบบ `/* /index.html 200` เพราะ Workers ถือว่าเป็น loop และ deploy ไม่ผ่าน)
 - `public/_headers` — header ความปลอดภัย + cache ไฟล์ใน `/assets` ระยะยาว, `sw.js` ไม่ cache
 - `.node-version` — Node 22
+
+## ถ้าโปรเจกต์ Cloudflare เป็น Workers (URL `*.workers.dev`)
+
+- Build command: `npm run build` · Deploy command: `npx wrangler deploy` (ใช้ `wrangler.jsonc` ใน repo)
+- ตัวแปร `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`, `NODE_VERSION` ใส่ที่ **Settings → Build → Variables and secrets** (ค่าตอน build) แล้ว redeploy

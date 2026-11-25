@@ -1,0 +1,11 @@
+// Cloudflare Workers (static assets). `npm run build` → dist/, served as a single-page app:
+// any path that is not a file (e.g. /reports/vat) returns index.html. See docs/DEPLOY.md.
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "thai-accounting",
+  "compatibility_date": "2026-11-23",
+  "assets": {
+    "directory": "./dist",
+    "not_found_handling": "single-page-application",
+  },
+}
