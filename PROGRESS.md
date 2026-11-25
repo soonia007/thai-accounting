@@ -380,3 +380,14 @@ esourcesin` — ถ้า terminal หา `docker` ไม่เจอให้�
 - คู่มือขึ้น TestFlight / Play Internal testing + เช็กลิสต์เครื่องจริง: [docs/RELEASE.md](docs/RELEASE.md)
 - **ยังไม่ได้ทำ (ต้องใช้เครื่องเจ้าของ):** build .aab/.ipa จริงและทดสอบบนเครื่องจริง — ไม่มี Android SDK/Xcode ในสภาพแวดล้อมนี้ (`cap sync android` ผ่าน)
 - ถัดไป: Phase 2 (M10 รายงาน VAT) — เริ่มได้เมื่อ M0–M9 ผ่านครบ + e2e เขียว ✔
+
+## M10 — รายงาน VAT (2026-11-25)
+
+- migration `20261125110000_m10_vat_reports.sql` (เพิ่มอย่างเดียว): `document_lines.vat_claimable`, ใบกำกับผู้ขาย + เดือนที่ใช้สิทธิ์ ใน `documents`/`payments`, ตาราง `vat_returns`, RPC `set_vat_claim`, `report_vat_sales`, `report_vat_purchases`, `vat_return_summary`, `file_vat_return`, `unfile_vat_return`; posting engine (build_journal/save_document/document_payload) รองรับภาษีซื้อขอคืนไม่ได้
+- ตัดสินใจ D11–D13 (docs/DECISIONS.md)
+- หน้า `/reports/vat`: เดือนภาษี + 3 แท็บ (ภาษีขาย / ภาษีซื้อ / สรุป ภ.พ.30 บรรทัด 1–12) + ส่งออก PDF/Excel + บันทึกการยื่น (ขอคืน/ยกไป) + ข้อความ "ร่างช่วยยื่น" (spec Phase 2 §0.4)
+- ฟอร์มซื้อ: ช่องใบกำกับภาษีผู้ขาย/เดือนที่ใช้สิทธิ์ + ติ๊ก "ภาษีซื้อขอคืนไม่ได้" ต่อบรรทัด (แผงจำลองแสดงผลทันที); เอกสารซื้อ/การจ่ายชำระที่บันทึกแล้วแก้ข้อมูลใบกำกับได้
+- PDF/Excel ของทุกรายงานแสดงวันที่ตาม พ.ศ./ค.ศ. ของบริษัท
+- ทดสอบ: pgTAP `11_m10_vat.test.sql` (21 tests เทียบตัวเลขคำนวณมือ) รวม 290; Vitest 144+; ในเบราว์เซอร์: ซื้อเงินสดภาษีต้องห้าม → รายงาน 3 แท็บ → PDF
+- ค้าง/ทราบไว้: ยังไม่ล็อกการ post/void เอกสารในเดือนที่ยื่นแล้ว (จะทำใน M15 ปิดงวด) — ตอนนี้หน้า ภ.พ.30 แจ้งเตือนถ้าตัวเลขเปลี่ยนหลังยื่น
+- ถัดไป: M11 รายงานภาษีหัก ณ ที่จ่าย

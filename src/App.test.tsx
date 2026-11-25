@@ -32,6 +32,7 @@ const ACME: MyCompany = {
   vat_rate: 7,
   date_era: 'BE',
   logo_path: null,
+  tax_id: null,
   role: 'owner',
 }
 
@@ -103,9 +104,9 @@ describe('App routing', () => {
       'href',
       '/reports/trial-balance',
     )
-    const vat = screen.getByText('ภาษีขาย-ซื้อ (ภ.พ.30)').closest('[aria-disabled]')
-    expect(vat).toHaveAttribute('aria-disabled', 'true')
-    expect(vat).toHaveTextContent('M10')
+    const wht = screen.getByText('ภาษีหัก ณ ที่จ่าย (ภ.ง.ด.)').closest('[aria-disabled]')
+    expect(wht).toHaveAttribute('aria-disabled', 'true')
+    expect(wht).toHaveTextContent('M11')
     expect(screen.getByText('ภาษีหัก ณ ที่จ่าย (ภ.ง.ด.)').closest('[aria-disabled]')).toHaveTextContent(
       'M11',
     )

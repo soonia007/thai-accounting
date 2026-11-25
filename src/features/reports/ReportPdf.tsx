@@ -4,7 +4,7 @@ import { C } from '@/features/pdf/colors'
 import { PDF_FONT_FAMILY } from '@/features/pdf/fonts'
 import { BrandBar, PdfFooter } from '@/features/pdf/theme'
 import type { ReportTable } from './model'
-import type { ReportMeta } from './export-xlsx'
+import { showDate, type ReportMeta } from './export-xlsx'
 
 const s = StyleSheet.create({
   page: {
@@ -122,7 +122,7 @@ export function ReportPdf({
                       fontWeight: kind === 'normal' ? 400 : 700,
                     }}
                   >
-                    {cellText(r.cells[i], kind === 'normal')}
+                    {cellText(showDate(r.cells[i], meta.era), kind === 'normal')}
                   </Text>
                 ))
               )}

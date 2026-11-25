@@ -145,6 +145,17 @@ export function LinesEditor({
                     ))}
                   </select>
                 )}
+                {vatRegistered && !isSale && line?.vat_type === 'standard' && (
+                  <label className="flex items-center gap-1" title={t('lines.vatNotClaimableHint')}>
+                    <input
+                      type="checkbox"
+                      data-field={`lines.${i}.vat_claimable`}
+                      checked={line?.vat_claimable === false}
+                      onChange={(e) => setValue(`lines.${i}.vat_claimable`, !e.target.checked)}
+                    />
+                    {t('lines.vatNotClaimable')}
+                  </label>
+                )}
               </div>
             </div>
             <label className="flex flex-col gap-1 text-xs text-muted-foreground @3xl:block">

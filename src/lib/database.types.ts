@@ -574,6 +574,7 @@ export type Database = {
           qty: number
           unit_price: number
           vat_amount: number
+          vat_claimable: boolean
           vat_type: Database['public']['Enums']['product_vat_type']
           wht_amount: number
           wht_income_type: string | null
@@ -594,6 +595,7 @@ export type Database = {
           qty?: number
           unit_price?: number
           vat_amount?: number
+          vat_claimable?: boolean
           vat_type?: Database['public']['Enums']['product_vat_type']
           wht_amount?: number
           wht_income_type?: string | null
@@ -613,6 +615,7 @@ export type Database = {
           qty?: number
           unit_price?: number
           vat_amount?: number
+          vat_claimable?: boolean
           vat_type?: Database['public']['Enums']['product_vat_type']
           wht_amount?: number
           wht_income_type?: string | null
@@ -718,9 +721,12 @@ export type Database = {
           source: Database['public']['Enums']['document_source']
           status: Database['public']['Enums']['document_status']
           subtotal: number
+          tax_invoice_date: string | null
+          tax_invoice_no: string | null
           total: number
           type: Database['public']['Enums']['document_type']
           updated_at: string
+          vat_claim_month: string | null
           vat_deferred_total: number
           vat_mode: Database['public']['Enums']['vat_mode']
           vat_rate: number
@@ -751,9 +757,12 @@ export type Database = {
           source?: Database['public']['Enums']['document_source']
           status?: Database['public']['Enums']['document_status']
           subtotal?: number
+          tax_invoice_date?: string | null
+          tax_invoice_no?: string | null
           total?: number
           type: Database['public']['Enums']['document_type']
           updated_at?: string
+          vat_claim_month?: string | null
           vat_deferred_total?: number
           vat_mode?: Database['public']['Enums']['vat_mode']
           vat_rate?: number
@@ -783,9 +792,12 @@ export type Database = {
           source?: Database['public']['Enums']['document_source']
           status?: Database['public']['Enums']['document_status']
           subtotal?: number
+          tax_invoice_date?: string | null
+          tax_invoice_no?: string | null
           total?: number
           type?: Database['public']['Enums']['document_type']
           updated_at?: string
+          vat_claim_month?: string | null
           vat_deferred_total?: number
           vat_mode?: Database['public']['Enums']['vat_mode']
           vat_rate?: number
@@ -1147,7 +1159,10 @@ export type Database = {
           posted_by: string | null
           reference: string | null
           status: Database['public']['Enums']['document_status']
+          tax_invoice_date: string | null
+          tax_invoice_no: string | null
           updated_at: string
+          vat_claim_month: string | null
           void_reason: string | null
           voided_at: string | null
           voided_by: string | null
@@ -1171,7 +1186,10 @@ export type Database = {
           posted_by?: string | null
           reference?: string | null
           status?: Database['public']['Enums']['document_status']
+          tax_invoice_date?: string | null
+          tax_invoice_no?: string | null
           updated_at?: string
+          vat_claim_month?: string | null
           void_reason?: string | null
           voided_at?: string | null
           voided_by?: string | null
@@ -1194,7 +1212,10 @@ export type Database = {
           posted_by?: string | null
           reference?: string | null
           status?: Database['public']['Enums']['document_status']
+          tax_invoice_date?: string | null
+          tax_invoice_no?: string | null
           updated_at?: string
+          vat_claim_month?: string | null
           void_reason?: string | null
           voided_at?: string | null
           voided_by?: string | null
@@ -1336,6 +1357,57 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      vat_returns: {
+        Row: {
+          carried_in: number
+          company_id: string
+          excess_choice: string | null
+          filed_at: string
+          filed_by: string | null
+          id: string
+          input_vat: number
+          month: string
+          net: number
+          output_vat: number
+          summary: NonNullable<Json>
+        }
+        ComputedFields: never
+        Insert: {
+          carried_in?: number
+          company_id: string
+          excess_choice?: string | null
+          filed_at?: string
+          filed_by?: string | null
+          id?: string
+          input_vat: number
+          month: string
+          net: number
+          output_vat: number
+          summary: NonNullable<Json>
+        }
+        Update: {
+          carried_in?: number
+          company_id?: string
+          excess_choice?: string | null
+          filed_at?: string
+          filed_by?: string | null
+          id?: string
+          input_vat?: number
+          month?: string
+          net?: number
+          output_vat?: number
+          summary?: NonNullable<Json>
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'vat_returns_company_id_fkey'
+            columns: ['company_id']
+            isOneToOne: false
+            referencedRelation: 'companies'
+            referencedColumns: ['id']
+          },
+        ]
       }
       wht_certificate_lines: {
         Row: {
@@ -1548,6 +1620,15 @@ export type Database = {
       }
       dashboard_summary: { Args: { p_company_id: string; p_months?: number }; Returns: Json }
       document_balance: { Args: { p_document_id: string }; Returns: Json }
+      file_vat_return: {
+        Args: {
+          p_carried_in?: number
+          p_company_id: string
+          p_excess_choice?: string
+          p_month: string
+        }
+        Returns: undefined
+      }
       get_shared_document: { Args: { p_token: string }; Returns: Json }
       is_valid_thai_tax_id: { Args: { p_tax_id: string }; Returns: boolean }
       list_documents: {
@@ -1638,12 +1719,25 @@ export type Database = {
         Args: { p_company_ids: string[]; p_from: string; p_to: string }
         Returns: Json
       }
+      report_vat_purchases: { Args: { p_company_id: string; p_month: string }; Returns: Json }
+      report_vat_sales: { Args: { p_company_id: string; p_month: string }; Returns: Json }
       revoke_share_link: { Args: { p_token: string }; Returns: undefined }
       save_document: { Args: { p_doc: Json }; Returns: string }
       save_manual_journal: { Args: { p_payload: Json }; Returns: string }
       save_payment: { Args: { p_pay: Json }; Returns: string }
+      set_vat_claim: {
+        Args: {
+          p_claim_month: string
+          p_document_id: string
+          p_payment_id: string
+          p_tax_invoice_date: string
+          p_tax_invoice_no: string
+        }
+        Returns: undefined
+      }
       simulate_manual_journal: { Args: { p_payload: Json }; Returns: Json }
       simulate_posting: { Args: { p_kind: string; p_payload: Json }; Returns: Json }
+      unfile_vat_return: { Args: { p_company_id: string; p_month: string }; Returns: undefined }
       update_member_role: {
         Args: {
           p_company_id: string
@@ -1652,6 +1746,7 @@ export type Database = {
         }
         Returns: undefined
       }
+      vat_return_summary: { Args: { p_company_id: string; p_month: string }; Returns: Json }
       void_document: { Args: { p_document_id: string; p_reason: string }; Returns: undefined }
       void_manual_journal: { Args: { p_id: string; p_reason: string }; Returns: undefined }
       void_payment: { Args: { p_payment_id: string; p_reason: string }; Returns: undefined }

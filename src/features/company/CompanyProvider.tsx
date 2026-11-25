@@ -5,7 +5,7 @@ import { supabase, type MemberRole, type Tables } from '@/lib/supabase'
 
 export type MyCompany = Pick<
   Tables<'companies'>,
-  'id' | 'name' | 'vat_registered' | 'vat_rate' | 'date_era' | 'logo_path'
+  'id' | 'name' | 'tax_id' | 'vat_registered' | 'vat_rate' | 'date_era' | 'logo_path'
 > & {
   role: MemberRole
 }
@@ -26,7 +26,9 @@ export const myCompaniesKey = (userId: string | undefined) => ['my-companies', u
 async function fetchMyCompanies(userId: string): Promise<MyCompany[]> {
   const { data, error } = await supabase
     .from('company_members')
-    .select('role, companies!inner (id, name, vat_registered, vat_rate, date_era, logo_path)')
+    .select(
+      'role, companies!inner (id, name, tax_id, vat_registered, vat_rate, date_era, logo_path)',
+    )
     .eq('user_id', userId)
   if (error) throw error
   return data

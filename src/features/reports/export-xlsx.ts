@@ -1,4 +1,5 @@
 import { downloadBlob } from '@/features/pdf/render'
+import { formatDate, type DateEra } from '@/lib/format'
 import type { ReportTable } from './model'
 
 export interface ReportMeta {
@@ -10,7 +11,14 @@ export interface ReportMeta {
   /** file name without extension */
   fileBase: string
   lang: string
+  /** how dates (YYYY-MM-DD cells) are shown */
+  era?: DateEra
 }
+
+const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/
+/** Date cells are stored ISO; exports show them like the screen does. */
+export const showDate = (v: string | number | null, era: DateEra = 'BE') =>
+  typeof v === 'string' && ISO_DATE.test(v) ? formatDate(v, era) : v
 
 const COBALT = 'FF0443A8'
 const ACCENT = 'FFE8F2FD'
@@ -53,7 +61,7 @@ export async function exportXlsx(table: ReportTable, meta: ReportMeta): Promise<
   ws.views = [{ state: 'frozen', ySplit: header.number }]
 
   for (const r of table.rows) {
-    const row = ws.addRow(r.cells.map((c) => c ?? null))
+    const row = ws.addRow(r.cells.map((c) => showDate(c, meta.era) ?? null))
     row.eachCell({ includeEmpty: true }, (cell, i) => {
       const col = table.columns[i - 1]
       if (!col) return

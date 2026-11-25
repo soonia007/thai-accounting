@@ -26,6 +26,9 @@ export function focusForField(name: string): PreviewFocus | null {
     if (['qty', 'unit_price', 'discount', 'product_id'].includes(f))
       return { field: f, line: n, sources: AMOUNT }
     if (['vat_type', 'item_kind'].includes(f)) return { field: f, line: n, sources: TAX }
+    // D11: non-claimable VAT moves from the VAT account into the line's expense
+    if (f === 'vat_claimable')
+      return { field: f, line: n, sources: ['line', 'vat', 'vat_deferred'] }
     if (['wht_rate', 'wht_income_type'].includes(f)) return { field: f, line: n, sources: WHT }
     if (f === 'account_id') return { field: f, line: n, sources: ['line', 'returns'] }
     return { field: f, line: n, sources: [] }

@@ -58,6 +58,7 @@ export function ReportPage({
     period,
     fileBase: `${name}-${mode === 'period' ? `${scope.from}_${scope.to}` : scope.to}`,
     lang: i18n.language,
+    era,
   }
 
   const run = async (kind: 'pdf' | 'xlsx') => {

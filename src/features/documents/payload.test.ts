@@ -11,11 +11,32 @@ const form = (over: Partial<DocForm> = {}): DocForm => ({
   wht_condition: 'withhold',
   reference: '',
   notes: '',
+  tax_invoice_no: '',
+  tax_invoice_date: '',
+  vat_claim_month: '',
   lines: [{ ...emptyLine(), description: 'ออกแบบ', unit_price: '10,000', wht_rate: '3' }],
   ...over,
 })
 
 describe('toPayload', () => {
+  it('sends the vendor tax invoice and claim month on purchases only (D12)', () => {
+    const f = form({
+      tax_invoice_no: ' TX-1 ',
+      tax_invoice_date: '2026-11-20',
+      vat_claim_month: '2026-12',
+    })
+    expect(toPayload('co', 'bill', f, vatCo)).toMatchObject({
+      tax_invoice_no: 'TX-1',
+      tax_invoice_date: '2026-11-20',
+      vat_claim_month: '2026-12-01',
+    })
+    expect(toPayload('co', 'invoice', f, vatCo)).not.toHaveProperty('tax_invoice_no')
+  })
+  it('passes the per-line claimable flag (D11)', () => {
+    const f = form({ lines: [{ ...emptyLine(), unit_price: '100', vat_claimable: false }] })
+    expect(toPayload('co', 'cash_purchase', f, vatCo).lines[0].vat_claimable).toBe(false)
+  })
+
   it('normalizes numbers and empty strings', () => {
     const p = toPayload('co', 'invoice', form(), vatCo)
     expect(p).toMatchObject({

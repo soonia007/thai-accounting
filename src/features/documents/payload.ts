@@ -20,6 +20,8 @@ export interface LineForm {
   /** D6: income type for the 50 ทวิ certificate (purchases) */
   wht_income_type: string
   account_id: string
+  /** D11 (purchases): false = VAT on this line cannot be claimed; it becomes part of the cost */
+  vat_claimable: boolean
 }
 
 export interface DocForm {
@@ -33,6 +35,10 @@ export interface DocForm {
   notes: string
   /** D8: who bears the WHT (cash purchases; bills choose it when paying) */
   wht_condition: WhtCondition
+  /** D12 (purchases): the vendor's tax invoice and the month its VAT is claimed in (YYYY-MM) */
+  tax_invoice_no: string
+  tax_invoice_date: string
+  vat_claim_month: string
   lines: LineForm[]
 }
 
@@ -47,6 +53,7 @@ export const emptyLine = (): LineForm => ({
   wht_rate: '0',
   wht_income_type: '',
   account_id: '',
+  vat_claimable: true,
 })
 
 const num = (v: string) => {
@@ -86,6 +93,13 @@ export function toPayload(
     reference: orNull(form.reference),
     notes: orNull(form.notes),
     wht_condition: form.wht_condition,
+    ...(type === 'bill' || type === 'cash_purchase'
+      ? {
+          tax_invoice_no: orNull(form.tax_invoice_no.trim()),
+          tax_invoice_date: orNull(form.tax_invoice_date),
+          vat_claim_month: form.vat_claim_month ? `${form.vat_claim_month}-01` : null,
+        }
+      : {}),
     lines: form.lines
       .filter((l) => l.description.trim() || l.product_id || num(l.unit_price) > 0)
       .map((l) => ({
@@ -99,6 +113,7 @@ export function toPayload(
         wht_rate: num(l.wht_rate),
         wht_income_type: num(l.wht_rate) > 0 ? orNull(l.wht_income_type) : null,
         account_id: orNull(l.account_id),
+        vat_claimable: l.vat_claimable,
       })),
   }
 }
@@ -139,6 +154,9 @@ export function docToForm(doc: DocumentRow, lines: DocumentLine[]): DocForm {
     reference: doc.reference ?? '',
     notes: doc.notes ?? '',
     wht_condition: doc.wht_condition,
+    tax_invoice_no: doc.tax_invoice_no ?? '',
+    tax_invoice_date: doc.tax_invoice_date ?? '',
+    vat_claim_month: doc.vat_claim_month ? doc.vat_claim_month.slice(0, 7) : '',
     lines: lines.map((l) => ({
       product_id: l.product_id ?? '',
       description: l.description,
@@ -150,6 +168,7 @@ export function docToForm(doc: DocumentRow, lines: DocumentLine[]): DocForm {
       wht_rate: str(l.wht_rate),
       wht_income_type: l.wht_income_type ?? '',
       account_id: l.account_id ?? '',
+      vat_claimable: l.vat_claimable,
     })),
   }
 }

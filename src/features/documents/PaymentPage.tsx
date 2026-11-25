@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next'
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { ActionGroup, PageHeader } from '@/components/PageHeader'
+import { VatClaimCard } from '@/features/vat/VatClaimCard'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -413,6 +414,9 @@ function PostedPayment({
     wht_amount: number
     void_reason: string | null
     reference: string | null
+    tax_invoice_no: string | null
+    tax_invoice_date: string | null
+    vat_claim_month: string | null
   }
 }) {
   const { t, i18n } = useTranslation()
@@ -468,6 +472,19 @@ function PostedPayment({
           </>
         }
       />
+      {direction === 'purchases' && current!.vat_registered && (
+        <VatClaimCard
+          target={{ paymentId: payment.id }}
+          taxInvoiceNo={payment.tax_invoice_no}
+          taxInvoiceDate={payment.tax_invoice_date}
+          claimMonth={payment.vat_claim_month}
+          fallbackNo={payment.reference}
+          fallbackDate={payment.pay_date}
+          era={current!.date_era}
+          canEdit={canEditMasterData(current?.role) && payment.status !== 'voided'}
+          onSaved={() => void queryClient.invalidateQueries({ queryKey: ['payment', payment.id] })}
+        />
+      )}
       {payment.status === 'voided' && (
         <Alert>
           <AlertDescription>

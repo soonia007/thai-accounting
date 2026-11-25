@@ -25,7 +25,8 @@
     "showInactive": "Show inactive",
     "noResults": "Nothing matches your search",
     "countOf": "Showing {{shown}} of {{total}}",
-    "close": "Close"
+    "close": "Close",
+    "edit": "Edit"
   },
   "hello": {
     "title": "Hello 👋",
@@ -270,7 +271,16 @@
     "DB_OUTDATED": "The database is not up to date — run npm run db:migrate in the project folder, then refresh this page",
     "REPORT_NO_COMPANY": "Select at least one company",
     "REPORT_PERIOD_INVALID": "Invalid date range",
-    "REPORT_TOO_LARGE": "Too many entries for this period — pick one account or a shorter date range"
+    "REPORT_TOO_LARGE": "Too many entries for this period — pick one account or a shorter date range",
+    "VAT_CLAIM_MONTH_INVALID": "The claim month must be between the tax invoice month and 6 months later",
+    "VAT_MONTH_FILED": "The PP.30 for this month is recorded as filed — undo the filing record first",
+    "VAT_CLAIM_TARGET": "This is not a purchase with input VAT",
+    "DOCUMENT_VOIDED": "This document has been voided",
+    "VAT_MONTH_IN_FUTURE": "A future month cannot be filed yet",
+    "VAT_PREVIOUS_MONTH_NOT_FILED": "Record the previous month’s filing first",
+    "VAT_LATER_MONTH_FILED": "A later month is already recorded as filed — undo that one first",
+    "VAT_EXCESS_CHOICE_REQUIRED": "Choose refund or carry forward",
+    "VAT_CARRIED_IN_INVALID": "An opening carry-forward is only allowed on the first filing and cannot be negative"
   },
   "contacts": {
     "title": "Contacts",
@@ -621,7 +631,9 @@
       "standard": "Standard VAT",
       "zero": "VAT 0%",
       "exempt": "VAT exempt"
-    }
+    },
+    "vatNotClaimable": "VAT not claimable",
+    "vatNotClaimableHint": "e.g. entertainment or an incomplete tax invoice — this line’s VAT becomes part of the expense"
   },
   "totals": {
     "subtotal": "Subtotal",
@@ -1211,6 +1223,79 @@
       "receivable": "Receivables",
       "payable": "Payables",
       "kind": "Type"
+    }
+  },
+  "vat": {
+    "title": "VAT reports",
+    "info": "Monthly output VAT, input VAT and PP.30 summary in the Revenue Department layout",
+    "taxMonth": "Tax month",
+    "prevMonth": "Previous month",
+    "nextMonth": "Next month",
+    "tabs": {
+      "sales": "Output VAT report",
+      "purchases": "Input VAT report",
+      "pp30": "PP.30 summary"
+    },
+    "disclaimer": "This is a draft to help you file — not a filing. Check it against the actual documents before submitting to the Revenue Department.",
+    "notRegistered": "This company is not VAT registered, so it has no output or input VAT.",
+    "salesNote": "Output VAT follows the tax point: goods = invoice date, services = payment date (receipt/tax invoice) · voided documents are excluded.",
+    "purchasesNote": "Input VAT is listed by its claim month — non-claimable VAT is not here (it was booked as an expense).",
+    "empty": "Nothing in this month",
+    "labels": {
+      "seq": "No.",
+      "date": "Date",
+      "invoiceNo": "Tax invoice no.",
+      "buyer": "Buyer / customer",
+      "seller": "Seller / supplier",
+      "taxId": "Tax ID",
+      "branch": "Establishment",
+      "headOffice": "Head office",
+      "branchNo": "Branch",
+      "base": "Value of goods/services",
+      "vat": "VAT",
+      "ourDoc": "Our document",
+      "late": "claimed late",
+      "total": "Total"
+    },
+    "pp30": {
+      "item": "Item",
+      "amount": "Amount",
+      "l1": "Sales this month",
+      "l2": "Less zero-rated sales",
+      "l3": "Less exempt sales",
+      "l4": "Taxable sales",
+      "l5": "Output VAT this month",
+      "l6": "Purchases eligible for input VAT this month",
+      "l7": "Input VAT this month",
+      "l8": "VAT payable this month (5 − 7)",
+      "l9": "VAT overpaid this month (7 − 5)",
+      "l10": "Overpaid VAT brought forward",
+      "l11": "Net VAT payable",
+      "l12": "Net VAT overpaid"
+    },
+    "fileTitle": "Record PP.30 filing",
+    "fileInfo": "After filing with the Revenue Department, record it here — the month’s figures are kept and any overpayment you carry forward is used next month.",
+    "openingCarry": "Overpaid VAT brought forward from before FINORA (if any)",
+    "resultPay": "VAT payable {{amount}}",
+    "resultExcessPending": "Overpaid {{amount}} — choose what to do",
+    "resultExcess": {
+      "refund": "Overpaid {{amount}} (cash refund)",
+      "carry": "Overpaid {{amount}} (carried forward)"
+    },
+    "choice": {
+      "carry": "Carry forward to next month",
+      "refund": "Request a cash refund"
+    },
+    "markFiled": "Mark as filed",
+    "filed": "Filed on {{date}} — {{result}}",
+    "unfile": "Undo filing record",
+    "outdated": "The books changed after this filing was recorded — an additional filing may be needed.",
+    "claim": {
+      "title": "Supplier tax invoice",
+      "invoiceNo": "Tax invoice no.",
+      "invoiceDate": "Tax invoice date",
+      "month": "Input VAT claim month",
+      "hint": "Used in the input VAT report · empty = the reference and document date · a claim may be moved up to 6 months after the invoice month"
     }
   }
 }

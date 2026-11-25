@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next'
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { ActionGroup, PageHeader } from '@/components/PageHeader'
+import { VatClaimCard } from '@/features/vat/VatClaimCard'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -63,6 +64,9 @@ const blankForm = (): DocForm => ({
   reference: '',
   notes: '',
   wht_condition: 'withhold',
+  tax_invoice_no: '',
+  tax_invoice_date: '',
+  vat_claim_month: '',
   lines: [emptyLine()],
 })
 
@@ -363,6 +367,32 @@ function DocumentEditor({
                 <Label htmlFor="d-ref-text">{t('docs.reference')}</Label>
                 <Input id="d-ref-text" {...register('reference')} />
               </div>
+              {!isSale && vatRegistered && (
+                <fieldset className="grid gap-3 rounded-xl border border-dashed p-3 sm:col-span-2 sm:grid-cols-3">
+                  <legend className="px-1 text-xs font-semibold text-muted-foreground">
+                    {t('vat.claim.title')}
+                  </legend>
+                  <div className="grid gap-2">
+                    <Label htmlFor="d-ti-no">{t('vat.claim.invoiceNo')}</Label>
+                    <Input
+                      id="d-ti-no"
+                      placeholder={form.reference || undefined}
+                      {...register('tax_invoice_no')}
+                    />
+                  </div>
+                  <div className="grid gap-2">
+                    <Label htmlFor="d-ti-date">{t('vat.claim.invoiceDate')}</Label>
+                    <Input id="d-ti-date" type="date" {...register('tax_invoice_date')} />
+                  </div>
+                  <div className="grid gap-2">
+                    <Label htmlFor="d-claim-month">{t('vat.claim.month')}</Label>
+                    <Input id="d-claim-month" type="month" {...register('vat_claim_month')} />
+                  </div>
+                  <p className="text-xs text-muted-foreground sm:col-span-3">
+                    {t('vat.claim.hint')}
+                  </p>
+                </fieldset>
+              )}
             </CardContent>
           </Card>
 
@@ -591,6 +621,21 @@ function PostedDocument({ direction, id }: { direction: Direction; id: string })
         }
       />
 
+      {(type === 'bill' || type === 'cash_purchase') &&
+        current!.vat_registered &&
+        Number(doc.vat_total) > 0 && (
+          <VatClaimCard
+            target={{ documentId: doc.id }}
+            taxInvoiceNo={doc.tax_invoice_no}
+            taxInvoiceDate={doc.tax_invoice_date}
+            claimMonth={doc.vat_claim_month}
+            fallbackNo={doc.reference}
+            fallbackDate={doc.doc_date}
+            era={era}
+            canEdit={canCreate && doc.status !== 'voided'}
+            onSaved={() => void queryClient.invalidateQueries({ queryKey: ['document', id] })}
+          />
+        )}
       {doc.status === 'voided' && (
         <Alert>
           <AlertDescription>
