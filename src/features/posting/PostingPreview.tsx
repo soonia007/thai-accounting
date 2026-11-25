@@ -25,6 +25,7 @@ import { Link } from 'react-router-dom'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { AnimatedMoney } from '@/components/AnimatedNumber'
+import { dbErrorMessage } from '@/features/accounts/errors'
 import { formatMoney } from '@/lib/format'
 import { cn } from '@/lib/utils'
 import {
@@ -267,15 +268,24 @@ function PanelBody({
   isFetching,
   compact,
   noPostingNote,
+  error,
 }: {
   result: SimResult | undefined
   isFetching: boolean
   compact?: boolean
   noPostingNote?: boolean
+  error?: unknown
 }) {
   const { t } = useTranslation()
   const [view, setView] = useView()
 
+  if (!result && error) {
+    return (
+      <div className="rounded-xl border border-destructive/30 bg-destructive/5 p-3.5 text-sm text-destructive-foreground">
+        {dbErrorMessage(t, error)}
+      </div>
+    )
+  }
   if (!result) {
     return (
       <>
@@ -359,6 +369,8 @@ interface Props {
   isFetching: boolean
   /** e.g. quotation / purchase order: show "this document does not post" */
   noPosting?: boolean
+  /** the preview request itself failed (e.g. database not up to date) */
+  error?: unknown
 }
 
 function ExpandButton({ onClick }: { onClick: () => void }) {
@@ -385,6 +397,7 @@ function FullscreenPreview({
   result,
   isFetching,
   noPosting,
+  error,
   onClose,
 }: Props & { onClose: () => void }) {
   const { t } = useTranslation()
@@ -423,7 +436,9 @@ function FullscreenPreview({
 
   let content: React.ReactNode
   if (!result || !result.ok || (result.lines.length === 0 && !result.next?.lines.length)) {
-    content = <PanelBody result={result} isFetching={isFetching} noPostingNote={noPosting} />
+    content = (
+      <PanelBody result={result} isFetching={isFetching} noPostingNote={noPosting} error={error} />
+    )
   } else {
     content = (
       <div className={cn('flex flex-col gap-8', isFetching && 'opacity-70 transition-opacity')}>
@@ -470,6 +485,7 @@ export function PostingPreview({
   isFetching,
   noPosting,
   inline,
+  error,
 }: Props & {
   /** Show on every screen size, not sticky (e.g. the sandbox page) */
   inline?: boolean
@@ -494,12 +510,13 @@ export function PostingPreview({
         </h2>
         <ExpandButton onClick={() => setFull(true)} />
       </div>
-      <PanelBody result={result} isFetching={isFetching} noPostingNote={noPosting} />
+      <PanelBody result={result} isFetching={isFetching} noPostingNote={noPosting} error={error} />
       {full && (
         <FullscreenPreview
           result={result}
           isFetching={isFetching}
           noPosting={noPosting}
+          error={error}
           onClose={() => setFull(false)}
         />
       )}
@@ -508,7 +525,7 @@ export function PostingPreview({
 }
 
 /** Mobile: collapsible bar above the bottom navigation, with a full-screen view. */
-export function PostingPreviewSheet({ result, isFetching, noPosting }: Props) {
+export function PostingPreviewSheet({ result, isFetching, noPosting, error }: Props) {
   const { t, i18n } = useTranslation()
   const [open, setOpen] = useState(false)
   const [full, setFull] = useState(false)
@@ -552,7 +569,12 @@ export function PostingPreviewSheet({ result, isFetching, noPosting }: Props) {
       </div>
       {open && (
         <div className="max-h-[55dvh] overflow-y-auto px-4 pb-4">
-          <PanelBody result={result} isFetching={isFetching} noPostingNote={noPosting} />
+          <PanelBody
+            result={result}
+            isFetching={isFetching}
+            noPostingNote={noPosting}
+            error={error}
+          />
         </div>
       )}
       {full && (
@@ -560,6 +582,7 @@ export function PostingPreviewSheet({ result, isFetching, noPosting }: Props) {
           result={result}
           isFetching={isFetching}
           noPosting={noPosting}
+          error={error}
           onClose={() => setFull(false)}
         />
       )}

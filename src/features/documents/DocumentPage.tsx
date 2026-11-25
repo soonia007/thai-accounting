@@ -443,12 +443,14 @@ function DocumentEditor({
         <PostingPreview
           result={sim.data}
           isFetching={sim.isFetching}
+          error={sim.error}
           noPosting={isNonPosting(type)}
         />
       </div>
       <PostingPreviewSheet
         result={sim.data}
         isFetching={sim.isFetching}
+        error={sim.error}
         noPosting={isNonPosting(type)}
       />
     </div>

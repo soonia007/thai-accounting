@@ -266,7 +266,8 @@
     "JOURNAL_LINE_ONE_SIDE": "Each line is either a debit or a credit",
     "JOURNAL_TOO_FEW_LINES": "A journal entry needs at least 2 lines",
     "MANUAL_JOURNAL_CONTROL_ACCOUNT": "Receivable/payable control accounts can only be posted through documents (invoices, credit notes, bills, payments)",
-    "ACCOUNT_NOT_FOUND": "Account not found"
+    "ACCOUNT_NOT_FOUND": "Account not found",
+    "DB_OUTDATED": "The database is not up to date — run npm run db:migrate in the project folder, then refresh this page"
   },
   "contacts": {
     "title": "Contacts",

@@ -351,7 +351,7 @@ export function SandboxPage() {
               })}
             </p>
           )}
-          <PostingPreview result={sim.data} isFetching={sim.isFetching} inline />
+          <PostingPreview result={sim.data} isFetching={sim.isFetching} error={sim.error} inline />
           <p className="text-xs text-muted-foreground">{t('sandbox.disclaimer')}</p>
         </div>
       </div>

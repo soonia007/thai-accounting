@@ -393,9 +393,9 @@ function PaymentEditor({ direction }: { direction: Direction }) {
             </div>
           )}
         </div>
-        <PostingPreview result={sim.data} isFetching={sim.isFetching} />
+        <PostingPreview result={sim.data} isFetching={sim.isFetching} error={sim.error} />
       </div>
-      <PostingPreviewSheet result={sim.data} isFetching={sim.isFetching} />
+      <PostingPreviewSheet result={sim.data} isFetching={sim.isFetching} error={sim.error} />
     </div>
   )
 }

@@ -67,7 +67,7 @@ cd thai-accounting
 # 3) ดึงโค้ดล่าสุด (ถ้ามีคนแก้จากที่อื่น) และติดตั้ง package ที่เพิ่มมา
 git pull
 npm install
-# 4) เปิดฐานข้อมูล — จะ apply migration ใหม่ให้อัตโนมัติถ้ามี
+# 4) เปิดฐานข้อมูล + อัปเดตโครงสร้างฐานข้อมูลเป็นเวอร์ชันล่าสุด (migration ใหม่จาก git pull)
 npm run db:start
 # 5) เปิดหน้าเว็บ
 npm run dev
@@ -101,7 +101,8 @@ npm run db:stop
 | คำสั่ง                                              | ใช้ทำอะไร                                            |
 | ------------------------------------------------- | --------------------------------------------------- |
 | `npm run dev`                                     | เปิดหน้าเว็บ http://localhost:5173                     |
-| `npm run db:start` / `npm run db:stop`            | เปิด / ปิดฐานข้อมูล (ข้อมูลไม่หาย)                         |
+| `npm run db:start` / `npm run db:stop`            | เปิด (+ อัปเดตโครงสร้างให้ล่าสุด) / ปิดฐานข้อมูล (ข้อมูลไม่หาย) |
+| `npm run db:migrate`                              | อัปเดตโครงสร้างฐานข้อมูลอย่างเดียว (ข้อมูลไม่หาย) — ใช้หลัง `git pull` |
 | `npm run db:status`                               | ดู URL และ key ของฐานข้อมูล                            |
 | `npm run db:reset`                                | ⚠️ **ล้างข้อมูลทั้งหมด** แล้วสร้างฐานข้อมูลใหม่จาก migrations |
 | `npm run db:test`                                 | รันเทสต์ฐานข้อมูล (pgTAP)                               |
@@ -119,6 +120,7 @@ npm run db:stop
 | `db:start` ขึ้น error เกี่ยวกับ Docker / `docker daemon is not running` | ยังไม่ได้เปิด Docker Desktop หรือยังเปิดไม่เสร็จ — เปิดแล้วรอ "Engine running" แล้วรันใหม่                   |
 | `db:start` บอก port ถูกใช้อยู่ (เช่น 54321, 54322)                      | มี Supabase ของโปรเจกต์อื่นเปิดค้าง — `npx supabase stop --all` แล้วรันใหม่                             |
 | `db:start` ค้าง/ล้มเหลวแปลกๆ หลังเปิดเครื่อง                             | `npm run db:stop` แล้ว `npm run db:start` อีกครั้ง                                                 |
+| ขึ้น "ฐานข้อมูลยังไม่ได้อัปเดต", "Could not find the function …" หรือ "Bucket not found" | ฐานข้อมูลเก่ากว่าโค้ด — รัน `npm run db:migrate` แล้วรีเฟรชหน้าเว็บ |
 | หน้าเว็บขาว / ล็อกอินไม่ได้ / ขึ้น "Failed to fetch"                       | ฐานข้อมูลยังไม่เปิด (`npm run db:start`) หรือ `.env.local` ไม่ถูกต้อง — แก้แล้วหยุด `npm run dev` แล้วรันใหม่ |
 | port 5173 ถูกใช้อยู่                                                   | Vite จะเปลี่ยนไปใช้ port อื่นให้เอง (ดูลิงก์ใน terminal)                                                |
 | หลัง `git pull` แล้ว error เรื่อง package                              | รัน `npm install` อีกครั้ง                                                                         |
