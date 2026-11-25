@@ -24,7 +24,14 @@ vi.mock('./lib/supabase', () => ({
   supabase: { rpc: async () => ({ data: [], error: null }), auth: { signOut: async () => {} } },
 }))
 
-const ACME: MyCompany = { id: 'c1', name: 'ACME จำกัด', vat_registered: true, role: 'owner' }
+const ACME: MyCompany = {
+  id: 'c1',
+  name: 'ACME จำกัด',
+  vat_registered: true,
+  vat_rate: 7,
+  date_era: 'BE',
+  role: 'owner',
+}
 
 function renderApp(path = '/') {
   return render(

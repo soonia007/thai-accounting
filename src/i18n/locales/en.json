@@ -243,7 +243,8 @@
     "JOURNAL_GROUP_ACCOUNT": "Cannot post to a group account",
     "JOURNAL_INACTIVE_ACCOUNT": "Cannot post to an inactive account",
     "IMMUTABLE_RECORD": "Journal entries cannot be changed. Use a reversing entry instead.",
-    "ACCOUNT_HAS_ENTRIES": "This account has entries; its type and group flag can no longer change"
+    "ACCOUNT_HAS_ENTRIES": "This account has entries; its type and group flag can no longer change",
+    "SHARE_NOT_POSTED": "Only posted documents can be shared"
   },
   "contacts": {
     "title": "Contacts",
@@ -381,5 +382,247 @@
       "accountNotFound": "Account code not found",
       "accountInvalid": "Account cannot be used (wrong type, group, or inactive)"
     }
+  },
+  "preview": {
+    "title": "Posting preview",
+    "balanced": "Balanced ✓",
+    "unbalanced": "Not balanced (off by {{diff}})",
+    "account": "Account",
+    "debit": "Debit",
+    "credit": "Credit",
+    "total": "Total",
+    "opening": "Opening",
+    "thisDoc": "This document",
+    "closing": "Closing",
+    "view": "Accounting view",
+    "journal": "Journal",
+    "tAccount": "T-accounts",
+    "fillForm": "Fill in the form to see how it will be recorded",
+    "noPosting": "This document does not post to the books",
+    "cannotPreview": "Can't preview yet. Check the form.",
+    "hide": "Hide",
+    "next": {
+      "payment_received": "Next: when paid in full",
+      "payment_paid": "Next: when you pay in full",
+      "invoice": "Next: when converted to an invoice",
+      "bill": "Next: when recorded as a bill"
+    },
+    "posted": "Recorded journal"
+  },
+  "plain": {
+    "role": {
+      "AR": {
+        "dr": "Customer owes you {{amount}} more",
+        "cr": "Receivables down {{amount}}"
+      },
+      "AP": {
+        "dr": "You owe suppliers {{amount}} less",
+        "cr": "You owe suppliers {{amount}} more"
+      },
+      "OUTPUT_VAT": {
+        "dr": "Output VAT due to the Revenue Department down {{amount}}",
+        "cr": "Output VAT due to the Revenue Department up {{amount}}"
+      },
+      "OUTPUT_VAT_DEFERRED": {
+        "dr": "Deferred output VAT down {{amount}} (now due, or credited)",
+        "cr": "Output VAT of {{amount}} becomes due when the customer pays"
+      },
+      "INPUT_VAT": {
+        "dr": "Claimable input VAT up {{amount}}",
+        "cr": "Input VAT down {{amount}}"
+      },
+      "INPUT_VAT_DEFERRED": {
+        "dr": "Input VAT of {{amount}} becomes claimable when you pay",
+        "cr": "Deferred input VAT down {{amount}} (now claimable)"
+      },
+      "WHT_RECEIVABLE": {
+        "dr": "Tax withheld from you {{amount}} (a credit on your income tax)",
+        "cr": "Withholding tax receivable down {{amount}}"
+      },
+      "WHT_PAYABLE": {
+        "dr": "Withholding tax to remit down {{amount}}",
+        "cr": "Withholding tax of {{amount}} to remit to the Revenue Department"
+      },
+      "SALES_REVENUE": {
+        "dr": "Revenue down {{amount}}",
+        "cr": "Revenue up {{amount}} (profit up by this much)"
+      },
+      "SALES_RETURNS": {
+        "dr": "Returns and allowances up {{amount}} (net revenue down)",
+        "cr": "Returns and allowances down {{amount}}"
+      },
+      "DEFAULT_EXPENSE": {
+        "dr": "Expenses up {{amount}} (profit down)",
+        "cr": "Expenses down {{amount}}"
+      },
+      "BANK": {
+        "dr": "Money into {{name}} {{amount}}",
+        "cr": "Money out of {{name}} {{amount}}"
+      },
+      "CASH": {
+        "dr": "Cash received {{amount}}",
+        "cr": "Cash paid {{amount}}"
+      }
+    },
+    "money": {
+      "dr": "Money into {{name}} {{amount}}",
+      "cr": "Money out of {{name}} {{amount}}"
+    },
+    "type": {
+      "asset": {
+        "dr": "{{name}} up {{amount}}",
+        "cr": "{{name}} down {{amount}}"
+      },
+      "liability": {
+        "dr": "{{name}} down {{amount}}",
+        "cr": "{{name}} up {{amount}}"
+      },
+      "equity": {
+        "dr": "{{name}} down {{amount}}",
+        "cr": "{{name}} up {{amount}}"
+      },
+      "revenue": {
+        "dr": "{{name}} down {{amount}}",
+        "cr": "Revenue ({{name}}) up {{amount}}"
+      },
+      "expense": {
+        "dr": "Expense ({{name}}) up {{amount}} (profit down)",
+        "cr": "{{name}} down {{amount}}"
+      }
+    }
+  },
+  "docTypes": {
+    "quotation": "Quotation",
+    "invoice": "Invoice",
+    "cash_sale": "Cash sale",
+    "credit_note": "Credit note",
+    "debit_note": "Debit note",
+    "purchase_order": "Purchase order",
+    "bill": "Bill (on credit)",
+    "cash_purchase": "Cash purchase"
+  },
+  "docStatus": {
+    "draft": "Draft",
+    "posted": "Posted",
+    "voided": "Voided"
+  },
+  "payStatus": {
+    "unpaid": "Unpaid",
+    "partial": "Partly paid",
+    "paid": "Paid",
+    "overdue": "Overdue"
+  },
+  "docs": {
+    "create": "New document",
+    "newPayment": {
+      "sales": "Receive payment",
+      "purchases": "Make payment"
+    },
+    "paymentsTab": {
+      "sales": "Receipts",
+      "purchases": "Payments"
+    },
+    "paymentTitle": {
+      "sales": "Receipt",
+      "purchases": "Payment voucher"
+    },
+    "search": "Search number or name",
+    "empty": "No documents yet",
+    "due": "due",
+    "outstanding": "Outstanding",
+    "customer": "Customer",
+    "vendor": "Vendor",
+    "chooseContact": "— Choose —",
+    "addContactFirst": "No contacts yet. Add one on the Contacts page.",
+    "date": "Date",
+    "dueDate": "Due date",
+    "validUntil": "Valid until",
+    "receivedInto": "Received into",
+    "paidFrom": "Paid from",
+    "refInvoice": "Referenced invoice",
+    "chooseInvoice": "— Choose an invoice —",
+    "vatMode": "VAT",
+    "vatModes": {
+      "exclusive": "Prices exclude VAT",
+      "inclusive": "Prices include VAT",
+      "none": "No VAT"
+    },
+    "reference": "Reference",
+    "notes": "Notes",
+    "saveDraft": "Save draft",
+    "post": "Post",
+    "issue": "Issue",
+    "confirmPost": "Post this document? Posted documents cannot be edited (you can void them).",
+    "confirmIssue": "Issue this document? It gets a number and can no longer be edited.",
+    "deleteDraft": "Delete draft",
+    "confirmDeleteDraft": "Delete this draft?",
+    "convertTo": "Create {{type}}",
+    "receivePayment": "Receive payment",
+    "makePayment": "Make payment",
+    "void": "Void",
+    "voidTitle": "Void {{number}}",
+    "voidHelp": "A reversing entry is posted on the original date. The document stays, marked as voided.",
+    "voidReason": "Reason",
+    "voidedNote": "This document was voided. Reason: {{reason}}",
+    "payDate": "Payment date",
+    "openDocuments": "Open documents",
+    "chooseContactFirst": "Choose a contact to see their open documents",
+    "nothingOpen": "Nothing outstanding",
+    "settle": "Amount settled",
+    "whtAmount": "Withholding tax",
+    "moneyIn": "Net received",
+    "moneyOut": "Net paid"
+  },
+  "lines": {
+    "item": "Item",
+    "product": "Product or service",
+    "noProduct": "— Type a description —",
+    "description": "Description",
+    "qty": "Qty",
+    "price": "Unit price",
+    "discount": "Discount",
+    "wht": "WHT",
+    "amount": "Amount",
+    "add": "Add line",
+    "remove": "Remove line",
+    "vat": {
+      "standard": "Standard VAT",
+      "zero": "VAT 0%",
+      "exempt": "VAT exempt"
+    }
+  },
+  "totals": {
+    "subtotal": "Subtotal",
+    "vat": "VAT",
+    "total": "Total",
+    "whtNow": "Withholding tax",
+    "whtLater": "Withholding tax (on payment)",
+    "net": "Net",
+    "netExpected": "Expected net settlement"
+  },
+  "share": {
+    "pdf": "PDF",
+    "original": "Original",
+    "copy": "Copy",
+    "link": "Share link",
+    "email": "Email",
+    "linkTitle": "Share link for {{number}}",
+    "linkHelp": "Anyone with the link can view and download the PDF without signing in. You can revoke it anytime.",
+    "copyLink": "Copy link",
+    "revoke": "Revoke",
+    "noLinks": "No links yet",
+    "createLink": "Create link",
+    "invalid": "This link is invalid, expired, or revoked.",
+    "emailBody": "Dear customer,\n\n{{company}} sends you {{title}} (PDF attached).\nView online: {{link}}\n\nThank you"
+  },
+  "companySettings": {
+    "title": "Company details",
+    "printed": "Printed on your documents",
+    "nameEn": "English name",
+    "dateEra": "Year format",
+    "eraBE": "Buddhist Era (B.E.)",
+    "eraCE": "Common Era (A.D.)",
+    "saved": "Saved",
+    "vatNote": "Changing VAT registration or the VAT rate affects tax reports; it will come with period locking (M15)."
   }
 }

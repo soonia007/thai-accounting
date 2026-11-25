@@ -1,0 +1,654 @@
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { ArrowLeft, Ban, CircleDollarSign, Repeat } from 'lucide-react'
+import { useEffect, useMemo, useState } from 'react'
+import { useForm, useWatch } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
+import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { dbErrorMessage } from '@/features/accounts/errors'
+import { useCompany } from '@/features/company/CompanyProvider'
+import { DocumentShareActions } from '@/features/pdf/DocumentShareActions'
+import {
+  PostedJournal,
+  PostingPreview,
+  PostingPreviewSheet,
+} from '@/features/posting/PostingPreview'
+import { usePostedJournal, usePostingSimulation } from '@/features/posting/simulation'
+import { addDays, formatDate, formatMoney, todayBangkok } from '@/lib/format'
+import { canEditFinanceSetup, canEditMasterData } from '@/lib/permissions'
+import { supabase } from '@/lib/supabase'
+import {
+  CONVERSIONS,
+  basePath,
+  directionOf,
+  isCashType,
+  isCreditType,
+  isNonPosting,
+  isNoteType,
+  type DocType,
+  type Direction,
+} from './doc-types'
+import { PaymentStatusBadge, StatusBadge } from './DocumentsListPage'
+import { LinesEditor } from './LinesEditor'
+import { docToForm, emptyLine, formTotals, toPayload, type DocForm } from './payload'
+import {
+  documentsKey,
+  useContacts,
+  useDocument,
+  useDocumentBalance,
+  useMoneyAccounts,
+  useProducts,
+} from './queries'
+import { VoidDialog } from './VoidDialog'
+
+const blankForm = (): DocForm => ({
+  contact_id: '',
+  doc_date: todayBangkok(),
+  due_date: '',
+  vat_mode: 'exclusive',
+  payment_account_id: '',
+  ref_document_id: '',
+  reference: '',
+  notes: '',
+  lines: [emptyLine()],
+})
+
+export function DocumentPage({ direction }: { direction: Direction }) {
+  const { id, type: newType } = useParams()
+  const [params] = useSearchParams()
+  const fromId = params.get('from') ?? undefined
+  const existing = useDocument(id)
+  const source = useDocument(id ? undefined : fromId)
+
+  if (id && existing.isLoading) return <p className="text-sm text-muted-foreground">…</p>
+  if (id && !existing.data) return <p className="text-sm text-muted-foreground">404</p>
+  if (!id && fromId && source.isLoading) return <p className="text-sm text-muted-foreground">…</p>
+
+  const doc = existing.data?.doc
+  const type = (doc?.type ?? newType) as DocType
+  if (doc && doc.status !== 'draft') {
+    return <PostedDocument direction={direction} id={doc.id} />
+  }
+
+  let initial: DocForm = blankForm()
+  if (existing.data) initial = docToForm(existing.data.doc, existing.data.lines)
+  else if (source.data) {
+    const s = source.data
+    initial = {
+      ...docToForm(s.doc, s.lines),
+      doc_date: todayBangkok(),
+      due_date: '',
+      // notes reference the invoice; conversions keep a link to the quotation / PO
+      ref_document_id: s.doc.id,
+      payment_account_id: '',
+    }
+    if (isNoteType(type)) initial.lines = [emptyLine()]
+  }
+
+  return (
+    <DocumentEditor
+      key={id ?? `${type}-${fromId ?? 'new'}`}
+      direction={direction}
+      type={type}
+      id={id}
+      initial={initial}
+    />
+  )
+}
+
+function DocumentEditor({
+  direction,
+  type,
+  id,
+  initial,
+}: {
+  direction: Direction
+  type: DocType
+  id: string | undefined
+  initial: DocForm
+}) {
+  const { t, i18n } = useTranslation()
+  const navigate = useNavigate()
+  const queryClient = useQueryClient()
+  const { current } = useCompany()
+  const companyId = current!.id
+  const vatRegistered = current!.vat_registered
+  const vatRate = Number(current!.vat_rate)
+  const co = useMemo(
+    () => ({ vat_registered: vatRegistered, vat_rate: vatRate }),
+    [vatRegistered, vatRate],
+  )
+  const canPost = canEditMasterData(current?.role)
+  const isSale = direction === 'sales'
+
+  const { data: contacts = [] } = useContacts(companyId)
+  const { data: products = [] } = useProducts(companyId)
+  const { data: moneyAccounts = [] } = useMoneyAccounts(companyId)
+
+  const { register, control, setValue, getValues, handleSubmit } = useForm<DocForm>({
+    defaultValues: initial,
+  })
+  const form = useWatch({ control }) as DocForm
+
+  // Notes: invoices of the chosen customer that can be referenced
+  const refOptions = useQuery({
+    queryKey: ['note-refs', companyId, form.contact_id],
+    enabled: isNoteType(type) && !!form.contact_id,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('documents')
+        .select('id, number, doc_date, total')
+        .eq('company_id', companyId)
+        .eq('contact_id', form.contact_id)
+        .eq('status', 'posted')
+        .in('type', ['invoice', 'debit_note'])
+        .order('doc_date', { ascending: false })
+      if (error) throw error
+      return data
+    },
+  })
+
+  // Default due date from the customer's credit term
+  const contact = contacts.find((c) => c.id === form.contact_id)
+  useEffect(() => {
+    if (!isCreditType(type) || !contact || getValues('due_date')) return
+    setValue('due_date', addDays(getValues('doc_date'), contact.credit_term_days))
+  }, [contact, type, getValues, setValue])
+
+  // Default money account for cash documents
+  useEffect(() => {
+    if (isCashType(type) && !getValues('payment_account_id') && moneyAccounts[0]) {
+      setValue('payment_account_id', moneyAccounts[0].id)
+    }
+  }, [moneyAccounts, type, getValues, setValue])
+
+  const totals = useMemo(() => formTotals(form, co), [form, co])
+  const payload = useMemo(
+    () => toPayload(companyId, type, form, co, id),
+    [form, companyId, type, co, id],
+  )
+  const sim = usePostingSimulation('document', payload.lines.length ? payload : null)
+
+  const save = useMutation({
+    mutationFn: async ({ post }: { post: boolean }) => {
+      const { data: savedId, error } = await supabase.rpc('save_document', {
+        p_doc: toPayload(companyId, type, getValues(), co, id),
+      })
+      if (error) throw error
+      if (post) {
+        const { error: pErr } = await supabase.rpc('post_document', { p_document_id: savedId })
+        if (pErr) {
+          // keep the saved draft; send the user to it with the error visible
+          if (!id) navigate(`${basePath(direction)}/${savedId}`, { replace: true })
+          throw pErr
+        }
+      }
+      return savedId
+    },
+    onSuccess: async (savedId) => {
+      await queryClient.invalidateQueries({ queryKey: documentsKey(companyId) })
+      await queryClient.invalidateQueries({ queryKey: ['document', savedId] })
+      navigate(`${basePath(direction)}/${savedId}`, { replace: true })
+    },
+  })
+
+  const remove = useMutation({
+    mutationFn: async () => {
+      const { error } = await supabase.from('documents').delete().eq('id', id!)
+      if (error) throw error
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: documentsKey(companyId) })
+      navigate(basePath(direction))
+    },
+  })
+
+  const contactOptions = contacts.filter(
+    (c) =>
+      (c.is_active || c.id === form.contact_id) &&
+      (c.contact_type === 'both' || c.contact_type === (isSale ? 'customer' : 'vendor')),
+  )
+
+  return (
+    <div className="flex flex-col gap-4 pb-28 md:pb-0">
+      <div className="flex items-center gap-2">
+        <Button variant="ghost" size="icon" asChild aria-label={t('common.back')}>
+          <Link to={`${basePath(direction)}?tab=${type}`}>
+            <ArrowLeft className="size-4" />
+          </Link>
+        </Button>
+        <h1 className="text-xl font-semibold">
+          {t(`docTypes.${type}`)}
+          <span className="ml-2 text-sm font-normal text-muted-foreground">
+            {t('docStatus.draft')}
+          </span>
+        </h1>
+      </div>
+
+      <div className="grid gap-4 md:grid-cols-[minmax(0,1fr)_22rem] lg:grid-cols-[minmax(0,1fr)_26rem]">
+        <form
+          className="flex min-w-0 flex-col gap-4"
+          noValidate
+          onSubmit={handleSubmit(() => save.mutate({ post: false }))}
+        >
+          {save.error && (
+            <Alert variant="destructive">
+              <AlertDescription>{dbErrorMessage(t, save.error)}</AlertDescription>
+            </Alert>
+          )}
+
+          <Card className="py-4">
+            <CardContent className="grid gap-4 px-4 sm:grid-cols-2">
+              <div className="grid gap-2 sm:col-span-2">
+                <Label htmlFor="d-contact">{isSale ? t('docs.customer') : t('docs.vendor')}</Label>
+                <select
+                  id="d-contact"
+                  className="h-9 rounded-md border bg-background px-3 text-sm"
+                  {...register('contact_id')}
+                >
+                  <option value="">{t('docs.chooseContact')}</option>
+                  {contactOptions.map((c) => (
+                    <option key={c.id} value={c.id}>
+                      {c.name}
+                      {c.tax_id ? ` (${c.tax_id})` : ''}
+                    </option>
+                  ))}
+                </select>
+                {contacts.length === 0 && (
+                  <Link to="/contacts" className="text-xs text-primary underline">
+                    {t('docs.addContactFirst')}
+                  </Link>
+                )}
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="d-date">{t('docs.date')}</Label>
+                <Input id="d-date" type="date" {...register('doc_date')} />
+              </div>
+              {isCreditType(type) || type === 'quotation' || type === 'purchase_order' ? (
+                <div className="grid gap-2">
+                  <Label htmlFor="d-due">
+                    {type === 'quotation' ? t('docs.validUntil') : t('docs.dueDate')}
+                  </Label>
+                  <Input id="d-due" type="date" {...register('due_date')} />
+                </div>
+              ) : (
+                <div />
+              )}
+              {isCashType(type) && (
+                <div className="grid gap-2 sm:col-span-2">
+                  <Label htmlFor="d-money">
+                    {isSale ? t('docs.receivedInto') : t('docs.paidFrom')}
+                  </Label>
+                  <select
+                    id="d-money"
+                    className="h-9 rounded-md border bg-background px-3 text-sm"
+                    {...register('payment_account_id')}
+                  >
+                    {moneyAccounts.map((a) => (
+                      <option key={a.id} value={a.id}>
+                        {a.code} {i18n.language === 'en' ? a.name_en || a.name_th : a.name_th}
+                        {a.detail ? ` · ${a.detail}` : ''}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
+              {isNoteType(type) && (
+                <div className="grid gap-2 sm:col-span-2">
+                  <Label htmlFor="d-ref">{t('docs.refInvoice')}</Label>
+                  <select
+                    id="d-ref"
+                    className="h-9 rounded-md border bg-background px-3 text-sm"
+                    {...register('ref_document_id')}
+                  >
+                    <option value="">{t('docs.chooseInvoice')}</option>
+                    {(refOptions.data ?? []).map((d) => (
+                      <option key={d.id} value={d.id}>
+                        {d.number} · {formatDate(d.doc_date, current!.date_era)} ·{' '}
+                        {formatMoney(d.total, i18n.language)}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
+              {co.vat_registered && (
+                <div className="grid gap-2">
+                  <Label htmlFor="d-vat">{t('docs.vatMode')}</Label>
+                  <select
+                    id="d-vat"
+                    className="h-9 rounded-md border bg-background px-3 text-sm"
+                    {...register('vat_mode')}
+                  >
+                    {(['exclusive', 'inclusive', 'none'] as const).map((m) => (
+                      <option key={m} value={m}>
+                        {t(`docs.vatModes.${m}`)}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
+              <div className="grid gap-2">
+                <Label htmlFor="d-ref-text">{t('docs.reference')}</Label>
+                <Input id="d-ref-text" {...register('reference')} />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="py-4">
+            <CardContent className="px-4">
+              <LinesEditor
+                control={control}
+                register={register}
+                setValue={setValue}
+                products={products}
+                isSale={isSale}
+                vatRegistered={co.vat_registered}
+                lineAmounts={totals?.lines}
+              />
+            </CardContent>
+          </Card>
+
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div className="grid gap-2">
+              <Label htmlFor="d-notes">{t('docs.notes')}</Label>
+              <textarea
+                id="d-notes"
+                rows={3}
+                className="rounded-md border bg-background px-3 py-2 text-sm"
+                {...register('notes')}
+              />
+            </div>
+            <TotalsBox
+              totals={totals}
+              vatRegistered={co.vat_registered}
+              isCash={isCashType(type)}
+            />
+          </div>
+
+          {canPost && (
+            <div className="flex flex-wrap justify-end gap-2">
+              {id && (
+                <Button
+                  type="button"
+                  variant="ghost"
+                  className="text-destructive"
+                  disabled={remove.isPending}
+                  onClick={() => {
+                    if (window.confirm(t('docs.confirmDeleteDraft'))) remove.mutate()
+                  }}
+                >
+                  {t('docs.deleteDraft')}
+                </Button>
+              )}
+              <Button type="submit" variant="outline" disabled={save.isPending}>
+                {t('docs.saveDraft')}
+              </Button>
+              <Button
+                type="button"
+                disabled={save.isPending || !totals}
+                onClick={() => {
+                  if (
+                    window.confirm(t(isNonPosting(type) ? 'docs.confirmIssue' : 'docs.confirmPost'))
+                  )
+                    save.mutate({ post: true })
+                }}
+              >
+                {isNonPosting(type) ? t('docs.issue') : t('docs.post')}
+              </Button>
+            </div>
+          )}
+        </form>
+
+        <PostingPreview
+          result={sim.data}
+          isFetching={sim.isFetching}
+          noPosting={isNonPosting(type)}
+        />
+      </div>
+      <PostingPreviewSheet
+        result={sim.data}
+        isFetching={sim.isFetching}
+        noPosting={isNonPosting(type)}
+      />
+    </div>
+  )
+}
+
+function TotalsBox({
+  totals,
+  vatRegistered,
+  isCash,
+}: {
+  totals: ReturnType<typeof formTotals>
+  vatRegistered: boolean
+  isCash: boolean
+}) {
+  const { t, i18n } = useTranslation()
+  if (!totals) {
+    return (
+      <Alert variant="destructive">
+        <AlertDescription>{t('dbErrors.LINE_NEGATIVE')}</AlertDescription>
+      </Alert>
+    )
+  }
+  const row = (label: string, value: number, strong = false) => (
+    <div className={`flex justify-between gap-4 ${strong ? 'font-semibold' : ''}`}>
+      <span className={strong ? '' : 'text-muted-foreground'}>{label}</span>
+      <span className="tabular-nums">{formatMoney(value, i18n.language)}</span>
+    </div>
+  )
+  return (
+    <div className="flex flex-col gap-1.5 rounded-lg border p-3 text-sm">
+      {row(t('totals.subtotal'), totals.subtotal)}
+      {vatRegistered && row(t('totals.vat'), totals.vatTotal)}
+      {row(t('totals.total'), totals.total, true)}
+      {totals.whtTotal > 0 && (
+        <>
+          {row(isCash ? t('totals.whtNow') : t('totals.whtLater'), -totals.whtTotal)}
+          {row(isCash ? t('totals.net') : t('totals.netExpected'), totals.netTotal, true)}
+        </>
+      )}
+    </div>
+  )
+}
+
+function PostedDocument({ direction, id }: { direction: Direction; id: string }) {
+  const { t, i18n } = useTranslation()
+  const navigate = useNavigate()
+  const queryClient = useQueryClient()
+  const { current } = useCompany()
+  const era = current!.date_era
+  const { data } = useDocument(id)
+  const doc = data!.doc
+  const lines = data!.lines
+  const type = doc.type
+  const posted = doc.status === 'posted'
+  const balance = useDocumentBalance(id, isCreditType(type) && posted)
+  const journal = usePostedJournal({ documentId: id }, !isNonPosting(type))
+  const { data: contacts = [] } = useContacts(current!.id)
+  const contact = contacts.find((c) => c.id === doc.contact_id)
+  const [voidOpen, setVoidOpen] = useState(false)
+  const canVoid = canEditFinanceSetup(current?.role) && posted
+  const canCreate = canEditMasterData(current?.role)
+  const base = basePath(directionOf(type))
+  const outstanding = Number(balance.data?.outstanding ?? 0)
+  const payStatus =
+    !posted || !isCreditType(type)
+      ? null
+      : outstanding <= 0
+        ? 'paid'
+        : doc.due_date && doc.due_date < todayBangkok()
+          ? 'overdue'
+          : Number(balance.data?.paid ?? 0) > 0
+            ? 'partial'
+            : 'unpaid'
+
+  return (
+    <div className="flex max-w-5xl flex-col gap-4">
+      <div className="flex flex-wrap items-center gap-2">
+        <Button variant="ghost" size="icon" asChild aria-label={t('common.back')}>
+          <Link to={`${base}?tab=${type}`}>
+            <ArrowLeft className="size-4" />
+          </Link>
+        </Button>
+        <h1 className="text-xl font-semibold">
+          {t(`docTypes.${type}`)} <span className="font-mono">{doc.number}</span>
+        </h1>
+        <StatusBadge status={doc.status} />
+        <PaymentStatusBadge status={payStatus} />
+      </div>
+
+      <div className="flex flex-wrap gap-2">
+        <DocumentShareActions documentId={doc.id} number={doc.number} posted={posted} />
+        {posted &&
+          canCreate &&
+          (CONVERSIONS[type] ?? []).map((to) => (
+            <Button
+              key={to}
+              variant="outline"
+              size="sm"
+              onClick={() => navigate(`${basePath(directionOf(to))}/new/${to}?from=${doc.id}`)}
+            >
+              <Repeat className="size-4" />
+              {t('docs.convertTo', { type: t(`docTypes.${to}`) })}
+            </Button>
+          ))}
+        {posted && canCreate && isCreditType(type) && outstanding > 0 && (
+          <Button
+            size="sm"
+            onClick={() => navigate(`${base}/payments/new?contact=${doc.contact_id}&doc=${doc.id}`)}
+          >
+            <CircleDollarSign className="size-4" />
+            {direction === 'sales' ? t('docs.receivePayment') : t('docs.makePayment')}
+          </Button>
+        )}
+        {canVoid && (
+          <Button
+            variant="ghost"
+            size="sm"
+            className="text-destructive"
+            onClick={() => setVoidOpen(true)}
+          >
+            <Ban className="size-4" />
+            {t('docs.void')}
+          </Button>
+        )}
+      </div>
+
+      {doc.status === 'voided' && (
+        <Alert>
+          <AlertDescription>
+            {t('docs.voidedNote', { reason: doc.void_reason ?? '' })}
+          </AlertDescription>
+        </Alert>
+      )}
+
+      <div className="grid gap-4 md:grid-cols-[minmax(0,1fr)_22rem] lg:grid-cols-[minmax(0,1fr)_26rem]">
+        <Card className="py-4">
+          <CardContent className="flex flex-col gap-4 px-4 text-sm">
+            <dl className="grid grid-cols-2 gap-x-4 gap-y-2">
+              <dt className="text-muted-foreground">
+                {direction === 'sales' ? t('docs.customer') : t('docs.vendor')}
+              </dt>
+              <dd>{contact?.name ?? '—'}</dd>
+              <dt className="text-muted-foreground">{t('docs.date')}</dt>
+              <dd>{formatDate(doc.doc_date, era)}</dd>
+              {doc.due_date && (
+                <>
+                  <dt className="text-muted-foreground">{t('docs.dueDate')}</dt>
+                  <dd>{formatDate(doc.due_date, era)}</dd>
+                </>
+              )}
+              {doc.reference && (
+                <>
+                  <dt className="text-muted-foreground">{t('docs.reference')}</dt>
+                  <dd>{doc.reference}</dd>
+                </>
+              )}
+              {isCreditType(type) && posted && (
+                <>
+                  <dt className="text-muted-foreground">{t('docs.outstanding')}</dt>
+                  <dd className="font-medium">{formatMoney(outstanding, i18n.language)}</dd>
+                </>
+              )}
+            </dl>
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b text-left text-xs text-muted-foreground">
+                  <th className="py-1 font-normal">{t('lines.item')}</th>
+                  <th className="py-1 text-right font-normal">{t('lines.qty')}</th>
+                  <th className="py-1 text-right font-normal">{t('lines.price')}</th>
+                  <th className="py-1 text-right font-normal">{t('lines.amount')}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {lines.map((l) => (
+                  <tr key={l.id} className="border-b">
+                    <td className="py-1.5">{l.description}</td>
+                    <td className="py-1.5 text-right tabular-nums">{Number(l.qty)}</td>
+                    <td className="py-1.5 text-right tabular-nums">
+                      {formatMoney(l.unit_price, i18n.language)}
+                    </td>
+                    <td className="py-1.5 text-right tabular-nums">
+                      {formatMoney(Number(l.base_amount) + Number(l.vat_amount), i18n.language)}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            <div className="ml-auto flex w-64 flex-col gap-1">
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">{t('totals.subtotal')}</span>
+                <span className="tabular-nums">{formatMoney(doc.subtotal, i18n.language)}</span>
+              </div>
+              {current!.vat_registered && (
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">{t('totals.vat')}</span>
+                  <span className="tabular-nums">{formatMoney(doc.vat_total, i18n.language)}</span>
+                </div>
+              )}
+              <div className="flex justify-between font-semibold">
+                <span>{t('totals.total')}</span>
+                <span className="tabular-nums">{formatMoney(doc.total, i18n.language)}</span>
+              </div>
+              {Number(doc.wht_total) > 0 && (
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">{t('totals.whtLater')}</span>
+                  <span className="tabular-nums">
+                    {formatMoney(-Number(doc.wht_total), i18n.language)}
+                  </span>
+                </div>
+              )}
+            </div>
+            {doc.notes && <p className="whitespace-pre-wrap text-muted-foreground">{doc.notes}</p>}
+          </CardContent>
+        </Card>
+        <div>
+          {isNonPosting(type) ? (
+            <p className="rounded-xl border p-4 text-sm text-muted-foreground">
+              {t('preview.noPosting')}
+            </p>
+          ) : (
+            journal.data && <PostedJournal entries={journal.data} />
+          )}
+        </div>
+      </div>
+
+      <VoidDialog
+        open={voidOpen}
+        onOpenChange={setVoidOpen}
+        target={{ documentId: doc.id }}
+        number={doc.number}
+        onVoided={() => {
+          void queryClient.invalidateQueries({ queryKey: ['document', id] })
+          void queryClient.invalidateQueries({ queryKey: ['posted-journal', id] })
+          void queryClient.invalidateQueries({ queryKey: documentsKey(current!.id) })
+        }}
+      />
+    </div>
+  )
+}

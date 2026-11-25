@@ -6,6 +6,11 @@ import { BankAccountsPage } from '@/features/bank-accounts/BankAccountsPage'
 import { ContactsPage } from '@/features/contacts/ContactsPage'
 import { ProductsPage } from '@/features/products/ProductsPage'
 import { MenuPage } from '@/pages/MenuPage'
+import { DocumentPage } from '@/features/documents/DocumentPage'
+import { DocumentsListPage } from '@/features/documents/DocumentsListPage'
+import { PaymentPage } from '@/features/documents/PaymentPage'
+import { CompanySettingsPage } from '@/pages/CompanySettingsPage'
+import { SharePage } from '@/pages/SharePage'
 import { NAV_ITEMS } from '@/components/layout/nav-items'
 import { RequireAuth, RequireCompany } from '@/features/auth/guards'
 import { LoginPage } from '@/features/auth/LoginPage'
@@ -15,13 +20,14 @@ import { ComingSoonPage } from '@/pages/ComingSoonPage'
 import { HelloPage } from '@/pages/HelloPage'
 import { SettingsPage } from '@/pages/SettingsPage'
 
-const BUILT_ROUTES = ['/', '/settings', '/accounting', '/contacts', '/products']
+const BUILT_ROUTES = ['/', '/settings', '/accounting', '/contacts', '/products', '/sales']
 const PLACEHOLDER_ROUTES = NAV_ITEMS.filter((i) => !BUILT_ROUTES.includes(i.to))
 
 export default function App() {
   return (
     <Routes>
       <Route path="/login" element={<LoginPage />} />
+      <Route path="/share/:token" element={<SharePage />} />
       <Route element={<RequireAuth />}>
         <Route path="/onboarding" element={<OnboardingPage />} />
         <Route element={<RequireCompany />}>
@@ -36,6 +42,12 @@ export default function App() {
             <Route path="/contacts" element={<ContactsPage />} />
             <Route path="/products" element={<ProductsPage />} />
             <Route path="/menu" element={<MenuPage />} />
+            <Route path="/settings/company" element={<CompanySettingsPage />} />
+            <Route path="/sales" element={<DocumentsListPage direction="sales" />} />
+            <Route path="/sales/new/:type" element={<DocumentPage direction="sales" />} />
+            <Route path="/sales/payments/new" element={<PaymentPage direction="sales" />} />
+            <Route path="/sales/payments/:id" element={<PaymentPage direction="sales" />} />
+            <Route path="/sales/:id" element={<DocumentPage direction="sales" />} />
             {PLACEHOLDER_ROUTES.map((i) => (
               <Route key={i.to} path={i.to} element={<ComingSoonPage titleKey={i.labelKey} />} />
             ))}
