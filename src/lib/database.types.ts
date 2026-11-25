@@ -1414,6 +1414,7 @@ export type Database = {
         Args: { p_document_id?: string; p_expires_at?: string; p_payment_id?: string }
         Returns: string
       }
+      dashboard_summary: { Args: { p_company_id: string; p_months?: number }; Returns: Json }
       document_balance: { Args: { p_document_id: string }; Returns: Json }
       get_shared_document: { Args: { p_token: string }; Returns: Json }
       is_valid_thai_tax_id: { Args: { p_tax_id: string }; Returns: boolean }

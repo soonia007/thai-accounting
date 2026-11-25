@@ -1,6 +1,7 @@
 import {
   BarChart3,
   BookOpen,
+  FlaskConical,
   Home,
   LayoutGrid,
   Package,
@@ -26,6 +27,7 @@ export const NAV_ITEMS: NavItem[] = [
   { to: '/contacts', labelKey: 'nav.contacts', icon: Users, mobile: true },
   { to: '/products', labelKey: 'nav.products', icon: Package, mobile: false },
   { to: '/accounting', labelKey: 'nav.accounting', icon: BookOpen, mobile: false },
+  { to: '/sandbox', labelKey: 'nav.sandbox', icon: FlaskConical, mobile: false },
   { to: '/reports', labelKey: 'nav.reports', icon: BarChart3, mobile: false },
   { to: '/settings', labelKey: 'nav.settings', icon: Settings, mobile: false },
 ]

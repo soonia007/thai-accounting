@@ -24,12 +24,16 @@ export function AnimatedMoney({
   const shown = useTween(value, 550, countFromZero ? 0 : undefined)
   const [flash, setFlash] = useState(0)
   const first = useRef(true)
+  const prevValue = useRef(value)
   useEffect(() => {
+    const before = prevValue.current
+    prevValue.current = value
     if (first.current) {
       first.current = false
       return
     }
-    setFlash((f) => f + 1)
+    // Flash only on a real change (not when data first arrives over a 0 placeholder)
+    if (before !== 0 && before !== value) setFlash((f) => f + 1)
   }, [value])
   return (
     <span

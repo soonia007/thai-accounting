@@ -465,11 +465,26 @@ function FullscreenPreview({
 }
 
 /** Desktop: sticky side panel. Use together with <PostingPreviewSheet> for mobile. */
-export function PostingPreview({ result, isFetching, noPosting }: Props) {
+export function PostingPreview({
+  result,
+  isFetching,
+  noPosting,
+  inline,
+}: Props & {
+  /** Show on every screen size, not sticky (e.g. the sandbox page) */
+  inline?: boolean
+}) {
   const { t } = useTranslation()
   const [full, setFull] = useState(false)
   return (
-    <aside className="hidden max-h-[calc(100dvh-4rem)] overflow-y-auto rounded-2xl border border-border/70 bg-card p-5 shadow-card md:sticky md:top-8 md:block">
+    <aside
+      className={cn(
+        'rounded-2xl border border-border/70 bg-card p-5 shadow-card',
+        inline
+          ? 'block'
+          : 'hidden max-h-[calc(100dvh-4rem)] overflow-y-auto md:sticky md:top-8 md:block',
+      )}
+    >
       <div className="mb-4 flex items-center justify-between gap-2">
         <h2 className="flex items-center gap-2.5 text-[15px] font-semibold tracking-tight">
           <span className="flex size-7 items-center justify-center rounded-lg bg-accent">

@@ -3,23 +3,23 @@
 แบรนด์ **FINORA** · ดูทันสมัย สะอาด แบบ Apple / Google · ใช้ได้ทั่วโลก (ไทย/อังกฤษ)
 ค่าทั้งหมดอยู่ใน `src/index.css` (CSS variables + Tailwind `@theme`) — **ห้าม hardcode สี** ในหน้าจอ ใช้ token เสมอ
 
-## สี (เจ้าของกำหนด 2026-11-25)
+## สี — โทนโลโก้ FINORA (เจ้าของกำหนด 2026-11-25 แทนชุดสีแรก)
 
-| ใช้งาน            | ชื่อ             | Hex       | Token / class                                     |
-| ---------------- | -------------- | --------- | ------------------------------------------------- |
-| Primary (แบรนด์)  | Mermaid Blue   | `#2690CF` | `brand` — โลโก้, เมนูที่เลือก, focus ring, ไอคอนเน้น    |
-| Primary Strong   | Deep Blue      | `#0B56A4` | `brand-strong` = `primary` — ปุ่มหลัก, ลิงก์, ตัวเลขเน้น |
-| Secondary        | Mid Blue       | `#3E77BB` | `brand-mid` — สีรอง, กราฟ                          |
-| App Background   | Soft Gray Blue | `#F5F8FA` | `background`                                      |
-| Card / Container | White          | `#FFFFFF` | `card`                                            |
-| Border           | Gray Blue      | `#DCE5EC` | `border`, `input`                                 |
-| Main Text        | Charcoal       | `#231F20` | `foreground`                                      |
-| Secondary Text   | Gray           | `#657786` | `muted-foreground`                                |
-| Success          | Green          | `#2E9D68` | `success` (ข้อความบนพื้นอ่อน: `success-foreground`)   |
-| Warning          | Amber          | `#E5A52B` | `warning` (ข้อความ: `warning-foreground`)          |
-| Error            | Red            | `#D64545` | `destructive` (ข้อความ: `destructive-foreground`)  |
+| ใช้งาน                     | Hex                               | Token / class                                                          |
+| ------------------------- | --------------------------------- | ---------------------------------------------------------------------- |
+| Brand (Sky)               | `#1488EE`                         | `brand` — ไอคอนเน้น, เมนูที่เลือก, focus ring, กราฟชุดที่ 1                    |
+| Brand strong (Cobalt)     | `#0443A8`                         | `brand-strong` = `primary` — ปุ่มหลัก, ลิงก์, คำว่า FINORA                   |
+| Brand mid (Blue)          | `#015BD3`                         | `brand-mid`                                                            |
+| Mint                      | `#2DE2C5`                         | `finora-mint` — กรอบ "กำลังแก้", แสงเน้น, จุดบนพื้นเข้ม                       |
+| Background                | `#F4F7FC`                         | `background`                                                           |
+| Card                      | `#FFFFFF`                         | `card`                                                                 |
+| Border                    | `#DBE4F0`                         | `border`, `input`                                                      |
+| Main text                 | `#0E1A33`                         | `foreground`                                                           |
+| Secondary text            | `#5B6B82`                         | `muted-foreground`                                                     |
+| Success / Warning / Error | `#2E9D68` / `#E5A52B` / `#D64545` | `success` / `warning` / `destructive` (+ `*-foreground` สำหรับตัวอักษร)   |
+| กราฟ                      | `#1488EE`, `#0FA594`              | `chart-1`, `chart-2` — ผ่าน validator (CVD) ห้ามเพิ่มสีเองโดยไม่รัน validator |
 
-**การเข้าถึง (WCAG AA ≥ 4.5:1):** ตัวอักษรขาวบน Mermaid Blue ได้แค่ 3.5:1 → ปุ่มทึบใช้ Deep Blue (7.3:1)
+**การเข้าถึง (WCAG AA ≥ 4.5:1):** ตัวอักษรขาวบน Sky ได้แค่ ~3.3:1 → ปุ่มทึบใช้ Cobalt
 Green / Amber / Red สว่างเกินจะเป็นตัวอักษรบนพื้นขาว → ใช้เป็นจุด/ไอคอน/พื้นอ่อน และใช้ `*-foreground` (เข้มกว่า) เป็นตัวอักษร
 
 ## โลโก้ (เจ้าของกำหนด 2026-11-25)
@@ -63,3 +63,11 @@ Inter (ละติน/ตัวเลข) + Noto Sans Thai — self-hosted ผ�
 - มือถือ: แถบบน/ล่างโปร่งแสงเบลอ (iOS style), dialog ทุกตัว**เต็มจอ**บนมือถือ, การ์ดกลางจอบนเดสก์ท็อป
 - แผงจำลองบัญชี: ปุ่ม **ขยายเต็มจอ** → สรุปภาษาง่าย + รายการบัญชี + T-account พร้อมกัน (Esc ปิด)
 - Safe area iOS: ใช้ `pt-[calc(… + env(safe-area-inset-top))]` — อย่าใช้ `.pt-safe` คู่กับ `p-*` (จะทับกัน)
+
+## Micro-interactions
+
+- `AnimatedMoney` (`src/components/AnimatedNumber.tsx`): ตัวเลขวิ่งไปค่าใหม่ + กะพริบมิ้นต์เมื่อเปลี่ยนจริง (ค่าสุดท้ายแม่นยำเสมอ)
+- ฟอร์มลงบัญชี ↔ แผงจำลอง (`src/features/posting/focus.ts`): ช่องที่กำลังแก้มีกรอบมิ้นต์ แผงจำลองบอก "กำลังแก้: …" และเน้นบรรทัดบัญชีที่ช่องนั้นมีผล (ใช้ `sources` จาก engine)
+- Dashboard: กราฟมี tooltip เมื่อชี้/แตะ, สลับมุมมอง/ช่วงเวลา, มีตารางสำรองสำหรับการเข้าถึง
+- ห้องทดลองบัญชี `/sandbox`: slider + toggle → `simulate_posting` จริง ไม่บันทึกอะไร
+- ทุกแอนิเมชันปิดเมื่อผู้ใช้ตั้ง reduced motion

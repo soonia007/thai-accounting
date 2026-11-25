@@ -12,7 +12,8 @@
     "settings": "Settings",
     "contacts": "Contacts",
     "products": "Products",
-    "menu": "Menu"
+    "menu": "Menu",
+    "sandbox": "Accounting sandbox"
   },
   "common": {
     "next": "Next",
@@ -901,5 +902,60 @@
       "reference": "Reference",
       "notes": "Notes"
     }
+  },
+  "dashboard": {
+    "vsLastMonth": "vs last month",
+    "thisMonth": "This month",
+    "revenueThisMonth": "Revenue this month",
+    "expensesThisMonth": "Expenses this month",
+    "cash": "Cash & bank",
+    "cashNote": "Balance per the books",
+    "receivables": "Receivables",
+    "payables": "Payables",
+    "overdue_one": "{{count}} overdue · {{amount}}",
+    "overdue_other": "{{count}} overdue · {{amount}}",
+    "revenue": "Revenue",
+    "expenses": "Expenses",
+    "profit": "Profit (loss)",
+    "chartFlow": "Monthly revenue and expenses",
+    "chartProfit": "Monthly profit",
+    "chartHint": "Hover or tap the chart for figures",
+    "view": "View",
+    "range": "Range",
+    "modeFlow": "Revenue / expenses",
+    "modeProfit": "Profit",
+    "months_one": "{{count}} month",
+    "months_other": "{{count}} months",
+    "empty": "No entries in this period yet",
+    "emptyCta": "Create your first invoice",
+    "showTable": "Show as table",
+    "month": "Month"
+  },
+  "sandbox": {
+    "title": "Accounting sandbox",
+    "subtitle": "Adjust the numbers and see the posting instantly — nothing is saved",
+    "teaser": "Drag the sliders, flip the toggles and watch the books respond",
+    "open": "Try it",
+    "reset": "Reset",
+    "controls": "Variables",
+    "transaction": "Transaction",
+    "types": {
+      "invoice": "Credit sale",
+      "cash_sale": "Cash sale",
+      "bill": "Credit purchase",
+      "cash_purchase": "Cash purchase"
+    },
+    "kind": "Type",
+    "vat": {
+      "exclusive": "Excl. VAT",
+      "inclusive": "Incl. VAT",
+      "none": "None"
+    },
+    "notVatRegistered": "This company is not VAT registered, so no VAT applies",
+    "lineDescription": "Sandbox item",
+    "whtNote": "Withholding tax {{amount}} — {{when}}",
+    "whtNow": "deducted in this transaction",
+    "whtLater": "deducted when paid (see the next step below)",
+    "disclaimer": "Uses the same posting rules as real posting, with this company's chart of accounts and mappings."
   }
 }

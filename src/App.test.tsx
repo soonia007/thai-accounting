@@ -58,10 +58,10 @@ describe('App routing', () => {
     expect(screen.getByRole('button', { name: 'เข้าสู่ระบบ' })).toBeInTheDocument()
   })
 
-  it('shows the product page to signed-out visitors of the home page', () => {
+  it('shows the product page to signed-out visitors of the home page', async () => {
     auth.session = null
     renderApp('/')
-    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('แล้วบัญชีลงให้เอง')
+    expect(await screen.findByRole('heading', { level: 1 })).toHaveTextContent('แล้วบัญชีลงให้เอง')
     expect(screen.getAllByRole('link', { name: /เริ่มใช้งาน/ })[0]).toHaveAttribute(
       'href',
       '/login?mode=signUp',
@@ -78,16 +78,17 @@ describe('App routing', () => {
     expect(screen.getByRole('radio', { name: /ธุรกิจบริการ/ })).toBeInTheDocument()
   })
 
-  it('shows the dashboard with the current company', () => {
+  it('shows the dashboard with the current company', async () => {
     renderApp('/')
-    expect(screen.getByText('สวัสดี 👋')).toBeInTheDocument()
+    expect(await screen.findByText('สวัสดี 👋')).toBeInTheDocument()
     expect(screen.getByText(/กำลังทำงานใน ACME จำกัด/)).toBeInTheDocument()
   })
 
   it('switches language to English', async () => {
     renderApp()
+    await screen.findByText('สวัสดี 👋')
     await userEvent.click(screen.getAllByRole('button', { name: 'EN' })[0])
-    expect(screen.getByText('Hello 👋')).toBeInTheDocument()
+    expect(await screen.findByText('Hello 👋')).toBeInTheDocument()
   })
 
   it('renders placeholder pages for nav routes', () => {
