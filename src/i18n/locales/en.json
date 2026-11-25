@@ -45,7 +45,16 @@
     "errors": {
       "email": "Invalid email address",
       "password": "Password must be at least 8 characters",
-      "invalidLogin": "Incorrect email or password"
+      "invalidLogin": "Incorrect email or password",
+      "network": "Cannot reach the database server — make sure Docker Desktop is open and npm run db:start has run (if you just created/edited .env.local, stop npm run dev and start it again)",
+      "notConfigured": "Connection is not configured — copy .env.example to .env.local, then restart npm run dev",
+      "user_already_exists": "This email is already registered — sign in instead",
+      "weak_password": "Password is too weak — use at least 8 characters",
+      "email_address_invalid": "This email address cannot be used",
+      "over_email_send_rate_limit": "Too many emails sent — please wait a moment",
+      "over_request_rate_limit": "Too many attempts — please wait a moment",
+      "signup_disabled": "Sign-ups are currently disabled",
+      "email_not_confirmed": "Email not confirmed yet — open the link in your email first"
     }
   },
   "onboarding": {

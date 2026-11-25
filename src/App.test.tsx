@@ -22,6 +22,7 @@ vi.mock('./features/company/CompanyProvider', async (orig) => ({
 // Keep network out of unit tests
 vi.mock('./lib/supabase', () => ({
   supabase: { rpc: async () => ({ data: [], error: null }), auth: { signOut: async () => {} } },
+  isSupabaseConfigured: true,
 }))
 
 const ACME: MyCompany = {

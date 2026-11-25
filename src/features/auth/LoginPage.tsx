@@ -10,7 +10,8 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { supabase } from '@/lib/supabase'
+import { isSupabaseConfigured, supabase } from '@/lib/supabase'
+import { authErrorMessage } from './auth-errors'
 import { useAuth } from './AuthProvider'
 
 const schema = z.object({
@@ -40,14 +41,14 @@ export function LoginPage() {
     setInfo(null)
     if (mode === 'signIn') {
       const { error } = await supabase.auth.signInWithPassword({ email, password })
-      if (error) setError(t('auth.errors.invalidLogin'))
+      if (error) setError(authErrorMessage(t, error, 'signIn'))
     } else {
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: { emailRedirectTo: window.location.origin },
       })
-      if (error) setError(error.message)
+      if (error) setError(authErrorMessage(t, error, 'signUp'))
       // Email confirmation enabled → no session yet
       else if (!data.session) setInfo(t('auth.checkEmail'))
     }
@@ -59,7 +60,7 @@ export function LoginPage() {
       provider: 'google',
       options: { redirectTo: window.location.origin },
     })
-    if (error) setError(error.message)
+    if (error) setError(authErrorMessage(t, error, 'signIn'))
   }
 
   return (
@@ -75,6 +76,11 @@ export function LoginPage() {
           </CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col gap-4">
+          {!isSupabaseConfigured && (
+            <Alert variant="destructive">
+              <AlertDescription>{t('auth.errors.notConfigured')}</AlertDescription>
+            </Alert>
+          )}
           {error && (
             <Alert variant="destructive">
               <AlertDescription>{error}</AlertDescription>
