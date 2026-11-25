@@ -301,7 +301,7 @@ select is((select number from public.payments where id = tests.get('pay_bill')),
   'payment voucher numbered PV-2026-0001');
 
 call tests.set('cash_purchase', tests.post('cash_purchase', 'VEN',
-  '[{"item_kind":"product","qty":1,"unit_price":2000,"wht_rate":1}]',
+  '[{"item_kind":"product","qty":1,"unit_price":2000,"wht_rate":1,"wht_income_type":"transport"}]',
   jsonb_build_object('payment_account_id', tests.acc('1120'))));
 select results_eq($$ select * from tests.je(tests.get('cash_purchase')) $$,
   $$ values ('5290'::text, 2000.00, 0.00), ('1140', 140.00, 0), ('1120', 0, 2120.00), ('2130', 0, 20.00) $$,

@@ -161,6 +161,68 @@ export type Database = {
           },
         ]
       }
+      attachments: {
+        Row: {
+          company_id: string
+          created_at: string
+          created_by: string | null
+          document_id: string | null
+          file_name: string
+          id: string
+          mime_type: string | null
+          payment_id: string | null
+          size_bytes: number | null
+          storage_path: string
+        }
+        ComputedFields: never
+        Insert: {
+          company_id: string
+          created_at?: string
+          created_by?: string | null
+          document_id?: string | null
+          file_name: string
+          id?: string
+          mime_type?: string | null
+          payment_id?: string | null
+          size_bytes?: number | null
+          storage_path: string
+        }
+        Update: {
+          company_id?: string
+          created_at?: string
+          created_by?: string | null
+          document_id?: string | null
+          file_name?: string
+          id?: string
+          mime_type?: string | null
+          payment_id?: string | null
+          size_bytes?: number | null
+          storage_path?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'attachments_company_id_document_id_fkey'
+            columns: ['company_id', 'document_id']
+            isOneToOne: false
+            referencedRelation: 'documents'
+            referencedColumns: ['company_id', 'id']
+          },
+          {
+            foreignKeyName: 'attachments_company_id_fkey'
+            columns: ['company_id']
+            isOneToOne: false
+            referencedRelation: 'companies'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'attachments_company_id_payment_id_fkey'
+            columns: ['company_id', 'payment_id']
+            isOneToOne: false
+            referencedRelation: 'payments'
+            referencedColumns: ['company_id', 'id']
+          },
+        ]
+      }
       audit_logs: {
         Row: {
           action: string
@@ -514,6 +576,7 @@ export type Database = {
           vat_amount: number
           vat_type: Database['public']['Enums']['product_vat_type']
           wht_amount: number
+          wht_income_type: string | null
           wht_rate: number
         }
         ComputedFields: never
@@ -533,6 +596,7 @@ export type Database = {
           vat_amount?: number
           vat_type?: Database['public']['Enums']['product_vat_type']
           wht_amount?: number
+          wht_income_type?: string | null
           wht_rate?: number
         }
         Update: {
@@ -551,6 +615,7 @@ export type Database = {
           vat_amount?: number
           vat_type?: Database['public']['Enums']['product_vat_type']
           wht_amount?: number
+          wht_income_type?: string | null
           wht_rate?: number
         }
         Relationships: [
@@ -574,6 +639,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: 'products'
             referencedColumns: ['company_id', 'id']
+          },
+          {
+            foreignKeyName: 'document_lines_wht_income_type_fkey'
+            columns: ['wht_income_type']
+            isOneToOne: false
+            referencedRelation: 'wht_income_types'
+            referencedColumns: ['code']
           },
         ]
       }
@@ -656,6 +728,7 @@ export type Database = {
           void_reason: string | null
           voided_at: string | null
           voided_by: string | null
+          wht_condition: Database['public']['Enums']['wht_condition']
           wht_total: number
         }
         ComputedFields: never
@@ -688,6 +761,7 @@ export type Database = {
           void_reason?: string | null
           voided_at?: string | null
           voided_by?: string | null
+          wht_condition?: Database['public']['Enums']['wht_condition']
           wht_total?: number
         }
         Update: {
@@ -719,6 +793,7 @@ export type Database = {
           void_reason?: string | null
           voided_at?: string | null
           voided_by?: string | null
+          wht_condition?: Database['public']['Enums']['wht_condition']
           wht_total?: number
         }
         Relationships: [
@@ -945,6 +1020,7 @@ export type Database = {
           voided_at: string | null
           voided_by: string | null
           wht_amount: number
+          wht_condition: Database['public']['Enums']['wht_condition']
         }
         ComputedFields: never
         Insert: {
@@ -968,6 +1044,7 @@ export type Database = {
           voided_at?: string | null
           voided_by?: string | null
           wht_amount?: number
+          wht_condition?: Database['public']['Enums']['wht_condition']
         }
         Update: {
           amount?: number
@@ -990,6 +1067,7 @@ export type Database = {
           voided_at?: string | null
           voided_by?: string | null
           wht_amount?: number
+          wht_condition?: Database['public']['Enums']['wht_condition']
         }
         Relationships: [
           {
@@ -1032,6 +1110,7 @@ export type Database = {
           unit: string | null
           updated_at: string
           vat_type: Database['public']['Enums']['product_vat_type']
+          wht_income_type: string | null
         }
         ComputedFields: never
         Insert: {
@@ -1050,6 +1129,7 @@ export type Database = {
           unit?: string | null
           updated_at?: string
           vat_type?: Database['public']['Enums']['product_vat_type']
+          wht_income_type?: string | null
         }
         Update: {
           code?: string
@@ -1067,6 +1147,7 @@ export type Database = {
           unit?: string | null
           updated_at?: string
           vat_type?: Database['public']['Enums']['product_vat_type']
+          wht_income_type?: string | null
         }
         Relationships: [
           {
@@ -1089,6 +1170,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: 'accounts'
             referencedColumns: ['company_id', 'id']
+          },
+          {
+            foreignKeyName: 'products_wht_income_type_fkey'
+            columns: ['wht_income_type']
+            isOneToOne: false
+            referencedRelation: 'wht_income_types'
+            referencedColumns: ['code']
           },
         ]
       }
@@ -1114,6 +1202,164 @@ export type Database = {
           full_name?: string | null
           id?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      wht_certificate_lines: {
+        Row: {
+          certificate_id: string
+          company_id: string
+          id: string
+          income_amount: number
+          income_type: string
+          line_no: number
+          tax_amount: number
+          wht_rate: number
+        }
+        ComputedFields: never
+        Insert: {
+          certificate_id: string
+          company_id: string
+          id?: string
+          income_amount: number
+          income_type: string
+          line_no: number
+          tax_amount: number
+          wht_rate: number
+        }
+        Update: {
+          certificate_id?: string
+          company_id?: string
+          id?: string
+          income_amount?: number
+          income_type?: string
+          line_no?: number
+          tax_amount?: number
+          wht_rate?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'wht_certificate_lines_company_id_certificate_id_fkey'
+            columns: ['company_id', 'certificate_id']
+            isOneToOne: false
+            referencedRelation: 'wht_certificates'
+            referencedColumns: ['company_id', 'id']
+          },
+          {
+            foreignKeyName: 'wht_certificate_lines_income_type_fkey'
+            columns: ['income_type']
+            isOneToOne: false
+            referencedRelation: 'wht_income_types'
+            referencedColumns: ['code']
+          },
+        ]
+      }
+      wht_certificates: {
+        Row: {
+          cert_date: string
+          company_id: string
+          condition: Database['public']['Enums']['wht_condition']
+          contact_id: string
+          created_at: string
+          document_id: string | null
+          form: Database['public']['Enums']['wht_form']
+          id: string
+          number: string
+          payment_id: string | null
+          total_income: number
+          total_tax: number
+          voided_at: string | null
+        }
+        ComputedFields: never
+        Insert: {
+          cert_date: string
+          company_id: string
+          condition: Database['public']['Enums']['wht_condition']
+          contact_id: string
+          created_at?: string
+          document_id?: string | null
+          form: Database['public']['Enums']['wht_form']
+          id?: string
+          number: string
+          payment_id?: string | null
+          total_income: number
+          total_tax: number
+          voided_at?: string | null
+        }
+        Update: {
+          cert_date?: string
+          company_id?: string
+          condition?: Database['public']['Enums']['wht_condition']
+          contact_id?: string
+          created_at?: string
+          document_id?: string | null
+          form?: Database['public']['Enums']['wht_form']
+          id?: string
+          number?: string
+          payment_id?: string | null
+          total_income?: number
+          total_tax?: number
+          voided_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'wht_certificates_company_id_contact_id_fkey'
+            columns: ['company_id', 'contact_id']
+            isOneToOne: false
+            referencedRelation: 'contacts'
+            referencedColumns: ['company_id', 'id']
+          },
+          {
+            foreignKeyName: 'wht_certificates_company_id_document_id_fkey'
+            columns: ['company_id', 'document_id']
+            isOneToOne: false
+            referencedRelation: 'documents'
+            referencedColumns: ['company_id', 'id']
+          },
+          {
+            foreignKeyName: 'wht_certificates_company_id_fkey'
+            columns: ['company_id']
+            isOneToOne: false
+            referencedRelation: 'companies'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'wht_certificates_company_id_payment_id_fkey'
+            columns: ['company_id', 'payment_id']
+            isOneToOne: false
+            referencedRelation: 'payments'
+            referencedColumns: ['company_id', 'id']
+          },
+        ]
+      }
+      wht_income_types: {
+        Row: {
+          code: string
+          default_rate: number | null
+          form_row: string
+          name_en: string
+          name_th: string
+          section: string
+          sort_order: number
+        }
+        ComputedFields: never
+        Insert: {
+          code: string
+          default_rate?: number | null
+          form_row: string
+          name_en: string
+          name_th: string
+          section: string
+          sort_order: number
+        }
+        Update: {
+          code?: string
+          default_rate?: number | null
+          form_row?: string
+          name_en?: string
+          name_th?: string
+          section?: string
+          sort_order?: number
         }
         Relationships: []
       }
@@ -1239,6 +1485,7 @@ export type Database = {
       post_document: { Args: { p_document_id: string }; Returns: Json }
       post_payment: { Args: { p_payment_id: string }; Returns: Json }
       print_document: { Args: { p_document_id?: string; p_payment_id?: string }; Returns: Json }
+      print_wht_certificate: { Args: { p_certificate_id: string }; Returns: Json }
       remove_member: { Args: { p_company_id: string; p_user_id: string }; Returns: undefined }
       revoke_share_link: { Args: { p_token: string }; Returns: undefined }
       save_document: { Args: { p_doc: Json }; Returns: string }
@@ -1254,6 +1501,14 @@ export type Database = {
       }
       void_document: { Args: { p_document_id: string; p_reason: string }; Returns: undefined }
       void_payment: { Args: { p_payment_id: string; p_reason: string }; Returns: undefined }
+      wht_tax: {
+        Args: {
+          p_base: number
+          p_condition: Database['public']['Enums']['wht_condition']
+          p_rate: number
+        }
+        Returns: number
+      }
     }
     Enums: {
       account_role:
@@ -1272,6 +1527,7 @@ export type Database = {
         | 'RETAINED_EARNINGS'
         | 'OUTPUT_VAT_DEFERRED'
         | 'INPUT_VAT_DEFERRED'
+        | 'WHT_BORNE_EXPENSE'
       account_type: 'asset' | 'liability' | 'equity' | 'revenue' | 'expense'
       bank_account_kind: 'savings' | 'current' | 'fixed' | 'other'
       business_type: 'service' | 'trading' | 'manufacturing' | 'restaurant'
@@ -1294,6 +1550,8 @@ export type Database = {
       product_kind: 'product' | 'service'
       product_vat_type: 'standard' | 'zero' | 'exempt'
       vat_mode: 'exclusive' | 'inclusive' | 'none'
+      wht_condition: 'withhold' | 'pay_always' | 'pay_once'
+      wht_form: 'pnd3' | 'pnd53'
     }
     CompositeTypes: {
       [_ in never]: never
@@ -1424,6 +1682,7 @@ export const Constants = {
         'RETAINED_EARNINGS',
         'OUTPUT_VAT_DEFERRED',
         'INPUT_VAT_DEFERRED',
+        'WHT_BORNE_EXPENSE',
       ],
       account_type: ['asset', 'liability', 'equity', 'revenue', 'expense'],
       bank_account_kind: ['savings', 'current', 'fixed', 'other'],
@@ -1448,6 +1707,8 @@ export const Constants = {
       product_kind: ['product', 'service'],
       product_vat_type: ['standard', 'zero', 'exempt'],
       vat_mode: ['exclusive', 'inclusive', 'none'],
+      wht_condition: ['withhold', 'pay_always', 'pay_once'],
+      wht_form: ['pnd3', 'pnd53'],
     },
   },
 } as const
