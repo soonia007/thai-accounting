@@ -12,7 +12,6 @@ import { DocumentsListPage } from '@/features/documents/DocumentsListPage'
 import { PaymentPage } from '@/features/documents/PaymentPage'
 import { CompanySettingsPage } from '@/pages/CompanySettingsPage'
 import { SharePage } from '@/pages/SharePage'
-import { NAV_ITEMS } from '@/components/layout/nav-items'
 import { RequireAuth, RequireCompany } from '@/features/auth/guards'
 import { LoginPage } from '@/features/auth/LoginPage'
 import { JournalEntryPage } from '@/features/journal/JournalEntryPage'
@@ -20,7 +19,6 @@ import { JournalListPage } from '@/features/journal/JournalListPage'
 import { MembersPage } from '@/features/members/MembersPage'
 import { OnboardingPage } from '@/features/onboarding/OnboardingPage'
 import { WhtCertificatesPage } from '@/features/wht/WhtCertificatesPage'
-import { ComingSoonPage } from '@/pages/ComingSoonPage'
 import { SettingsPage } from '@/pages/SettingsPage'
 
 // Heavier pages (charts, marketing visuals) load on demand to keep the first download small
@@ -33,18 +31,6 @@ const SandboxPage = lazy(() =>
 const LandingPage = lazy(() =>
   import('@/features/landing/LandingPage').then((m) => ({ default: m.LandingPage })),
 )
-
-const BUILT_ROUTES = [
-  '/',
-  '/settings',
-  '/accounting',
-  '/contacts',
-  '/products',
-  '/sales',
-  '/purchases',
-  '/sandbox',
-]
-const PLACEHOLDER_ROUTES = NAV_ITEMS.filter((i) => !BUILT_ROUTES.includes(i.to))
 
 export default function App() {
   return (
@@ -89,9 +75,6 @@ export default function App() {
               />
               <Route path="/purchases/wht-certificates" element={<WhtCertificatesPage />} />
               <Route path="/purchases/:id" element={<DocumentPage direction="purchases" />} />
-              {PLACEHOLDER_ROUTES.map((i) => (
-                <Route key={i.to} path={i.to} element={<ComingSoonPage titleKey={i.labelKey} />} />
-              ))}
             </Route>
           </Route>
         </Route>

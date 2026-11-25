@@ -55,7 +55,7 @@ describe('App routing', () => {
 
   it('sends signed-out users to the login page', () => {
     auth.session = null
-    renderApp('/reports')
+    renderApp('/sales')
     expect(screen.getByRole('button', { name: 'เข้าสู่ระบบ' })).toBeInTheDocument()
   })
 
@@ -92,8 +92,23 @@ describe('App routing', () => {
     expect(await screen.findByText('Hello 👋')).toBeInTheDocument()
   })
 
-  it('renders placeholder pages for nav routes', () => {
-    renderApp('/reports')
-    expect(screen.getByRole('heading', { name: 'รายงาน' })).toBeInTheDocument()
+  it('lists unbuilt functions greyed out with their milestone, built ones as links', async () => {
+    renderApp('/')
+    await screen.findByText('สวัสดี 👋')
+    const reports = screen.getByRole('button', { name: 'รายงาน' })
+    expect(reports).toHaveAttribute('aria-expanded', 'false')
+    await userEvent.click(reports)
+    expect(reports).toHaveAttribute('aria-expanded', 'true')
+    const tb = screen.getByText('งบทดลอง').closest('[aria-disabled]')
+    expect(tb).toHaveAttribute('aria-disabled', 'true')
+    expect(tb).toHaveTextContent('M8')
+    expect(screen.getByText('ภาษีหัก ณ ที่จ่าย (ภ.ง.ด.)').closest('[aria-disabled]')).toHaveTextContent(
+      'M11',
+    )
+    await userEvent.click(screen.getByRole('button', { name: 'บัญชี' }))
+    expect(screen.getByRole('link', { name: 'สมุดรายวันทั่วไป' })).toHaveAttribute(
+      'href',
+      '/accounting/journal',
+    )
   })
 })

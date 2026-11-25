@@ -1068,5 +1068,53 @@
     "cash_purchase": "ซื้อและจ่ายเงินทันที",
     "payment_sales": "รับชำระจากลูกค้าตามใบแจ้งหนี้",
     "payment_purchases": "จ่ายชำระให้ผู้ขายตามค่าใช้จ่าย"
+  },
+  "navTree": {
+    "groups": {
+      "data": "ข้อมูลหลัก",
+      "import": "นำเข้าเอกสาร (OCR)"
+    },
+    "items": {
+      "quotation": "ใบเสนอราคา",
+      "invoice": "ใบแจ้งหนี้",
+      "cash_sale": "ขายเงินสด",
+      "credit_note": "ใบลดหนี้",
+      "debit_note": "ใบเพิ่มหนี้",
+      "receipts": "รับชำระเงิน",
+      "purchase_order": "ใบสั่งซื้อ",
+      "bill": "ค่าใช้จ่าย (ซื้อเชื่อ)",
+      "cash_purchase": "ซื้อเงินสด",
+      "vendorPayments": "จ่ายชำระเงิน",
+      "whtCertificates": "หนังสือรับรอง 50 ทวิ",
+      "contacts": "ผู้ติดต่อ",
+      "products": "สินค้า/บริการ",
+      "warehouses": "คลังสินค้า",
+      "journal": "สมุดรายวันทั่วไป",
+      "chart": "ผังบัญชี",
+      "mappings": "การผูกบัญชีอัตโนมัติ",
+      "bankAccounts": "บัญชีเงินสด/ธนาคาร",
+      "bankRecon": "กระทบยอดธนาคาร",
+      "stock": "สต็อกสินค้า",
+      "fixedAssets": "สินทรัพย์ถาวร / ค่าเสื่อม",
+      "periodClose": "ปิดงวดบัญชี",
+      "trialBalance": "งบทดลอง",
+      "incomeStatement": "งบกำไรขาดทุน",
+      "balanceSheet": "งบแสดงฐานะการเงิน",
+      "generalLedger": "บัญชีแยกประเภท",
+      "arApSummary": "ลูกหนี้ / เจ้าหนี้คงค้าง",
+      "vatReport": "ภาษีขาย-ซื้อ (ภ.พ.30)",
+      "whtReport": "ภาษีหัก ณ ที่จ่าย (ภ.ง.ด.)",
+      "stockReport": "รายงานสินค้าคงเหลือ",
+      "fullDashboard": "Dashboard การเงินฉบับเต็ม",
+      "ocrApi": "เชื่อมต่อ OCR (API)",
+      "upload": "อัปโหลด / ถ่ายรูปบิล",
+      "reviewQueue": "คิวตรวจทานเอกสาร",
+      "vendorRules": "กฎผู้ขาย (เรียนรู้อัตโนมัติ)",
+      "autoPost": "Auto-post & ความแม่นยำ",
+      "general": "ทั่วไป",
+      "company": "ข้อมูลบริษัท",
+      "members": "สมาชิกและสิทธิ์"
+    },
+    "soon": "ยังไม่เปิดใช้ — จะทำใน {{m}}"
   }
 }

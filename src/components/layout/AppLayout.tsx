@@ -4,7 +4,8 @@ import { CompanySwitcher } from '@/features/company/CompanySwitcher'
 import { cn } from '@/lib/utils'
 import { BrandLogo, BrandMark } from './BrandMark'
 import { LanguageSwitcher } from './LanguageSwitcher'
-import { MENU_ITEM, NAV_ITEMS } from './nav-items'
+import { MENU_ITEM, MOBILE_ITEMS } from './nav-items'
+import { NavTree } from './NavTree'
 
 export function AppLayout() {
   const { t } = useTranslation()
@@ -18,30 +19,8 @@ export function AppLayout() {
         <div className="px-3 pb-3">
           <CompanySwitcher className="w-full" />
         </div>
-        <nav aria-label="sidebar" className="flex flex-1 flex-col gap-0.5 overflow-y-auto px-3">
-          {NAV_ITEMS.map(({ to, labelKey, icon: Icon }) => (
-            <NavLink
-              key={to}
-              to={to}
-              end={to === '/'}
-              className={({ isActive }) =>
-                cn(
-                  'group flex h-10 items-center gap-3 rounded-xl px-3 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground',
-                  isActive && 'bg-accent font-medium text-brand-strong hover:bg-accent',
-                )
-              }
-            >
-              {({ isActive }) => (
-                <>
-                  <Icon
-                    className={cn('size-[18px]', isActive && 'text-brand')}
-                    strokeWidth={isActive ? 2.2 : 1.8}
-                  />
-                  {t(labelKey)}
-                </>
-              )}
-            </NavLink>
-          ))}
+        <nav aria-label="sidebar" className="flex-1 overflow-y-auto px-3 pb-3">
+          <NavTree />
         </nav>
         <div className="flex items-center justify-between border-t border-border/70 px-5 py-4">
           <span className="text-xs text-muted-foreground">{t('language')}</span>
@@ -70,7 +49,7 @@ export function AppLayout() {
           aria-label="bottom navigation"
           className="pb-safe fixed inset-x-0 bottom-0 z-20 grid grid-cols-5 border-t border-border/60 bg-card/85 backdrop-blur-xl backdrop-saturate-150 md:hidden"
         >
-          {[...NAV_ITEMS.filter((i) => i.mobile), MENU_ITEM].map(({ to, labelKey, icon: Icon }) => (
+          {[...MOBILE_ITEMS, MENU_ITEM].map(({ to, labelKey, icon: Icon }) => (
             <NavLink
               key={to}
               to={to}

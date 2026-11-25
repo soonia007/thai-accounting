@@ -1068,5 +1068,53 @@
     "cash_purchase": "Buy and pay at once",
     "payment_sales": "Record money received against invoices",
     "payment_purchases": "Record money paid against bills"
+  },
+  "navTree": {
+    "groups": {
+      "data": "Master data",
+      "import": "Document import (OCR)"
+    },
+    "items": {
+      "quotation": "Quotations",
+      "invoice": "Invoices",
+      "cash_sale": "Cash sales",
+      "credit_note": "Credit notes",
+      "debit_note": "Debit notes",
+      "receipts": "Receive payment",
+      "purchase_order": "Purchase orders",
+      "bill": "Bills (on credit)",
+      "cash_purchase": "Cash purchases",
+      "vendorPayments": "Make payment",
+      "whtCertificates": "50 Tawi certificates",
+      "contacts": "Contacts",
+      "products": "Products & services",
+      "warehouses": "Warehouses",
+      "journal": "General journal",
+      "chart": "Chart of accounts",
+      "mappings": "Account mappings",
+      "bankAccounts": "Cash & bank accounts",
+      "bankRecon": "Bank reconciliation",
+      "stock": "Inventory",
+      "fixedAssets": "Fixed assets & depreciation",
+      "periodClose": "Period closing",
+      "trialBalance": "Trial balance",
+      "incomeStatement": "Income statement",
+      "balanceSheet": "Balance sheet",
+      "generalLedger": "General ledger",
+      "arApSummary": "Receivables / payables",
+      "vatReport": "VAT report (PP.30)",
+      "whtReport": "Withholding tax",
+      "stockReport": "Inventory report",
+      "fullDashboard": "Full financial dashboard",
+      "ocrApi": "OCR connection (API)",
+      "upload": "Upload / scan bills",
+      "reviewQueue": "Review queue",
+      "vendorRules": "Vendor rules (auto-learn)",
+      "autoPost": "Auto-post & accuracy",
+      "general": "General",
+      "company": "Company profile",
+      "members": "Members & roles"
+    },
+    "soon": "Not available yet — planned in {{m}}"
   }
 }
