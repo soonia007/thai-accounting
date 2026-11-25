@@ -1,4 +1,4 @@
-import { Building2, Check, ChevronsUpDown, LogOut, Plus } from 'lucide-react'
+import { Check, ChevronsUpDown, LogOut, Plus } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
@@ -13,6 +13,7 @@ import {
 import { useAuth } from '@/features/auth/AuthProvider'
 import { supabase } from '@/lib/supabase'
 import { cn } from '@/lib/utils'
+import { CompanyLogo } from './CompanyLogo'
 import { useCompany } from './CompanyProvider'
 
 export function CompanySwitcher({ className }: { className?: string }) {
@@ -33,9 +34,7 @@ export function CompanySwitcher({ className }: { className?: string }) {
           aria-label={t('company.switch')}
         >
           <span className="flex min-w-0 items-center gap-2.5">
-            <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-accent text-sm font-semibold text-brand-strong">
-              {current?.name?.trim().charAt(0) || <Building2 className="size-4" />}
-            </span>
+            <CompanyLogo name={current?.name} logoPath={current?.logo_path} />
             <span className="flex min-w-0 flex-col items-start leading-tight">
               <span className="max-w-full truncate text-sm font-semibold">{current?.name}</span>
               {current && (
@@ -56,6 +55,11 @@ export function CompanySwitcher({ className }: { className?: string }) {
         {companies.map((c) => (
           <DropdownMenuItem key={c.id} onSelect={() => switchCompany(c.id)}>
             <Check className={cn('size-4', c.id !== current?.id && 'invisible')} />
+            <CompanyLogo
+              name={c.name}
+              logoPath={c.logo_path}
+              className="size-6 rounded-md text-xs"
+            />
             <span className="flex-1 truncate">{c.name}</span>
             <span className="text-xs text-muted-foreground">{t(`roles.${c.role}`)}</span>
           </DropdownMenuItem>

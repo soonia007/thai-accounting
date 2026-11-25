@@ -11,7 +11,13 @@ export interface WhtCertificateData {
   total_tax: number
   voided: boolean
   source_number: string | null
-  payer: { name: string; tax_id: string | null; address: string | null; branch_code: string | null }
+  payer: {
+    name: string
+    tax_id: string | null
+    address: string | null
+    branch_code: string | null
+    logo_path?: string | null
+  }
   payee: {
     name: string
     tax_id: string | null

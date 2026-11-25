@@ -31,6 +31,7 @@ const ACME: MyCompany = {
   vat_registered: true,
   vat_rate: 7,
   date_era: 'BE',
+  logo_path: null,
   role: 'owner',
 }
 

@@ -957,5 +957,21 @@
     "whtNow": "deducted in this transaction",
     "whtLater": "deducted when paid (see the next step below)",
     "disclaimer": "Uses the same posting rules as real posting, with this company's chart of accounts and mappings."
+  },
+  "companyLogo": {
+    "title": "Company logo",
+    "description": "Shown in the app and on every document: invoice/receipt PDFs, 50 Tawi certificates and share links",
+    "upload": "Upload logo",
+    "replace": "Replace logo",
+    "remove": "Remove logo",
+    "confirmRemove": "Remove the company logo? Documents will show the company name instead.",
+    "drop": "Click or drop a file here",
+    "none": "No logo yet",
+    "uploading": "Uploading…",
+    "hint": "PNG, JPG, WebP or SVG — a transparent background works best. Resized automatically (max 800×400 px).",
+    "errors": {
+      "LOGO_NOT_IMAGE": "This file is not an image that can be opened",
+      "LOGO_TOO_LARGE": "The image is over 2 MB even after resizing — try a simpler file"
+    }
   }
 }

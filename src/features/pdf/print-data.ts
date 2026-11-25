@@ -12,6 +12,8 @@ export interface PrintCompany {
   email: string | null
   vat_registered: boolean
   date_era: DateEra
+  /** path in the company-logos bucket (companies.logo_path) */
+  logo_path?: string | null
 }
 
 export interface PrintContact {

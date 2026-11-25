@@ -1,110 +1,145 @@
-import { Document, Page, StyleSheet, Text, View } from '@react-pdf/renderer'
+import { Document, Image, Page, StyleSheet, Text, View } from '@react-pdf/renderer'
 import { bahtText, formatDate, formatMoney } from '@/lib/format'
-import { branchLabel, documentTitle, type PrintData } from './print-data'
 import { PDF_FONT_FAMILY } from './fonts'
+import { branchLabel, documentTitle, type PrintData } from './print-data'
+import { C } from './colors'
+import { BrandBar, PdfFooter, VoidWatermark } from './theme'
+
+// Modern tax-invoice layout in the FINORA theme. Content follows the Thai full tax invoice
+// (seller/buyer name, address, tax ID, branch; number; date; items; VAT shown separately).
 
 const s = StyleSheet.create({
   page: {
     fontFamily: PDF_FONT_FAMILY,
-    fontSize: 10,
-    padding: 36,
-    color: '#111',
+    fontSize: 9.5,
+    paddingTop: 34,
+    paddingBottom: 54,
+    paddingHorizontal: 36,
+    color: C.ink,
     lineHeight: 1.4,
   },
   row: { flexDirection: 'row' },
   between: { flexDirection: 'row', justifyContent: 'space-between' },
   bold: { fontWeight: 700 },
-  muted: { color: '#555' },
-  small: { fontSize: 8.5 },
-  title: { fontSize: 15, fontWeight: 700, textAlign: 'right' },
-  copyTag: {
+  muted: { color: C.muted },
+  label: { fontSize: 7.5, color: C.muted, letterSpacing: 0.3 },
+  card: { borderWidth: 0.8, borderColor: C.border, borderRadius: 8, padding: 10 },
+  pill: {
     alignSelf: 'flex-end',
-    borderWidth: 1,
-    borderColor: '#111',
-    paddingHorizontal: 6,
-    paddingVertical: 1,
-    marginTop: 4,
-    fontSize: 9,
-  },
-  box: { borderWidth: 1, borderColor: '#bbb', borderRadius: 3, padding: 8 },
-  th: {
-    flexDirection: 'row',
-    backgroundColor: '#eee',
-    borderBottomWidth: 1,
-    borderColor: '#999',
-    paddingVertical: 4,
+    borderRadius: 999,
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    fontSize: 8,
     fontWeight: 700,
   },
-  tr: { flexDirection: 'row', borderBottomWidth: 0.5, borderColor: '#ccc', paddingVertical: 3 },
+  th: {
+    flexDirection: 'row',
+    backgroundColor: C.cobalt,
+    color: '#FFFFFF',
+    borderTopLeftRadius: 8,
+    borderTopRightRadius: 8,
+    paddingVertical: 6,
+    fontSize: 8.5,
+    fontWeight: 700,
+  },
+  tr: {
+    flexDirection: 'row',
+    borderBottomWidth: 0.6,
+    borderColor: C.border,
+    paddingVertical: 5.5,
+  },
   cNo: { width: '6%', textAlign: 'center' },
-  cDesc: { width: '44%', paddingHorizontal: 3 },
-  cQty: { width: '10%', textAlign: 'right', paddingRight: 3 },
-  cPrice: { width: '14%', textAlign: 'right', paddingRight: 3 },
-  cDisc: { width: '12%', textAlign: 'right', paddingRight: 3 },
-  cAmt: { width: '14%', textAlign: 'right', paddingRight: 3 },
-  sign: { width: '45%', alignItems: 'center', marginTop: 36 },
-  signLine: { borderTopWidth: 0.7, borderColor: '#111', width: '80%', marginBottom: 3 },
+  cDesc: { width: '44%', paddingHorizontal: 4 },
+  cQty: { width: '10%', textAlign: 'right', paddingRight: 4 },
+  cPrice: { width: '14%', textAlign: 'right', paddingRight: 4 },
+  cDisc: { width: '12%', textAlign: 'right', paddingRight: 4 },
+  cAmt: { width: '14%', textAlign: 'right', paddingRight: 6 },
+  sign: { flex: 1, alignItems: 'center', paddingTop: 30 },
+  signLine: { borderTopWidth: 0.7, borderColor: C.ink, width: '78%', marginBottom: 4 },
 })
 
 const m = (n: number | string | null | undefined) => formatMoney(n ?? 0, 'th')
 
-function Party({
-  label,
-  name,
-  address,
-  taxId,
-  branch,
+function Meta({ label, value }: { label: string; value: string }) {
+  return (
+    <View style={{ flex: 1, gap: 2 }}>
+      <Text style={s.label}>{label}</Text>
+      <Text style={s.bold}>{value}</Text>
+    </View>
+  )
+}
+
+function TotalRow({ label, value }: { label: string; value: number }) {
+  return (
+    <View style={[s.between, { paddingVertical: 2.5, paddingHorizontal: 10 }]}>
+      <Text style={s.muted}>{label}</Text>
+      <Text>{m(value)}</Text>
+    </View>
+  )
+}
+
+/** Emphasised amount: cobalt bar with white text (grand total / net). */
+function GrandTotal({ label, value }: { label: string; value: number }) {
+  return (
+    <View
+      style={[
+        s.between,
+        {
+          backgroundColor: C.cobalt,
+          color: '#FFFFFF',
+          borderRadius: 8,
+          paddingVertical: 7,
+          paddingHorizontal: 10,
+          marginTop: 4,
+          alignItems: 'center',
+        },
+      ]}
+    >
+      <Text style={s.bold}>{label}</Text>
+      <Text style={[s.bold, { fontSize: 12 }]}>{m(value)}</Text>
+    </View>
+  )
+}
+
+export function DocumentPdf({
+  data,
+  copy,
+  logo,
 }: {
-  label: string
-  name: string
-  address: string | null
-  taxId: string | null
-  branch: string | null
+  data: PrintData
+  copy: boolean
+  /** company logo as a data URL (see theme.loadLogo); null → company name only */
+  logo?: string | null
 }) {
-  return (
-    <View style={{ flex: 1 }}>
-      <Text style={[s.small, s.muted]}>{label}</Text>
-      <Text style={s.bold}>{name}</Text>
-      {address ? <Text>{address}</Text> : null}
-      {taxId ? (
-        <Text>
-          เลขประจำตัวผู้เสียภาษี {taxId}
-          {branch ? `  ${branch}` : ''}
-        </Text>
-      ) : null}
-    </View>
-  )
-}
-
-function TotalRow({ label, value, strong }: { label: string; value: number; strong?: boolean }) {
-  return (
-    <View style={[s.between, { paddingVertical: 1.5 }]}>
-      <Text style={strong ? s.bold : s.muted}>{label}</Text>
-      <Text style={strong ? s.bold : undefined}>{m(value)}</Text>
-    </View>
-  )
-}
-
-export function DocumentPdf({ data, copy }: { data: PrintData; copy: boolean }) {
   const { company, contact, document: d } = data
   const era = company.date_era
   const title = documentTitle(data)
   const isPayment = d.kind === 'payment'
   const date = isPayment ? d.pay_date : d.doc_date
   const voided = d.status === 'voided'
+  const partyLabel = isPayment && d.direction === 'paid' ? 'จ่ายให้ / Pay to' : 'ลูกค้า / Bill to'
 
   return (
-    <Document title={`${title.th} ${d.number ?? ''}`} author={company.name}>
+    <Document title={`${title.th} ${d.number ?? ''}`} author={company.name} creator="FINORA">
       <Page size="A4" style={s.page}>
-        {/* Header: seller | title */}
-        <View style={[s.between, { marginBottom: 12 }]}>
-          <View style={{ width: '58%' }}>
-            <Text style={[s.bold, { fontSize: 13 }]}>{company.name}</Text>
+        <BrandBar />
+        {voided ? <VoidWatermark /> : null}
+
+        {/* Header: seller (logo) | title */}
+        <View style={[s.between, { marginBottom: 14 }]}>
+          <View style={{ width: '58%', gap: 1.5 }}>
+            {logo ? (
+              <Image
+                src={logo}
+                style={{ maxHeight: 46, maxWidth: 160, objectFit: 'contain', marginBottom: 6 }}
+              />
+            ) : null}
+            <Text style={[s.bold, { fontSize: logo ? 11 : 14, color: C.ink }]}>{company.name}</Text>
             {company.name_en ? <Text style={s.muted}>{company.name_en}</Text> : null}
-            {company.address ? <Text>{company.address}</Text> : null}
+            {company.address ? <Text style={s.muted}>{company.address}</Text> : null}
             {company.tax_id ? (
-              <Text>
-                เลขประจำตัวผู้เสียภาษี {company.tax_id}{' '}
+              <Text style={s.muted}>
+                เลขประจำตัวผู้เสียภาษี {company.tax_id} ·{' '}
                 {branchLabel(company.branch_code, company.branch_name)}
               </Text>
             ) : null}
@@ -112,69 +147,92 @@ export function DocumentPdf({ data, copy }: { data: PrintData; copy: boolean }) 
               <Text style={s.muted}>
                 {[company.phone && `โทร ${company.phone}`, company.email]
                   .filter(Boolean)
-                  .join('  ')}
+                  .join(' · ')}
               </Text>
             ) : null}
           </View>
-          <View style={{ width: '40%' }}>
-            <Text style={s.title}>{title.th}</Text>
-            <Text style={[s.muted, { textAlign: 'right' }]}>{title.en}</Text>
-            <Text style={s.copyTag}>{copy ? 'สำเนา / Copy' : 'ต้นฉบับ / Original'}</Text>
-            {voided ? (
-              <Text style={[s.copyTag, { color: '#b00', borderColor: '#b00' }]}>ยกเลิก / VOID</Text>
-            ) : null}
+          <View style={{ width: '40%', alignItems: 'flex-end', gap: 3 }}>
+            {title.th.split(' / ').map((part) => (
+              <Text
+                key={part}
+                style={{
+                  fontSize: title.th.includes(' / ') ? 16 : 19,
+                  fontWeight: 700,
+                  color: C.cobalt,
+                  textAlign: 'right',
+                  lineHeight: 1.45,
+                }}
+              >
+                {part}
+              </Text>
+            ))}
+            <Text style={{ fontSize: 8.5, color: C.muted, letterSpacing: 1.2, textAlign: 'right' }}>
+              {title.en.toUpperCase()}
+            </Text>
+            <View style={[s.row, { gap: 4, marginTop: 4 }]}>
+              <Text
+                style={[
+                  s.pill,
+                  copy
+                    ? { backgroundColor: C.tint, color: C.muted }
+                    : { backgroundColor: C.accent, color: C.cobalt },
+                ]}
+              >
+                {copy ? 'สำเนา · COPY' : 'ต้นฉบับ · ORIGINAL'}
+              </Text>
+              {voided ? (
+                <Text style={[s.pill, { backgroundColor: '#FBE9E9', color: C.red }]}>
+                  ยกเลิก · VOID
+                </Text>
+              ) : null}
+            </View>
           </View>
         </View>
 
-        {/* Buyer | document info */}
-        <View style={[s.row, { gap: 10, marginBottom: 12 }]}>
-          <View style={[s.box, { flex: 1.6 }]}>
-            {contact ? (
-              <Party
-                label={isPayment && d.direction === 'paid' ? 'จ่ายให้ / Pay to' : 'ลูกค้า / Customer'}
-                name={contact.name}
-                address={contact.address}
-                taxId={contact.tax_id}
-                branch={
-                  contact.entity_type === 'juristic'
-                    ? branchLabel(contact.branch_code, contact.branch_name)
-                    : null
-                }
-              />
-            ) : null}
-          </View>
-          <View style={[s.box, { flex: 1 }]}>
-            <View style={s.between}>
-              <Text style={s.muted}>เลขที่ / No.</Text>
-              <Text style={s.bold}>{d.number ?? '—'}</Text>
-            </View>
-            <View style={s.between}>
-              <Text style={s.muted}>วันที่ / Date</Text>
-              <Text>{formatDate(date, era)}</Text>
-            </View>
-            {!isPayment && d.due_date ? (
-              <View style={s.between}>
-                <Text style={s.muted}>
-                  {d.type === 'quotation' ? 'ยืนราคาถึง' : 'ครบกำหนด / Due'}
-                </Text>
-                <Text>{formatDate(d.due_date, era)}</Text>
-              </View>
-            ) : null}
-            {d.reference ? (
-              <View style={s.between}>
-                <Text style={s.muted}>อ้างอิง / Ref.</Text>
-                <Text>{d.reference}</Text>
-              </View>
-            ) : null}
-          </View>
+        {/* Document facts strip */}
+        <View
+          style={[
+            s.row,
+            { backgroundColor: C.tint, borderRadius: 8, padding: 10, gap: 10, marginBottom: 10 },
+          ]}
+        >
+          <Meta label="เลขที่ / NO." value={d.number ?? '—'} />
+          <Meta label="วันที่ / DATE" value={formatDate(date, era)} />
+          {!isPayment && d.due_date ? (
+            <Meta
+              label={d.type === 'quotation' ? 'ยืนราคาถึง / VALID UNTIL' : 'ครบกำหนด / DUE'}
+              value={formatDate(d.due_date, era)}
+            />
+          ) : null}
+          {d.reference ? <Meta label="อ้างอิง / REF." value={d.reference} /> : null}
         </View>
+
+        {/* Buyer */}
+        {contact ? (
+          <View style={[s.card, { borderLeftWidth: 3, borderLeftColor: C.sky, marginBottom: 10 }]}>
+            <Text style={[s.label, { marginBottom: 2 }]}>{partyLabel.toUpperCase()}</Text>
+            <Text style={[s.bold, { fontSize: 10.5 }]}>{contact.name}</Text>
+            {contact.address ? <Text style={s.muted}>{contact.address}</Text> : null}
+            {contact.tax_id ? (
+              <Text style={s.muted}>
+                เลขประจำตัวผู้เสียภาษี {contact.tax_id}
+                {contact.entity_type === 'juristic'
+                  ? ` · ${branchLabel(contact.branch_code, contact.branch_name)}`
+                  : ''}
+              </Text>
+            ) : null}
+          </View>
+        ) : null}
 
         {!isPayment && d.ref_number && (d.type === 'credit_note' || d.type === 'debit_note') ? (
-          <View style={[s.box, { marginBottom: 10 }]}>
+          <View
+            style={[s.card, { backgroundColor: C.accent, borderColor: C.accent, marginBottom: 10 }]}
+          >
             <Text>
-              อ้างอิงเอกสารเลขที่ {d.ref_number} ลงวันที่ {formatDate(d.ref_date, era)}
+              อ้างอิงเอกสารเลขที่ <Text style={s.bold}>{d.ref_number}</Text> ลงวันที่{' '}
+              {formatDate(d.ref_date, era)}
             </Text>
-            <Text>
+            <Text style={s.muted}>
               มูลค่าตามเอกสารเดิม {m(d.ref_total)} บาท · ผลต่าง {m(d.total)} บาท · มูลค่าที่ถูกต้อง{' '}
               {m(Number(d.ref_total ?? 0) + (d.type === 'credit_note' ? -1 : 1) * Number(d.total))}{' '}
               บาท
@@ -185,7 +243,7 @@ export function DocumentPdf({ data, copy }: { data: PrintData; copy: boolean }) 
         {/* Lines */}
         {!isPayment ? (
           <View>
-            <View style={s.th}>
+            <View style={s.th} fixed>
               <Text style={s.cNo}>#</Text>
               <Text style={s.cDesc}>รายการ / Description</Text>
               <Text style={s.cQty}>จำนวน</Text>
@@ -194,13 +252,17 @@ export function DocumentPdf({ data, copy }: { data: PrintData; copy: boolean }) 
               <Text style={s.cAmt}>จำนวนเงิน</Text>
             </View>
             {d.lines.map((l, i) => (
-              <View key={l.line_no} style={s.tr} wrap={false}>
-                <Text style={s.cNo}>{i + 1}</Text>
+              <View
+                key={l.line_no}
+                style={[s.tr, i % 2 === 1 ? { backgroundColor: C.zebra } : {}]}
+                wrap={false}
+              >
+                <Text style={[s.cNo, s.muted]}>{i + 1}</Text>
                 <Text style={s.cDesc}>{l.description}</Text>
                 <Text style={s.cQty}>{Number(l.qty).toLocaleString('th-TH')}</Text>
                 <Text style={s.cPrice}>{m(l.unit_price)}</Text>
-                <Text style={s.cDisc}>{Number(l.discount) ? m(l.discount) : ''}</Text>
-                <Text style={s.cAmt}>{m(l.base_amount)}</Text>
+                <Text style={[s.cDisc, s.muted]}>{Number(l.discount) ? m(l.discount) : '—'}</Text>
+                <Text style={[s.cAmt, s.bold]}>{m(l.base_amount)}</Text>
               </View>
             ))}
           </View>
@@ -208,31 +270,42 @@ export function DocumentPdf({ data, copy }: { data: PrintData; copy: boolean }) 
           <View>
             <View style={s.th}>
               <Text style={s.cNo}>#</Text>
-              <Text style={{ width: '44%', paddingHorizontal: 3 }}>เอกสาร / Document</Text>
+              <Text style={{ width: '44%', paddingHorizontal: 4 }}>เอกสาร / Document</Text>
               <Text style={{ width: '16%' }}>วันที่</Text>
               <Text style={[s.cAmt, { width: '17%' }]}>ยอดเอกสาร</Text>
               <Text style={[s.cAmt, { width: '17%' }]}>ชำระครั้งนี้</Text>
             </View>
             {d.allocations.map((a, i) => (
-              <View key={a.number} style={s.tr} wrap={false}>
-                <Text style={s.cNo}>{i + 1}</Text>
-                <Text style={{ width: '44%', paddingHorizontal: 3 }}>{a.number}</Text>
+              <View
+                key={a.number}
+                style={[s.tr, i % 2 === 1 ? { backgroundColor: C.zebra } : {}]}
+                wrap={false}
+              >
+                <Text style={[s.cNo, s.muted]}>{i + 1}</Text>
+                <Text style={{ width: '44%', paddingHorizontal: 4 }}>{a.number}</Text>
                 <Text style={{ width: '16%' }}>{formatDate(a.doc_date, era)}</Text>
                 <Text style={[s.cAmt, { width: '17%' }]}>{m(a.total)}</Text>
-                <Text style={[s.cAmt, { width: '17%' }]}>{m(a.amount)}</Text>
+                <Text style={[s.cAmt, s.bold, { width: '17%' }]}>{m(a.amount)}</Text>
               </View>
             ))}
           </View>
         )}
 
-        {/* Totals */}
-        <View style={[s.row, { marginTop: 10, gap: 10 }]} wrap={false}>
-          <View style={[s.box, { flex: 1.4, justifyContent: 'center' }]}>
-            <Text style={s.muted}>จำนวนเงินตัวอักษร</Text>
-            <Text style={s.bold}>
-              ({bahtText(isPayment ? Number(d.amount) + Number(d.wht_amount) : d.total)})
-            </Text>
-            {d.notes ? <Text style={[s.small, { marginTop: 4 }]}>หมายเหตุ: {d.notes}</Text> : null}
+        {/* Words + notes | totals */}
+        <View style={[s.row, { marginTop: 12, gap: 12 }]} wrap={false}>
+          <View style={{ flex: 1.3, gap: 8 }}>
+            <View style={{ backgroundColor: C.mintTint, borderRadius: 8, padding: 10 }}>
+              <Text style={[s.label, { color: C.mintInk }]}>จำนวนเงินตัวอักษร / AMOUNT IN WORDS</Text>
+              <Text style={[s.bold, { color: C.mintInk, marginTop: 2 }]}>
+                ({bahtText(isPayment ? Number(d.amount) + Number(d.wht_amount) : d.total)})
+              </Text>
+            </View>
+            {d.notes ? (
+              <View style={s.card}>
+                <Text style={s.label}>หมายเหตุ / NOTES</Text>
+                <Text style={{ marginTop: 2 }}>{d.notes}</Text>
+              </View>
+            ) : null}
           </View>
           <View style={{ flex: 1 }}>
             {!isPayment ? (
@@ -241,11 +314,15 @@ export function DocumentPdf({ data, copy }: { data: PrintData; copy: boolean }) 
                 {company.vat_registered ? (
                   <TotalRow label={`ภาษีมูลค่าเพิ่ม ${Number(d.vat_rate)}%`} value={d.vat_total} />
                 ) : null}
-                <TotalRow label="จำนวนเงินรวมทั้งสิ้น" value={d.total} strong />
+                <GrandTotal label="จำนวนเงินรวมทั้งสิ้น" value={d.total} />
                 {Number(d.wht_total) > 0 ? (
                   <>
+                    <View style={{ height: 4 }} />
                     <TotalRow label="หัก ณ ที่จ่าย" value={-Number(d.wht_total)} />
-                    <TotalRow label="ยอดชำระสุทธิ" value={d.net_total} strong />
+                    <View style={[s.between, { paddingVertical: 2.5, paddingHorizontal: 10 }]}>
+                      <Text style={s.bold}>ยอดชำระสุทธิ</Text>
+                      <Text style={[s.bold, { color: C.cobalt }]}>{m(d.net_total)}</Text>
+                    </View>
                   </>
                 ) : null}
               </>
@@ -255,10 +332,9 @@ export function DocumentPdf({ data, copy }: { data: PrintData; copy: boolean }) 
                 {Number(d.wht_amount) > 0 ? (
                   <TotalRow label="หัก ณ ที่จ่าย" value={-Number(d.wht_amount)} />
                 ) : null}
-                <TotalRow
+                <GrandTotal
                   label={d.direction === 'received' ? 'รับเงินสุทธิ' : 'จ่ายเงินสุทธิ'}
                   value={d.amount}
-                  strong
                 />
                 {d.allocations.some((a) => Number(a.vat_transferred ?? 0) > 0) ? (
                   <TotalRow
@@ -275,18 +351,20 @@ export function DocumentPdf({ data, copy }: { data: PrintData; copy: boolean }) 
         </View>
 
         {/* Signatures */}
-        <View style={[s.between, { marginTop: 24 }]} wrap={false}>
-          <View style={s.sign}>
+        <View style={[s.row, { marginTop: 26, gap: 14 }]} wrap={false}>
+          <View style={[s.card, s.sign]}>
             <View style={s.signLine} />
             <Text>{isPayment && d.direction === 'received' ? 'ผู้รับเงิน' : 'ผู้รับเอกสาร'}</Text>
-            <Text style={s.muted}>วันที่ ........................</Text>
+            <Text style={[s.muted, { fontSize: 8 }]}>วันที่ ........................</Text>
           </View>
-          <View style={s.sign}>
+          <View style={[s.card, s.sign]}>
             <View style={s.signLine} />
             <Text>ผู้มีอำนาจลงนาม</Text>
-            <Text style={s.muted}>ในนาม {company.name}</Text>
+            <Text style={[s.muted, { fontSize: 8 }]}>ในนาม {company.name}</Text>
           </View>
         </View>
+
+        <PdfFooter label={`${title.th} ${d.number ?? ''}`} />
       </Page>
     </Document>
   )

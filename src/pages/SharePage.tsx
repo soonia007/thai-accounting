@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { documentTitle, type PrintData } from '@/features/pdf/print-data'
 import { downloadBlob, pdfFileName, renderPdf } from '@/features/pdf/render'
 import { formatDate, formatMoney } from '@/lib/format'
+import { CompanyLogo } from '@/features/company/CompanyLogo'
 import { supabase } from '@/lib/supabase'
 
 /** Public, read-only page behind a share link (docs/DECISIONS.md P2). No sign-in needed. */
@@ -43,11 +44,19 @@ export function SharePage() {
       )}
       {data && (
         <Card>
-          <CardHeader>
-            <CardTitle>
-              {documentTitle(data).th} {data.document.number}
-            </CardTitle>
-            <p className="text-sm text-muted-foreground">{data.company.name}</p>
+          <CardHeader className="flex flex-col gap-3 sm:flex-row sm:items-center">
+            <CompanyLogo
+              name={data.company.name}
+              logoPath={data.company.logo_path}
+              wide
+              className="h-12 rounded-xl"
+            />
+            <div className="min-w-0">
+              <CardTitle>
+                {documentTitle(data).th} {data.document.number}
+              </CardTitle>
+              <p className="text-sm text-muted-foreground">{data.company.name}</p>
+            </div>
           </CardHeader>
           <CardContent className="flex flex-col gap-4 text-sm">
             <dl className="grid grid-cols-2 gap-y-1">

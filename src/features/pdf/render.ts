@@ -1,15 +1,18 @@
 import { createElement } from 'react'
+import { companyLogoUrl } from '@/features/company/logo'
 import type { PrintData } from './print-data'
 import { documentTitle } from './print-data'
 
 /** Build the PDF in the browser (spec §1). react-pdf is loaded on demand to keep the app bundle small. */
 export async function renderPdf(data: PrintData, copy: boolean): Promise<Blob> {
-  const [{ pdf }, { DocumentPdf }] = await Promise.all([
+  const [{ pdf }, { DocumentPdf }, { loadLogo }] = await Promise.all([
     import('@react-pdf/renderer'),
     import('./DocumentPdf'),
+    import('./load-logo'),
   ])
+  const logo = await loadLogo(companyLogoUrl(data.company.logo_path))
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  return pdf(createElement(DocumentPdf, { data, copy }) as any).toBlob()
+  return pdf(createElement(DocumentPdf, { data, copy, logo }) as any).toBlob()
 }
 
 export function pdfFileName(data: PrintData, copy: boolean): string {

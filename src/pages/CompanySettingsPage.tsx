@@ -11,6 +11,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { dbErrorMessage } from '@/features/accounts/errors'
 import { useAuth } from '@/features/auth/AuthProvider'
+import { CompanyLogoCard } from '@/features/company/CompanyLogoCard'
 import { canManageMembers, myCompaniesKey, useCompany } from '@/features/company/CompanyProvider'
 import { supabase } from '@/lib/supabase'
 import { isValidThaiTaxId, normalizeTaxId } from '@/lib/tax-id'
@@ -67,7 +68,22 @@ export function CompanySettingsPage() {
     setValue,
     control,
     formState: { errors },
-  } = useForm<FormInput, unknown, FormValues>({ resolver: zodResolver(schema) })
+  } = useForm<FormInput, unknown, FormValues>({
+    resolver: zodResolver(schema),
+    // controlled from the first render (values arrive after the company loads)
+    defaultValues: {
+      name: '',
+      name_en: '',
+      address: '',
+      tax_id: '',
+      is_head_office: true,
+      branch_code: '',
+      branch_name: '',
+      phone: '',
+      email: '',
+      date_era: 'BE',
+    },
+  })
   useEffect(() => {
     const c = company.data
     if (!c) return
@@ -123,6 +139,13 @@ export function CompanySettingsPage() {
       <h1 className="text-2xl font-semibold tracking-tight md:text-[28px]">
         {t('companySettings.title')}
       </h1>
+      {company.data && (
+        <CompanyLogoCard
+          companyId={current!.id}
+          logoPath={company.data.logo_path}
+          canEdit={canEdit}
+        />
+      )}
       <Card>
         <CardHeader>
           <CardTitle className="text-base">{t('companySettings.printed')}</CardTitle>
