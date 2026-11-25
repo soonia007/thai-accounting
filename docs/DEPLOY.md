@@ -8,7 +8,8 @@
 1. สมัคร/เข้าสู่ระบบที่ https://supabase.com → **New project**
    - Name: `finora` · Region: **Southeast Asia (Singapore)** · ตั้ง **Database password** (จดเก็บไว้ ห้ามใส่ใน git)
 2. รอสร้างเสร็จ (~2 นาที) แล้วไป **Project Settings → API** จดค่า:
-   - **Project URL** (เช่น `https://abcd1234.supabase.co`)
+   - **Project URL** (เช่น `https://abcd1234.supabase.co`) — ใช้แค่ส่วนนี้ **ห้ามมี `/rest/v1/` ต่อท้าย**
+     (ถ้าใส่ผิด หน้าสมัครจะขึ้น "Invalid path specified in request URL")
    - **anon public** key (ใช้ฝั่งเว็บได้ เพราะทุกตารางมี RLS)
    - ห้ามใช้ `service_role` key กับเว็บเด็ดขาด
 3. จดรหัสโปรเจกต์ (**Reference ID**) จาก Project Settings → General
