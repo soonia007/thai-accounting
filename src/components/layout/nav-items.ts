@@ -117,7 +117,7 @@ export const NAV_TREE: NavNode[] = [
       leaf('generalLedger', '/reports/general-ledger'),
       leaf('arApSummary', '/reports/receivables-payables'),
       leaf('vatReport', '/reports/vat'),
-      leaf('whtReport', undefined, 'M11'),
+      leaf('whtReport', '/reports/wht'),
       leaf('stockReport', undefined, 'M13'),
       leaf('fullDashboard', undefined, 'M16'),
     ],

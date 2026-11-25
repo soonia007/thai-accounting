@@ -25,6 +25,15 @@ export interface ReportTable {
   balanced?: boolean
 }
 
+/** Several tables in one export (e.g. PND summary + attachment). */
+export interface ReportSection {
+  title?: string
+  table: ReportTable
+}
+export type ReportContent = ReportTable | ReportSection[]
+export const sectionsOf = (c: ReportContent): ReportSection[] =>
+  Array.isArray(c) ? c : [{ table: c }]
+
 // ---- raw rows returned by the report_* RPCs --------------------------------------------------
 export type AccountType = 'asset' | 'liability' | 'equity' | 'revenue' | 'expense'
 interface Named {

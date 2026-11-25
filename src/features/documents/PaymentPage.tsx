@@ -6,6 +6,7 @@ import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { ActionGroup, PageHeader } from '@/components/PageHeader'
 import { VatClaimCard } from '@/features/vat/VatClaimCard'
+import { WhtReceivedCard } from '@/features/wht/WhtReceivedCard'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -417,6 +418,8 @@ function PostedPayment({
     tax_invoice_no: string | null
     tax_invoice_date: string | null
     vat_claim_month: string | null
+    received_wht_cert_no: string | null
+    received_wht_cert_date: string | null
   }
 }) {
   const { t, i18n } = useTranslation()
@@ -472,6 +475,17 @@ function PostedPayment({
           </>
         }
       />
+      {direction === 'sales' && Number(payment.wht_amount) > 0 && (
+        <WhtReceivedCard
+          target={{ paymentId: payment.id }}
+          amount={Number(payment.wht_amount)}
+          certNo={payment.received_wht_cert_no}
+          certDate={payment.received_wht_cert_date}
+          era={current!.date_era}
+          canEdit={canEditMasterData(current?.role) && payment.status !== 'voided'}
+          onSaved={() => void queryClient.invalidateQueries({ queryKey: ['payment', payment.id] })}
+        />
+      )}
       {direction === 'purchases' && current!.vat_registered && (
         <VatClaimCard
           target={{ paymentId: payment.id }}

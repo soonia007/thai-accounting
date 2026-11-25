@@ -3,7 +3,7 @@ import { formatMoney } from '@/lib/format'
 import { C } from '@/features/pdf/colors'
 import { PDF_FONT_FAMILY } from '@/features/pdf/fonts'
 import { BrandBar, PdfFooter } from '@/features/pdf/theme'
-import type { ReportTable } from './model'
+import { sectionsOf, type ReportContent, type ReportTable } from './model'
 import { showDate, type ReportMeta } from './export-xlsx'
 
 const s = StyleSheet.create({
@@ -25,18 +25,110 @@ const cellText = (v: string | number | null, zeroDash: boolean) => {
 }
 
 /** A4 report: brand bar, logo + company, title, period, then the table (header repeats per page). */
-export function ReportPdf({
+function TableBlock({
   table,
   meta,
-  logo,
+  fixedHeader,
 }: {
   table: ReportTable
   meta: ReportMeta
-  logo: string | null
+  fixedHeader: boolean
 }) {
   const total = table.columns.reduce((t, c) => t + (c.weight ?? 1), 0)
   const w = (i: number) => `${(((table.columns[i].weight ?? 1) / total) * 100).toFixed(2)}%`
   const firstText = table.columns.findIndex((c) => !c.money)
+  return (
+    <View>
+      <View
+        fixed={fixedHeader}
+        style={{
+          flexDirection: 'row',
+          backgroundColor: C.cobalt,
+          color: '#FFFFFF',
+          borderTopLeftRadius: 5,
+          borderTopRightRadius: 5,
+          paddingVertical: 4,
+          paddingHorizontal: 4,
+          fontWeight: 700,
+        }}
+      >
+        {table.columns.map((c, i) => (
+          <Text
+            key={c.key}
+            style={{
+              width: w(i),
+              textAlign: c.align === 'right' ? 'right' : 'left',
+              paddingHorizontal: 2,
+            }}
+          >
+            {c.label}
+          </Text>
+        ))}
+      </View>
+
+      {table.rows.map((r, ri) => {
+        const kind = r.kind ?? 'normal'
+        const label = r.cells.find((c) => c !== null)
+        return (
+          <View
+            key={ri}
+            wrap={false}
+            style={{
+              flexDirection: 'row',
+              paddingVertical: 3,
+              paddingHorizontal: 4,
+              borderBottomWidth: 0.5,
+              borderColor: C.border,
+              backgroundColor:
+                kind === 'section'
+                  ? C.accent
+                  : kind === 'total'
+                    ? C.tint
+                    : ri % 2
+                      ? C.zebra
+                      : '#FFFFFF',
+              ...(kind === 'subtotal' || kind === 'total'
+                ? { borderTopWidth: 0.8, borderTopColor: C.muted }
+                : {}),
+            }}
+          >
+            {kind === 'section' ? (
+              <Text style={{ fontWeight: 700, color: C.cobalt, paddingHorizontal: 2 }}>
+                {String(label ?? '')}
+              </Text>
+            ) : (
+              table.columns.map((c, i) => (
+                <Text
+                  key={c.key}
+                  style={{
+                    width: w(i),
+                    textAlign: c.align === 'right' ? 'right' : 'left',
+                    paddingHorizontal: 2,
+                    paddingLeft: r.indent && i === firstText ? 10 : 2,
+                    fontWeight: kind === 'normal' ? 400 : 700,
+                  }}
+                >
+                  {cellText(showDate(r.cells[i], meta.era), kind === 'normal')}
+                </Text>
+              ))
+            )}
+          </View>
+        )
+      })}
+    </View>
+  )
+}
+
+export function ReportPdf({
+  content,
+  meta,
+  logo,
+}: {
+  content: ReportContent
+  meta: ReportMeta
+  logo: string | null
+}) {
+  const sections = sectionsOf(content)
 
   return (
     <Document title={meta.title} author="FINORA">
@@ -53,82 +145,16 @@ export function ReportPdf({
           </View>
         </View>
 
-        <View
-          fixed
-          style={{
-            flexDirection: 'row',
-            backgroundColor: C.cobalt,
-            color: '#FFFFFF',
-            borderTopLeftRadius: 5,
-            borderTopRightRadius: 5,
-            paddingVertical: 4,
-            paddingHorizontal: 4,
-            fontWeight: 700,
-          }}
-        >
-          {table.columns.map((c, i) => (
-            <Text
-              key={c.key}
-              style={{
-                width: w(i),
-                textAlign: c.align === 'right' ? 'right' : 'left',
-                paddingHorizontal: 2,
-              }}
-            >
-              {c.label}
-            </Text>
-          ))}
-        </View>
-
-        {table.rows.map((r, ri) => {
-          const kind = r.kind ?? 'normal'
-          const label = r.cells.find((c) => c !== null)
-          return (
-            <View
-              key={ri}
-              wrap={false}
-              style={{
-                flexDirection: 'row',
-                paddingVertical: 3,
-                paddingHorizontal: 4,
-                borderBottomWidth: 0.5,
-                borderColor: C.border,
-                backgroundColor:
-                  kind === 'section'
-                    ? C.accent
-                    : kind === 'total'
-                      ? C.tint
-                      : ri % 2
-                        ? C.zebra
-                        : '#FFFFFF',
-                ...(kind === 'subtotal' || kind === 'total'
-                  ? { borderTopWidth: 0.8, borderTopColor: C.muted }
-                  : {}),
-              }}
-            >
-              {kind === 'section' ? (
-                <Text style={{ fontWeight: 700, color: C.cobalt, paddingHorizontal: 2 }}>
-                  {String(label ?? '')}
-                </Text>
-              ) : (
-                table.columns.map((c, i) => (
-                  <Text
-                    key={c.key}
-                    style={{
-                      width: w(i),
-                      textAlign: c.align === 'right' ? 'right' : 'left',
-                      paddingHorizontal: 2,
-                      paddingLeft: r.indent && i === firstText ? 10 : 2,
-                      fontWeight: kind === 'normal' ? 400 : 700,
-                    }}
-                  >
-                    {cellText(showDate(r.cells[i], meta.era), kind === 'normal')}
-                  </Text>
-                ))
-              )}
-            </View>
-          )
-        })}
+        {sections.map((sec, si) => (
+          <View key={si} style={{ marginTop: si ? 14 : 0 }}>
+            {sec.title && (
+              <Text style={{ fontSize: 11, fontWeight: 700, color: C.cobalt, marginBottom: 4 }}>
+                {sec.title}
+              </Text>
+            )}
+            <TableBlock table={sec.table} meta={meta} fixedHeader={sections.length === 1} />
+          </View>
+        ))}
 
         <PdfFooter label={meta.title} />
       </Page>

@@ -69,8 +69,7 @@ export function ReportTableView({ table, era }: { table: ReportTable; era: 'BE' 
                         (r.cells[i] as number) < 0 &&
                         'text-destructive',
                       r.indent && i === firstText && 'pl-7',
-                      !c.money &&
-                        i === 0 &&
+                      (c.key === 'code' || c.key === 'seq') &&
                         kind === 'normal' &&
                         'font-mono text-xs text-muted-foreground',
                     )}

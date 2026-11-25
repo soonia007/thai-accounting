@@ -7,6 +7,7 @@ import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { ActionGroup, PageHeader } from '@/components/PageHeader'
 import { VatClaimCard } from '@/features/vat/VatClaimCard'
+import { WhtReceivedCard } from '@/features/wht/WhtReceivedCard'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -621,6 +622,17 @@ function PostedDocument({ direction, id }: { direction: Direction; id: string })
         }
       />
 
+      {type === 'cash_sale' && Number(doc.wht_total) > 0 && doc.status !== 'draft' && (
+        <WhtReceivedCard
+          target={{ documentId: doc.id }}
+          amount={Number(doc.wht_total)}
+          certNo={doc.received_wht_cert_no}
+          certDate={doc.received_wht_cert_date}
+          era={era}
+          canEdit={canCreate && doc.status !== 'voided'}
+          onSaved={() => void queryClient.invalidateQueries({ queryKey: ['document', id] })}
+        />
+      )}
       {(type === 'bill' || type === 'cash_purchase') &&
         current!.vat_registered &&
         Number(doc.vat_total) > 0 && (

@@ -49,6 +49,9 @@ const ReceivablePayablePage = lazy(() =>
 const VatReportPage = lazy(() =>
   import('@/features/vat/VatReportPage').then((m) => ({ default: m.VatReportPage })),
 )
+const WhtReportPage = lazy(() =>
+  import('@/features/wht/WhtReportPage').then((m) => ({ default: m.WhtReportPage })),
+)
 
 export default function App() {
   return (
@@ -66,6 +69,7 @@ export default function App() {
               <Route path="/reports" element={<Navigate to="/reports/trial-balance" replace />} />
               <Route path="/reports/trial-balance" element={<TrialBalancePage />} />
               <Route path="/reports/vat" element={<VatReportPage />} />
+              <Route path="/reports/wht" element={<WhtReportPage />} />
               <Route path="/reports/income-statement" element={<IncomeStatementPage />} />
               <Route path="/reports/balance-sheet" element={<BalanceSheetPage />} />
               <Route path="/reports/general-ledger" element={<GeneralLedgerPage />} />

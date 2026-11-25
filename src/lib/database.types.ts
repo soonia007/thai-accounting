@@ -716,6 +716,8 @@ export type Database = {
           payment_account_id: string | null
           posted_at: string | null
           posted_by: string | null
+          received_wht_cert_date: string | null
+          received_wht_cert_no: string | null
           ref_document_id: string | null
           reference: string | null
           source: Database['public']['Enums']['document_source']
@@ -752,6 +754,8 @@ export type Database = {
           payment_account_id?: string | null
           posted_at?: string | null
           posted_by?: string | null
+          received_wht_cert_date?: string | null
+          received_wht_cert_no?: string | null
           ref_document_id?: string | null
           reference?: string | null
           source?: Database['public']['Enums']['document_source']
@@ -787,6 +791,8 @@ export type Database = {
           payment_account_id?: string | null
           posted_at?: string | null
           posted_by?: string | null
+          received_wht_cert_date?: string | null
+          received_wht_cert_no?: string | null
           ref_document_id?: string | null
           reference?: string | null
           source?: Database['public']['Enums']['document_source']
@@ -1157,6 +1163,8 @@ export type Database = {
           payment_account_id: string
           posted_at: string | null
           posted_by: string | null
+          received_wht_cert_date: string | null
+          received_wht_cert_no: string | null
           reference: string | null
           status: Database['public']['Enums']['document_status']
           tax_invoice_date: string | null
@@ -1184,6 +1192,8 @@ export type Database = {
           payment_account_id: string
           posted_at?: string | null
           posted_by?: string | null
+          received_wht_cert_date?: string | null
+          received_wht_cert_no?: string | null
           reference?: string | null
           status?: Database['public']['Enums']['document_status']
           tax_invoice_date?: string | null
@@ -1210,6 +1220,8 @@ export type Database = {
           payment_account_id?: string
           posted_at?: string | null
           posted_by?: string | null
+          received_wht_cert_date?: string | null
+          received_wht_cert_no?: string | null
           reference?: string | null
           status?: Database['public']['Enums']['document_status']
           tax_invoice_date?: string | null
@@ -1721,10 +1733,36 @@ export type Database = {
       }
       report_vat_purchases: { Args: { p_company_id: string; p_month: string }; Returns: Json }
       report_vat_sales: { Args: { p_company_id: string; p_month: string }; Returns: Json }
+      report_wht_certificates: {
+        Args: { p_company_id: string; p_from: string; p_to: string }
+        Returns: Json
+      }
+      report_wht_pnd: {
+        Args: {
+          p_company_id: string
+          p_form: Database['public']['Enums']['wht_form']
+          p_from: string
+          p_to: string
+        }
+        Returns: Json
+      }
+      report_wht_received: {
+        Args: { p_company_id: string; p_from: string; p_to: string }
+        Returns: Json
+      }
       revoke_share_link: { Args: { p_token: string }; Returns: undefined }
       save_document: { Args: { p_doc: Json }; Returns: string }
       save_manual_journal: { Args: { p_payload: Json }; Returns: string }
       save_payment: { Args: { p_pay: Json }; Returns: string }
+      set_received_wht_cert: {
+        Args: {
+          p_cert_date: string
+          p_cert_no: string
+          p_document_id: string
+          p_payment_id: string
+        }
+        Returns: undefined
+      }
       set_vat_claim: {
         Args: {
           p_claim_month: string

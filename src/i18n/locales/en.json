@@ -280,7 +280,8 @@
     "VAT_PREVIOUS_MONTH_NOT_FILED": "Record the previous month’s filing first",
     "VAT_LATER_MONTH_FILED": "A later month is already recorded as filed — undo that one first",
     "VAT_EXCESS_CHOICE_REQUIRED": "Choose refund or carry forward",
-    "VAT_CARRIED_IN_INVALID": "An opening carry-forward is only allowed on the first filing and cannot be negative"
+    "VAT_CARRIED_IN_INVALID": "An opening carry-forward is only allowed on the first filing and cannot be negative",
+    "WHT_CERT_TARGET": "This document has no tax withheld"
   },
   "contacts": {
     "title": "Contacts",
@@ -1297,5 +1298,63 @@
       "month": "Input VAT claim month",
       "hint": "Used in the input VAT report · empty = the reference and document date · a claim may be moved up to 6 months after the invoice month"
     }
+  },
+  "whtReport": {
+    "title": "Withholding tax reports",
+    "info": "Monthly PND.3 / PND.53 by income type with the attachment, and registers of 50 Tawi certificates issued and received",
+    "month": "Tax month",
+    "year": "Tax year",
+    "wholeYear": "Whole year",
+    "tabs": {
+      "pnd3": "PND.3",
+      "pnd53": "PND.53",
+      "issued": "50 Tawi issued",
+      "received": "50 Tawi received"
+    },
+    "summary": "Summary by income type",
+    "attachment": "Attachment",
+    "disclaimer": "This is a draft to help you file — not a filing. Check it against the 50 Tawi certificates before submitting (due the 7th of next month, or the 15th when filed online).",
+    "notes": {
+      "pnd3": "Payees who are individuals · by payment date (the certificate date) · voided certificates excluded · condition: 1 withheld, 2 borne by us always, 3 borne by us once",
+      "pnd53": "Payees that are companies · by payment date (the certificate date) · voided certificates excluded · condition: 1 withheld, 2 borne by us always, 3 borne by us once",
+      "issued": "Every certificate the company issued (voided ones are listed but not totalled)",
+      "received": "Tax customers withheld from us (a credit against income tax) — record their 50 Tawi number on the receipt / cash sale"
+    },
+    "empty": "Nothing in this period",
+    "labels": {
+      "seq": "No.",
+      "taxId": "Tax ID",
+      "payee": "Payee",
+      "payer": "Payer (withholder)",
+      "branch": "Branch",
+      "headOffice": "Head office",
+      "date": "Payment date",
+      "incomeType": "Income type",
+      "rate": "Rate",
+      "income": "Amount paid",
+      "tax": "Tax withheld",
+      "condition": "Condition",
+      "total": "Total",
+      "payees": "payees",
+      "lines": "Lines",
+      "number": "50 Tawi no.",
+      "form": "Form",
+      "pnd3": "PND.3",
+      "pnd53": "PND.53",
+      "status": "Status",
+      "voided": "Voided",
+      "ourDoc": "Our document",
+      "certNo": "50 Tawi no. received",
+      "certDate": "50 Tawi date",
+      "missing": "Not received"
+    }
+  },
+  "whtReceived": {
+    "title": "Tax withheld by the customer",
+    "amount": "Withheld",
+    "certNo": "50 Tawi no.",
+    "certDate": "50 Tawi date",
+    "missing": "50 Tawi not received yet",
+    "hint": "Record the number and date of the withholding certificate (50 Tawi) the customer sent you, as evidence for the tax credit — it does not change the books."
   }
 }
