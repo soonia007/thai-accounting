@@ -836,6 +836,7 @@ export type Database = {
           document_id: string | null
           entry_date: string
           id: string
+          manual_journal_id: string | null
           payment_id: string | null
           reverses_entry_id: string | null
         }
@@ -848,6 +849,7 @@ export type Database = {
           document_id?: string | null
           entry_date: string
           id?: string
+          manual_journal_id?: string | null
           payment_id?: string | null
           reverses_entry_id?: string | null
         }
@@ -859,6 +861,7 @@ export type Database = {
           document_id?: string | null
           entry_date?: string
           id?: string
+          manual_journal_id?: string | null
           payment_id?: string | null
           reverses_entry_id?: string | null
         }
@@ -882,6 +885,13 @@ export type Database = {
             columns: ['company_id', 'payment_id']
             isOneToOne: false
             referencedRelation: 'payments'
+            referencedColumns: ['company_id', 'id']
+          },
+          {
+            foreignKeyName: 'journal_entries_manual_journal_fk'
+            columns: ['company_id', 'manual_journal_id']
+            isOneToOne: false
+            referencedRelation: 'manual_journals'
             referencedColumns: ['company_id', 'id']
           },
           {
@@ -949,6 +959,128 @@ export type Database = {
             isOneToOne: false
             referencedRelation: 'journal_entries'
             referencedColumns: ['company_id', 'id']
+          },
+        ]
+      }
+      manual_journal_lines: {
+        Row: {
+          account_id: string | null
+          company_id: string
+          contact_id: string | null
+          credit: number
+          debit: number
+          description: string | null
+          id: string
+          journal_id: string
+          line_no: number
+        }
+        ComputedFields: never
+        Insert: {
+          account_id?: string | null
+          company_id: string
+          contact_id?: string | null
+          credit?: number
+          debit?: number
+          description?: string | null
+          id?: string
+          journal_id: string
+          line_no: number
+        }
+        Update: {
+          account_id?: string | null
+          company_id?: string
+          contact_id?: string | null
+          credit?: number
+          debit?: number
+          description?: string | null
+          id?: string
+          journal_id?: string
+          line_no?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'manual_journal_lines_company_id_account_id_fkey'
+            columns: ['company_id', 'account_id']
+            isOneToOne: false
+            referencedRelation: 'accounts'
+            referencedColumns: ['company_id', 'id']
+          },
+          {
+            foreignKeyName: 'manual_journal_lines_company_id_contact_id_fkey'
+            columns: ['company_id', 'contact_id']
+            isOneToOne: false
+            referencedRelation: 'contacts'
+            referencedColumns: ['company_id', 'id']
+          },
+          {
+            foreignKeyName: 'manual_journal_lines_company_id_journal_id_fkey'
+            columns: ['company_id', 'journal_id']
+            isOneToOne: false
+            referencedRelation: 'manual_journals'
+            referencedColumns: ['company_id', 'id']
+          },
+        ]
+      }
+      manual_journals: {
+        Row: {
+          company_id: string
+          created_at: string
+          created_by: string | null
+          entry_date: string
+          id: string
+          memo: string | null
+          number: string | null
+          posted_at: string | null
+          posted_by: string | null
+          reference: string | null
+          status: Database['public']['Enums']['document_status']
+          updated_at: string
+          void_reason: string | null
+          voided_at: string | null
+          voided_by: string | null
+        }
+        ComputedFields: never
+        Insert: {
+          company_id: string
+          created_at?: string
+          created_by?: string | null
+          entry_date?: string
+          id?: string
+          memo?: string | null
+          number?: string | null
+          posted_at?: string | null
+          posted_by?: string | null
+          reference?: string | null
+          status?: Database['public']['Enums']['document_status']
+          updated_at?: string
+          void_reason?: string | null
+          voided_at?: string | null
+          voided_by?: string | null
+        }
+        Update: {
+          company_id?: string
+          created_at?: string
+          created_by?: string | null
+          entry_date?: string
+          id?: string
+          memo?: string | null
+          number?: string | null
+          posted_at?: string | null
+          posted_by?: string | null
+          reference?: string | null
+          status?: Database['public']['Enums']['document_status']
+          updated_at?: string
+          void_reason?: string | null
+          voided_at?: string | null
+          voided_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'manual_journals_company_id_fkey'
+            columns: ['company_id']
+            isOneToOne: false
+            referencedRelation: 'companies'
+            referencedColumns: ['id']
           },
         ]
       }
@@ -1484,13 +1616,16 @@ export type Database = {
         }[]
       }
       post_document: { Args: { p_document_id: string }; Returns: Json }
+      post_manual_journal: { Args: { p_id: string }; Returns: Json }
       post_payment: { Args: { p_payment_id: string }; Returns: Json }
       print_document: { Args: { p_document_id?: string; p_payment_id?: string }; Returns: Json }
       print_wht_certificate: { Args: { p_certificate_id: string }; Returns: Json }
       remove_member: { Args: { p_company_id: string; p_user_id: string }; Returns: undefined }
       revoke_share_link: { Args: { p_token: string }; Returns: undefined }
       save_document: { Args: { p_doc: Json }; Returns: string }
+      save_manual_journal: { Args: { p_payload: Json }; Returns: string }
       save_payment: { Args: { p_pay: Json }; Returns: string }
+      simulate_manual_journal: { Args: { p_payload: Json }; Returns: Json }
       simulate_posting: { Args: { p_kind: string; p_payload: Json }; Returns: Json }
       update_member_role: {
         Args: {
@@ -1501,6 +1636,7 @@ export type Database = {
         Returns: undefined
       }
       void_document: { Args: { p_document_id: string; p_reason: string }; Returns: undefined }
+      void_manual_journal: { Args: { p_id: string; p_reason: string }; Returns: undefined }
       void_payment: { Args: { p_payment_id: string; p_reason: string }; Returns: undefined }
       wht_tax: {
         Args: {
