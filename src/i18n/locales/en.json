@@ -1041,6 +1041,42 @@
       "sales": "Issue sales documents, collect cash",
       "purchases": "Record purchases, pay vendors",
       "books": "Journal entries and master data"
+    },
+    "modeCash": "Cash",
+    "chartCash": "Monthly cash in and out",
+    "cashIn": "Cash in",
+    "cashOut": "Cash out",
+    "netCash": "Net cash",
+    "scope": {
+      "label": "Show",
+      "all": "All companies ({{count}})",
+      "note": "Simple totals — inter-company items aren't eliminated"
+    },
+    "aging": {
+      "ar": "Receivables aging",
+      "ap": "Payables aging",
+      "detail": "Details",
+      "none": "Nothing outstanding 🎉",
+      "current": "Not yet due",
+      "d30": "1–30 days overdue",
+      "d60": "31–60 days overdue",
+      "d90": "61–90 days overdue",
+      "over90": "90+ days overdue"
+    },
+    "tax": {
+      "title": "Tax filings due this month",
+      "hint": "For {{month}} — amounts estimated from your records",
+      "none": "Nothing to file this month",
+      "due": "Paper {{paper}} · e-filing {{efiling}}",
+      "refund": "Credit {{amount}}",
+      "filed": "Filed",
+      "open": "Prepare",
+      "estimate": "Deadlines may shift on holidays — check with the Revenue Department.",
+      "forms": {
+        "pp30": "PP30 (VAT)",
+        "pnd3": "ภ.ง.ด.3",
+        "pnd53": "ภ.ง.ด.53"
+      }
     }
   },
   "sandbox": {

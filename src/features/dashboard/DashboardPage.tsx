@@ -38,6 +38,7 @@ import { AnimatedMoney } from '@/components/AnimatedNumber'
 import { PageHeader } from '@/components/PageHeader'
 import { GettingStarted } from './GettingStarted'
 import { LowStock } from './LowStock'
+import { AgingCard, TaxDueCard, type AgingSide, type TaxDue } from './FinanceCards'
 import { useCompany } from '@/features/company/CompanyProvider'
 import { MyInvitations } from '@/features/company/MyInvitations'
 import { formatMoney } from '@/lib/format'
@@ -48,6 +49,8 @@ interface MonthRow {
   month: string
   revenue: number
   expenses: number
+  cash_in: number
+  cash_out: number
 }
 interface Summary {
   months: MonthRow[]
@@ -55,31 +58,40 @@ interface Summary {
   receivables: number
   payables: number
   overdue: { count: number; amount: number }
+  aging: { ar: AgingSide; ap: AgingSide }
+  taxes: TaxDue[]
+  tax_month: string
 }
 
 type Range = 6 | 12
-type ChartMode = 'flow' | 'profit'
+type ChartMode = 'flow' | 'profit' | 'cash'
 
-function useDashboard(companyId: string, months: Range) {
+function useDashboard(companyIds: string[], months: Range) {
   return useQuery({
-    queryKey: ['dashboard', companyId, months],
+    queryKey: ['dashboard', companyIds, months],
     queryFn: async (): Promise<Summary> => {
-      const { data, error } = await supabase.rpc('dashboard_summary', {
-        p_company_id: companyId,
+      const { data, error } = await supabase.rpc('dashboard_full', {
+        p_company_ids: companyIds,
         p_months: months,
       })
       if (error) throw error
-      const d = data as unknown as Summary
+      const d = data as unknown as Omit<Summary, 'overdue'>
+      const ar = d.aging.ar
       return {
         ...d,
         cash: Number(d.cash),
         receivables: Number(d.receivables),
         payables: Number(d.payables),
-        overdue: { count: Number(d.overdue.count), amount: Number(d.overdue.amount) },
+        overdue: {
+          count: Number(ar.overdue_count),
+          amount: Number(ar.d30) + Number(ar.d60) + Number(ar.d90) + Number(ar.over90),
+        },
         months: d.months.map((m) => ({
           month: m.month,
           revenue: Number(m.revenue),
           expenses: Number(m.expenses),
+          cash_in: Number(m.cash_in),
+          cash_out: Number(m.cash_out),
         })),
       }
     },
@@ -194,11 +206,13 @@ interface TipProps {
   payload?: readonly { payload?: unknown }[]
   label?: string | number
 }
-function ChartTooltip({ active, payload, label }: TipProps) {
+function ChartTooltip({ active, payload, label, cash }: TipProps & { cash?: boolean }) {
   const { t, i18n } = useTranslation()
   if (!active || !payload?.length) return null
   const row = payload[0].payload as MonthRow & { label: string }
-  const profit = row.revenue - row.expenses
+  const a = cash ? row.cash_in : row.revenue
+  const b = cash ? row.cash_out : row.expenses
+  const profit = a - b
   const line = (color: string, name: string, v: number) => (
     <div className="flex items-center justify-between gap-6">
       <span className="flex items-center gap-2 text-muted-foreground">
@@ -212,11 +226,13 @@ function ChartTooltip({ active, payload, label }: TipProps) {
     <div className="min-w-52 rounded-xl border border-border/70 bg-card/95 p-3 text-sm shadow-raised backdrop-blur">
       <div className="mb-2 font-semibold">{label}</div>
       <div className="flex flex-col gap-1">
-        {line('var(--chart-1)', t('dashboard.revenue'), row.revenue)}
-        {line('var(--chart-2)', t('dashboard.expenses'), row.expenses)}
+        {line('var(--chart-1)', t(cash ? 'dashboard.cashIn' : 'dashboard.revenue'), a)}
+        {line('var(--chart-2)', t(cash ? 'dashboard.cashOut' : 'dashboard.expenses'), b)}
       </div>
       <div className="mt-2 flex items-center justify-between gap-6 border-t pt-2">
-        <span className="text-muted-foreground">{t('dashboard.profit')}</span>
+        <span className="text-muted-foreground">
+          {t(cash ? 'dashboard.netCash' : 'dashboard.profit')}
+        </span>
         <span
           className={cn(
             'font-semibold tabular-nums',
@@ -230,17 +246,17 @@ function ChartTooltip({ active, payload, label }: TipProps) {
   )
 }
 
-function Legend() {
+function Legend({ cash }: { cash?: boolean }) {
   const { t } = useTranslation()
   return (
     <div className="flex items-center gap-4 text-xs text-muted-foreground">
       <span className="flex items-center gap-1.5">
         <span className="size-2.5 rounded-sm bg-chart-1" />
-        {t('dashboard.revenue')}
+        {t(cash ? 'dashboard.cashIn' : 'dashboard.revenue')}
       </span>
       <span className="flex items-center gap-1.5">
         <span className="size-2.5 rounded-sm bg-chart-2" />
-        {t('dashboard.expenses')}
+        {t(cash ? 'dashboard.cashOut' : 'dashboard.expenses')}
       </span>
     </div>
   )
@@ -248,10 +264,12 @@ function Legend() {
 
 export function DashboardPage() {
   const { t, i18n } = useTranslation()
-  const { current } = useCompany()
+  const { current, companies } = useCompany()
   const [range, setRange] = useState<Range>(12)
   const [mode, setMode] = useState<ChartMode>('flow')
-  const summary = useDashboard(current!.id, range)
+  const [scope, setScope] = useState<'one' | 'all'>('one')
+  const multi = companies.length > 1 && scope === 'all'
+  const summary = useDashboard(multi ? companies.map((c) => c.id) : [current!.id], range)
   const d = summary.data
 
   const monthFmt = new Intl.DateTimeFormat(i18n.language === 'en' ? 'en-US' : 'th-TH', {
@@ -264,7 +282,10 @@ export function DashboardPage() {
   }))
   const thisM = rows.at(-1)
   const lastM = rows.at(-2)
-  const hasData = rows.some((r) => r.revenue !== 0 || r.expenses !== 0)
+  const hasData = rows.some(
+    (r) => r.revenue !== 0 || r.expenses !== 0 || r.cash_in !== 0 || r.cash_out !== 0,
+  )
+  const isCash = mode === 'cash'
   const axisMoney = (v: number) =>
     new Intl.NumberFormat(i18n.language === 'en' ? 'en-US' : 'th-TH', {
       notation: 'compact',
@@ -333,6 +354,23 @@ export function DashboardPage() {
           </>
         }
       />
+
+      {companies.length > 1 && (
+        <div className="flex flex-wrap items-center gap-2">
+          <Segmented
+            label={t('dashboard.scope.label')}
+            value={scope}
+            onChange={setScope}
+            options={[
+              { value: 'one', label: current!.name },
+              { value: 'all', label: t('dashboard.scope.all', { count: companies.length }) },
+            ]}
+          />
+          {multi && (
+            <span className="text-xs text-muted-foreground">{t('dashboard.scope.note')}</span>
+          )}
+        </div>
+      )}
 
       <GettingStarted companyId={current!.id} />
       <LowStock companyId={current!.id} />
@@ -427,7 +465,13 @@ export function DashboardPage() {
         <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
           <div>
             <h2 className="text-[15px] font-semibold tracking-tight">
-              {mode === 'flow' ? t('dashboard.chartFlow') : t('dashboard.chartProfit')}
+              {t(
+                mode === 'flow'
+                  ? 'dashboard.chartFlow'
+                  : mode === 'cash'
+                    ? 'dashboard.chartCash'
+                    : 'dashboard.chartProfit',
+              )}
             </h2>
             <p className="text-xs text-muted-foreground">{t('dashboard.chartHint')}</p>
           </div>
@@ -439,6 +483,7 @@ export function DashboardPage() {
               options={[
                 { value: 'flow', label: t('dashboard.modeFlow') },
                 { value: 'profit', label: t('dashboard.modeProfit') },
+                { value: 'cash', label: t('dashboard.modeCash') },
               ]}
             />
             <Segmented
@@ -452,7 +497,7 @@ export function DashboardPage() {
             />
           </div>
         </div>
-        {mode === 'flow' && hasData && <Legend />}
+        {mode !== 'profit' && hasData && <Legend cash={isCash} />}
         <div
           className={cn(
             'mt-3 h-72 transition-opacity duration-300',
@@ -468,7 +513,7 @@ export function DashboardPage() {
             </div>
           ) : (
             <ResponsiveContainer width="100%" height="100%">
-              {mode === 'flow' ? (
+              {mode !== 'profit' ? (
                 <BarChart
                   data={rows}
                   barGap={2}
@@ -491,19 +536,24 @@ export function DashboardPage() {
                   />
                   <Tooltip
                     content={(p) => (
-                      <ChartTooltip active={p.active} payload={p.payload} label={p.label} />
+                      <ChartTooltip
+                        active={p.active}
+                        payload={p.payload}
+                        label={p.label}
+                        cash={isCash}
+                      />
                     )}
                     cursor={{ fill: 'var(--accent)', opacity: 0.7, radius: 8 } as object}
                   />
                   <Bar
-                    dataKey="revenue"
+                    dataKey={isCash ? 'cash_in' : 'revenue'}
                     fill="var(--chart-1)"
                     radius={[4, 4, 0, 0]}
                     maxBarSize={28}
                     animationDuration={700}
                   />
                   <Bar
-                    dataKey="expenses"
+                    dataKey={isCash ? 'cash_out' : 'expenses'}
                     fill="var(--chart-2)"
                     radius={[4, 4, 0, 0]}
                     maxBarSize={28}
@@ -572,6 +622,8 @@ export function DashboardPage() {
                   <th className="py-1.5 font-medium">{t('dashboard.revenue')}</th>
                   <th className="py-1.5 font-medium">{t('dashboard.expenses')}</th>
                   <th className="py-1.5 font-medium">{t('dashboard.profit')}</th>
+                  <th className="py-1.5 font-medium">{t('dashboard.cashIn')}</th>
+                  <th className="py-1.5 font-medium">{t('dashboard.cashOut')}</th>
                 </tr>
               </thead>
               <tbody>
@@ -583,12 +635,21 @@ export function DashboardPage() {
                     <td className="py-1.5">{formatMoney(r.revenue, i18n.language)}</td>
                     <td className="py-1.5">{formatMoney(r.expenses, i18n.language)}</td>
                     <td className="py-1.5">{formatMoney(r.profit, i18n.language)}</td>
+                    <td className="py-1.5">{formatMoney(r.cash_in, i18n.language)}</td>
+                    <td className="py-1.5">{formatMoney(r.cash_out, i18n.language)}</td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
         </details>
+      </section>
+
+      {/* M16: aging + tax calendar */}
+      <section className="grid gap-3 lg:grid-cols-3">
+        <AgingCard side="ar" data={d?.aging.ar} />
+        <AgingCard side="ap" data={d?.aging.ap} />
+        <TaxDueCard month={d?.tax_month ?? ''} items={d?.taxes ?? []} multi={multi} />
       </section>
 
       {/* Sandbox teaser */}

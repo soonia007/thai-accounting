@@ -2426,6 +2426,7 @@ export type Database = {
         Args: { p_document_id?: string; p_expires_at?: string; p_payment_id?: string }
         Returns: string
       }
+      dashboard_full: { Args: { p_company_ids: string[]; p_months?: number }; Returns: Json }
       dashboard_summary: { Args: { p_company_id: string; p_months?: number }; Returns: Json }
       depreciation_preview: { Args: { p_company_id: string; p_month: string }; Returns: Json }
       disposal_preview: {
