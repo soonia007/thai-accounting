@@ -318,6 +318,186 @@ export type Database = {
           },
         ]
       }
+      bank_import_mappings: {
+        Row: {
+          bank_code: string
+          company_id: string
+          mapping: NonNullable<Json>
+          updated_at: string
+        }
+        ComputedFields: never
+        Insert: {
+          bank_code: string
+          company_id: string
+          mapping: NonNullable<Json>
+          updated_at?: string
+        }
+        Update: {
+          bank_code?: string
+          company_id?: string
+          mapping?: NonNullable<Json>
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'bank_import_mappings_company_id_fkey'
+            columns: ['company_id']
+            isOneToOne: false
+            referencedRelation: 'companies'
+            referencedColumns: ['id']
+          },
+        ]
+      }
+      bank_matches: {
+        Row: {
+          company_id: string
+          created_at: string
+          id: string
+          journal_line_id: string
+          statement_line_id: string
+        }
+        ComputedFields: never
+        Insert: {
+          company_id: string
+          created_at?: string
+          id?: string
+          journal_line_id: string
+          statement_line_id: string
+        }
+        Update: {
+          company_id?: string
+          created_at?: string
+          id?: string
+          journal_line_id?: string
+          statement_line_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'bank_matches_company_id_statement_line_id_fkey'
+            columns: ['company_id', 'statement_line_id']
+            isOneToOne: false
+            referencedRelation: 'bank_statement_lines'
+            referencedColumns: ['company_id', 'id']
+          },
+          {
+            foreignKeyName: 'bank_matches_journal_line_id_fkey'
+            columns: ['journal_line_id']
+            isOneToOne: true
+            referencedRelation: 'journal_lines'
+            referencedColumns: ['id']
+          },
+        ]
+      }
+      bank_statement_lines: {
+        Row: {
+          amount: number
+          balance: number | null
+          bank_account_id: string
+          company_id: string
+          description: string
+          id: string
+          line_no: number
+          matched_at: string | null
+          matched_by: string | null
+          reference: string | null
+          statement_id: string
+          txn_date: string
+        }
+        ComputedFields: never
+        Insert: {
+          amount: number
+          balance?: number | null
+          bank_account_id: string
+          company_id: string
+          description?: string
+          id?: string
+          line_no: number
+          matched_at?: string | null
+          matched_by?: string | null
+          reference?: string | null
+          statement_id: string
+          txn_date: string
+        }
+        Update: {
+          amount?: number
+          balance?: number | null
+          bank_account_id?: string
+          company_id?: string
+          description?: string
+          id?: string
+          line_no?: number
+          matched_at?: string | null
+          matched_by?: string | null
+          reference?: string | null
+          statement_id?: string
+          txn_date?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'bank_statement_lines_company_id_bank_account_id_fkey'
+            columns: ['company_id', 'bank_account_id']
+            isOneToOne: false
+            referencedRelation: 'bank_accounts'
+            referencedColumns: ['company_id', 'id']
+          },
+          {
+            foreignKeyName: 'bank_statement_lines_company_id_statement_id_fkey'
+            columns: ['company_id', 'statement_id']
+            isOneToOne: false
+            referencedRelation: 'bank_statements'
+            referencedColumns: ['company_id', 'id']
+          },
+        ]
+      }
+      bank_statements: {
+        Row: {
+          bank_account_id: string
+          company_id: string
+          date_from: string | null
+          date_to: string | null
+          file_name: string | null
+          id: string
+          imported_at: string
+          imported_by: string | null
+        }
+        ComputedFields: never
+        Insert: {
+          bank_account_id: string
+          company_id: string
+          date_from?: string | null
+          date_to?: string | null
+          file_name?: string | null
+          id?: string
+          imported_at?: string
+          imported_by?: string | null
+        }
+        Update: {
+          bank_account_id?: string
+          company_id?: string
+          date_from?: string | null
+          date_to?: string | null
+          file_name?: string | null
+          id?: string
+          imported_at?: string
+          imported_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'bank_statements_company_id_bank_account_id_fkey'
+            columns: ['company_id', 'bank_account_id']
+            isOneToOne: false
+            referencedRelation: 'bank_accounts'
+            referencedColumns: ['company_id', 'id']
+          },
+          {
+            foreignKeyName: 'bank_statements_company_id_fkey'
+            columns: ['company_id']
+            isOneToOne: false
+            referencedRelation: 'companies'
+            referencedColumns: ['id']
+          },
+        ]
+      }
       companies: {
         Row: {
           address: string | null
@@ -1589,6 +1769,12 @@ export type Database = {
         Args: { p_role: Database['public']['Enums']['account_role'] }
         Returns: Database['public']['Enums']['account_type']
       }
+      bank_match_suggestions: { Args: { p_bank_account_id: string }; Returns: Json }
+      bank_reconcile_data: { Args: { p_bank_account_id: string }; Returns: Json }
+      bank_reconciliation: {
+        Args: { p_as_of: string; p_bank_account_id: string; p_statement_balance?: number }
+        Returns: Json
+      }
       calc_line: {
         Args: {
           p_discount: number
@@ -1611,6 +1797,10 @@ export type Database = {
           p_ledger_code: string
           p_ledger_name: string
         }
+        Returns: string
+      }
+      create_bank_adjustment: {
+        Args: { p_account_id: string; p_memo?: string; p_statement_line_id: string }
         Returns: string
       }
       create_company: {
@@ -1642,6 +1832,10 @@ export type Database = {
         Returns: undefined
       }
       get_shared_document: { Args: { p_token: string }; Returns: Json }
+      import_bank_statement: {
+        Args: { p_bank_account_id: string; p_file_name: string; p_lines: Json; p_mapping?: Json }
+        Returns: Json
+      }
       is_valid_thai_tax_id: { Args: { p_tax_id: string }; Returns: boolean }
       list_documents: {
         Args: { p_company_id: string; p_types: Database['public']['Enums']['document_type'][] }
@@ -1679,6 +1873,10 @@ export type Database = {
           status: Database['public']['Enums']['document_status']
           wht_amount: number
         }[]
+      }
+      match_bank_line: {
+        Args: { p_journal_line_ids: string[]; p_statement_line_id: string }
+        Returns: undefined
       }
       my_invitations: {
         Args: Record<PropertyKey, never>
@@ -1776,6 +1974,7 @@ export type Database = {
       simulate_manual_journal: { Args: { p_payload: Json }; Returns: Json }
       simulate_posting: { Args: { p_kind: string; p_payload: Json }; Returns: Json }
       unfile_vat_return: { Args: { p_company_id: string; p_month: string }; Returns: undefined }
+      unmatch_bank_line: { Args: { p_statement_line_id: string }; Returns: undefined }
       update_member_role: {
         Args: {
           p_company_id: string

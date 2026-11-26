@@ -410,3 +410,11 @@ esourcesin` — ถ้า terminal หา `docker` ไม่เจอให้�
 - ContactDialog / ProductDialog รับ `defaultType` / `defaultName` / `onCreated` และกัน submit ทะลุไปฟอร์มเอกสาร
 - Dashboard: การ์ด "เริ่มต้นใช้งาน FINORA" 6 ขั้น ติ๊กเองจากข้อมูลจริง มีแถบความคืบหน้า เน้นขั้นถัดไป ซ่อนได้ และหายเองเมื่อครบ
 - หน้าสร้างบริษัท: error ฐานข้อมูลยังไม่อัปเดตแสดงคำแนะนำแทนข้อความดิบ
+
+## M12 — กระทบยอดธนาคาร (2026-11-26)
+
+- migration `20261125130000_m12_bank_reconciliation.sql`: ตาราง `bank_statements`, `bank_statement_lines`, `bank_matches`, `bank_import_mappings`; RPC `import_bank_statement` (ข้ามรายการซ้ำ, จำ mapping ต่อธนาคาร), `bank_reconcile_data`, `bank_match_suggestions`, `match_bank_line` (หลายรายการบัญชีต่อ 1 รายการ statement), `unmatch_bank_line`, `create_bank_adjustment` (D15), `bank_reconciliation`
+- หน้า `/accounting/bank-reconciliation` (เมนู บัญชี → กระทบยอดธนาคาร + แท็บในหมวดบัญชี): ขั้นตอน 4 ข้อบนหน้า, สรุปยอด, นำเข้า CSV/Excel (ลากวาง → เลือกคอลัมน์ + ตัวอย่างการอ่าน; วันที่ พ.ศ./ค.ศ., ถอน/ฝาก หรือคอลัมน์เดียว), จับคู่อัตโนมัติ (ยืนยันทีละคู่หรือทั้งหมด), จับคู่เอง (ไฮไลต์ยอดเท่ากัน + ยอดที่เลือก), ลงบัญชีด่วน, ปุ่มไปรับ/จ่ายชำระพร้อมกรอกค่าไว้, รายงานกระทบยอด + PDF/Excel
+- หน้ารับ/จ่ายชำระรับค่า `?date=&account=&ref=&amount=` จาก statement
+- ทดสอบ: pgTAP `13_m12_bank_reconciliation.test.sql` (15) รวม 319; Vitest 160 (parse + report); ในเบราว์เซอร์: นำเข้า CSV แบบกสิกร → จับคู่อัตโนมัติ 3 คู่ → ค่าธรรมเนียม JV → รายงานผลต่าง 0
+- ถัดไป: M13 สต็อกสินค้า

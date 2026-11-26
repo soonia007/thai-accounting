@@ -281,7 +281,15 @@
     "VAT_LATER_MONTH_FILED": "A later month is already recorded as filed — undo that one first",
     "VAT_EXCESS_CHOICE_REQUIRED": "Choose refund or carry forward",
     "VAT_CARRIED_IN_INVALID": "An opening carry-forward is only allowed on the first filing and cannot be negative",
-    "WHT_CERT_TARGET": "This document has no tax withheld"
+    "WHT_CERT_TARGET": "This document has no tax withheld",
+    "BANK_ACCOUNT_NOT_FOUND": "Bank account not found",
+    "BANK_STATEMENT_EMPTY": "The file has no lines",
+    "BANK_STATEMENT_LINE_INVALID": "Some lines have an invalid date or amount",
+    "BANK_LINE_NOT_FOUND": "Statement line not found",
+    "BANK_LINE_ALREADY_MATCHED": "This line is already matched",
+    "BANK_BOOK_LINE_INVALID": "A selected book line is already matched or belongs to another account",
+    "BANK_MATCH_AMOUNT_MISMATCH": "The selected total does not equal the statement amount",
+    "BANK_ADJUSTMENT_ACCOUNT": "Choose an account other than this bank account"
   },
   "contacts": {
     "title": "Contacts",
@@ -1394,6 +1402,109 @@
         "title": "Open the trial balance and reports",
         "hint": "Every figure comes from your posted documents"
       }
+    }
+  },
+  "bankRecon": {
+    "tab": "Bank reconciliation",
+    "title": "Bank reconciliation",
+    "info": "Import your bank statement, match it to the books and check that the balances agree",
+    "importStatement": "Import statement",
+    "matchGroup": "Match",
+    "autoMatch": "Auto-match",
+    "noBank": "No bank account yet",
+    "noBankHint": "Add the company bank account first, then come back to import a statement",
+    "addBank": "Add bank account",
+    "steps": {
+      "s1": "Import the statement file (CSV/Excel) from your bank",
+      "s2": "Press \"Auto-match\" or match lines yourself",
+      "s3": "Lines not in the books (charges, interest) post in one click",
+      "s4": "Check the reconciliation — the difference must be 0"
+    },
+    "tiles": {
+      "book": "Book balance (today)",
+      "statement": "Latest statement balance",
+      "unmatched": "Statement lines to match",
+      "bookOpen": "Unmatched book lines"
+    },
+    "tabs": {
+      "match": "Match",
+      "report": "Reconciliation report"
+    },
+    "noSuggestions": "No same-amount pairs within 7 days — match lines yourself below",
+    "matchedCount": "{{count}} lines matched",
+    "suggestTitle": "{{count}} likely pairs found — review and confirm",
+    "confirmPairs": "Confirm {{count}} pairs",
+    "noStatement": "No statement imported yet",
+    "noStatementHint": "Download the account statement from internet banking as CSV or Excel and import it here — the first time you choose the columns, they are remembered after that",
+    "statementSide": "Statement lines",
+    "bookSide": "Unmatched book lines",
+    "hideMatched": "Hide matched",
+    "matchedWith": "Matched with",
+    "unmatch": "Unmatch",
+    "pick": "Match manually",
+    "postFee": "Post as expense / charge",
+    "postIncome": "Post as income / interest",
+    "receiveFromCustomer": "Receive from customer →",
+    "payVendor": "Pay vendor →",
+    "pickHint": "Tick book lines adding up to {{amount}} — same-amount lines have a green border",
+    "selectFirst": "Choose a statement line on the left, then tick the matching book lines",
+    "bookEmpty": "All book lines are matched",
+    "pickedSum": "Selected",
+    "matchNow": "Match",
+    "fromStatement": "Statement amount: {{amount}} — choose the contact and documents so the payment matches it",
+    "import": {
+      "title": "Import statement",
+      "step1": "Choose the account statement file (CSV or Excel .xlsx) downloaded from your bank",
+      "step2": "Check each field points at the right column — remembered for this bank",
+      "drop": "Drop the file here or click to choose",
+      "formats": "CSV or Excel (.xlsx) · re-importing is safe, lines already imported are skipped",
+      "readError": "Could not read the file — use CSV or .xlsx with a header row",
+      "otherFile": "Choose another file",
+      "none": "— none —",
+      "fields": {
+        "date": "Date",
+        "dateOrder": "Date format",
+        "description": "Description",
+        "reference": "Reference",
+        "amount": "Amount (+ in / − out)",
+        "balance": "Balance",
+        "withdrawal": "Withdrawal / out",
+        "deposit": "Deposit / in"
+      },
+      "moneyHint": "Use \"Amount\" when the file has one column that is negative for money out, or \"Withdrawal\" + \"Deposit\" when they are separate",
+      "preview": "How it will be read ({{count}} lines)",
+      "skippedRows": "Unreadable rows skipped: {{rows}}",
+      "submit": "Import {{count}} lines",
+      "done": "Imported {{inserted}} lines ({{skipped}} duplicates skipped)"
+    },
+    "adjust": {
+      "title": "Post a statement line",
+      "info": "For lines without a document, e.g. bank charges or interest — a journal entry (JV) is posted and matched straight away",
+      "accountOut": "Expense account",
+      "accountIn": "Income account",
+      "choose": "— choose an account —",
+      "memo": "Description",
+      "previewOut": "Posts: debit the chosen account / credit the bank",
+      "previewIn": "Posts: debit the bank / credit the chosen account",
+      "submit": "Post and match"
+    },
+    "report": {
+      "title": "Bank reconciliation",
+      "date": "Date",
+      "ref": "Ref.",
+      "description": "Description",
+      "amount": "Amount",
+      "statementBalance": "Balance per statement",
+      "bookOnly": "Add/less: in the books, not yet on the statement",
+      "statementOnly": "Less/add: on the statement, not yet in the books",
+      "adjusted": "Adjusted balance",
+      "bookBalance": "Balance per books",
+      "difference": "Difference",
+      "none": "None",
+      "overrideBalance": "Statement balance (optional override)",
+      "needBalance": "The imported file has no balance column — enter the statement balance to see the difference",
+      "ok": "Reconciled — difference 0",
+      "notOk": "There is a difference — check the unmatched lines"
     }
   }
 }

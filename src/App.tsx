@@ -52,6 +52,9 @@ const VatReportPage = lazy(() =>
 const WhtReportPage = lazy(() =>
   import('@/features/wht/WhtReportPage').then((m) => ({ default: m.WhtReportPage })),
 )
+const BankReconPage = lazy(() =>
+  import('@/features/bank-recon/BankReconPage').then((m) => ({ default: m.BankReconPage })),
+)
 
 export default function App() {
   return (
@@ -80,6 +83,7 @@ export default function App() {
               <Route path="/accounting/accounts" element={<ChartOfAccountsPage />} />
               <Route path="/accounting/mappings" element={<MappingsPage />} />
               <Route path="/accounting/bank-accounts" element={<BankAccountsPage />} />
+              <Route path="/accounting/bank-reconciliation" element={<BankReconPage />} />
               <Route path="/accounting/journal" element={<JournalListPage />} />
               <Route path="/accounting/journal/new" element={<JournalEntryPage />} />
               <Route path="/accounting/journal/:id" element={<JournalEntryPage />} />

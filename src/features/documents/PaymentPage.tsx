@@ -91,9 +91,11 @@ function PaymentEditor({ direction }: { direction: Direction }) {
   const { data: contacts = [] } = useContacts(companyId)
   const { data: moneyAccounts = [] } = useMoneyAccounts(companyId)
   const [contactId, setContactId] = useState(params.get('contact') ?? '')
-  const [payDate, setPayDate] = useState(todayBangkok())
-  const [accountId, setAccountId] = useState('')
-  const [reference, setReference] = useState('')
+  // prefill from a bank statement line (M12: "receive / pay" from bank reconciliation)
+  const [payDate, setPayDate] = useState(params.get('date') ?? todayBangkok())
+  const [accountId, setAccountId] = useState(params.get('account') ?? '')
+  const [reference, setReference] = useState(params.get('ref') ?? '')
+  const statementAmount = params.get('amount')
   const [edits, setEdits] = useState<Record<string, Partial<AllocRow>>>({})
   const [whtCondition, setWhtCondition] = useState<WhtCondition>('withhold')
   const preselect = params.get('doc')
@@ -231,6 +233,15 @@ function PaymentEditor({ direction }: { direction: Direction }) {
 
       <div className="grid gap-4 md:grid-cols-[minmax(0,1fr)_22rem] lg:grid-cols-[minmax(0,1fr)_26rem] xl:grid-cols-[minmax(0,1fr)_30rem] 2xl:grid-cols-[minmax(0,1fr)_36rem]">
         <div className="flex min-w-0 flex-col gap-4" {...focusTracking}>
+          {statementAmount && (
+            <Alert>
+              <AlertDescription>
+                {t('bankRecon.fromStatement', {
+                  amount: formatMoney(Number(statementAmount), i18n.language),
+                })}
+              </AlertDescription>
+            </Alert>
+          )}
           {post.error && (
             <Alert variant="destructive">
               <AlertDescription>{dbErrorMessage(t, post.error)}</AlertDescription>
