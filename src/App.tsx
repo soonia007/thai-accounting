@@ -58,6 +58,9 @@ const BankReconPage = lazy(() =>
 const InventoryPage = lazy(() =>
   import('@/features/inventory/InventoryPage').then((m) => ({ default: m.InventoryPage })),
 )
+const FixedAssetsPage = lazy(() =>
+  import('@/features/fixed-assets/FixedAssetsPage').then((m) => ({ default: m.FixedAssetsPage })),
+)
 
 export default function App() {
   return (
@@ -88,6 +91,7 @@ export default function App() {
               <Route path="/accounting/bank-accounts" element={<BankAccountsPage />} />
               <Route path="/accounting/bank-reconciliation" element={<BankReconPage />} />
               <Route path="/accounting/inventory" element={<InventoryPage />} />
+              <Route path="/accounting/fixed-assets" element={<FixedAssetsPage />} />
               <Route path="/accounting/journal" element={<JournalListPage />} />
               <Route path="/accounting/journal/new" element={<JournalEntryPage />} />
               <Route path="/accounting/journal/:id" element={<JournalEntryPage />} />

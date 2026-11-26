@@ -161,6 +161,62 @@ export type Database = {
           },
         ]
       }
+      asset_categories: {
+        Row: {
+          accum_account_id: string
+          asset_account_id: string
+          company_id: string
+          created_at: string
+          default_life_months: number
+          id: string
+          is_active: boolean
+          name: string
+        }
+        ComputedFields: never
+        Insert: {
+          accum_account_id: string
+          asset_account_id: string
+          company_id: string
+          created_at?: string
+          default_life_months: number
+          id?: string
+          is_active?: boolean
+          name: string
+        }
+        Update: {
+          accum_account_id?: string
+          asset_account_id?: string
+          company_id?: string
+          created_at?: string
+          default_life_months?: number
+          id?: string
+          is_active?: boolean
+          name?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'asset_categories_company_id_accum_account_id_fkey'
+            columns: ['company_id', 'accum_account_id']
+            isOneToOne: false
+            referencedRelation: 'accounts'
+            referencedColumns: ['company_id', 'id']
+          },
+          {
+            foreignKeyName: 'asset_categories_company_id_asset_account_id_fkey'
+            columns: ['company_id', 'asset_account_id']
+            isOneToOne: false
+            referencedRelation: 'accounts'
+            referencedColumns: ['company_id', 'id']
+          },
+          {
+            foreignKeyName: 'asset_categories_company_id_fkey'
+            columns: ['company_id']
+            isOneToOne: false
+            referencedRelation: 'companies'
+            referencedColumns: ['id']
+          },
+        ]
+      }
       attachments: {
         Row: {
           company_id: string
@@ -712,6 +768,79 @@ export type Database = {
           },
         ]
       }
+      depreciation_lines: {
+        Row: {
+          amount: number
+          asset_id: string
+          run_id: string
+        }
+        ComputedFields: never
+        Insert: {
+          amount: number
+          asset_id: string
+          run_id: string
+        }
+        Update: {
+          amount?: number
+          asset_id?: string
+          run_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'depreciation_lines_asset_id_fkey'
+            columns: ['asset_id']
+            isOneToOne: false
+            referencedRelation: 'fixed_assets'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'depreciation_lines_run_id_fkey'
+            columns: ['run_id']
+            isOneToOne: false
+            referencedRelation: 'depreciation_runs'
+            referencedColumns: ['id']
+          },
+        ]
+      }
+      depreciation_runs: {
+        Row: {
+          company_id: string
+          id: string
+          month: string
+          posted_at: string
+          posted_by: string | null
+          status: Database['public']['Enums']['document_status']
+          total: number
+        }
+        ComputedFields: never
+        Insert: {
+          company_id: string
+          id?: string
+          month: string
+          posted_at?: string
+          posted_by?: string | null
+          status?: Database['public']['Enums']['document_status']
+          total: number
+        }
+        Update: {
+          company_id?: string
+          id?: string
+          month?: string
+          posted_at?: string
+          posted_by?: string | null
+          status?: Database['public']['Enums']['document_status']
+          total?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'depreciation_runs_company_id_fkey'
+            columns: ['company_id']
+            isOneToOne: false
+            referencedRelation: 'companies'
+            referencedColumns: ['id']
+          },
+        ]
+      }
       doc_sequences: {
         Row: {
           company_id: string
@@ -1031,14 +1160,125 @@ export type Database = {
           },
         ]
       }
+      fixed_assets: {
+        Row: {
+          acquired_on: string
+          category_id: string
+          code: string
+          company_id: string
+          cost: number
+          created_at: string
+          created_by: string | null
+          disposal_accum: number | null
+          disposal_document_id: string | null
+          disposal_proceeds: number | null
+          disposed_on: string | null
+          id: string
+          life_months: number
+          name: string
+          notes: string | null
+          opening_accum: number
+          salvage: number
+          source: string
+          source_document_id: string | null
+          source_line_id: string | null
+          status: string
+        }
+        ComputedFields: never
+        Insert: {
+          acquired_on: string
+          category_id: string
+          code: string
+          company_id: string
+          cost: number
+          created_at?: string
+          created_by?: string | null
+          disposal_accum?: number | null
+          disposal_document_id?: string | null
+          disposal_proceeds?: number | null
+          disposed_on?: string | null
+          id?: string
+          life_months: number
+          name: string
+          notes?: string | null
+          opening_accum?: number
+          salvage?: number
+          source: string
+          source_document_id?: string | null
+          source_line_id?: string | null
+          status?: string
+        }
+        Update: {
+          acquired_on?: string
+          category_id?: string
+          code?: string
+          company_id?: string
+          cost?: number
+          created_at?: string
+          created_by?: string | null
+          disposal_accum?: number | null
+          disposal_document_id?: string | null
+          disposal_proceeds?: number | null
+          disposed_on?: string | null
+          id?: string
+          life_months?: number
+          name?: string
+          notes?: string | null
+          opening_accum?: number
+          salvage?: number
+          source?: string
+          source_document_id?: string | null
+          source_line_id?: string | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'fixed_assets_company_id_category_id_fkey'
+            columns: ['company_id', 'category_id']
+            isOneToOne: false
+            referencedRelation: 'asset_categories'
+            referencedColumns: ['company_id', 'id']
+          },
+          {
+            foreignKeyName: 'fixed_assets_company_id_disposal_document_id_fkey'
+            columns: ['company_id', 'disposal_document_id']
+            isOneToOne: false
+            referencedRelation: 'documents'
+            referencedColumns: ['company_id', 'id']
+          },
+          {
+            foreignKeyName: 'fixed_assets_company_id_fkey'
+            columns: ['company_id']
+            isOneToOne: false
+            referencedRelation: 'companies'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'fixed_assets_company_id_source_document_id_fkey'
+            columns: ['company_id', 'source_document_id']
+            isOneToOne: false
+            referencedRelation: 'documents'
+            referencedColumns: ['company_id', 'id']
+          },
+          {
+            foreignKeyName: 'fixed_assets_source_line_id_fkey'
+            columns: ['source_line_id']
+            isOneToOne: true
+            referencedRelation: 'document_lines'
+            referencedColumns: ['id']
+          },
+        ]
+      }
       journal_entries: {
         Row: {
           company_id: string
           created_at: string
           created_by: string | null
+          depreciation_run_id: string | null
           description: string | null
           document_id: string | null
           entry_date: string
+          fixed_asset_id: string | null
           id: string
           manual_journal_id: string | null
           payment_id: string | null
@@ -1050,9 +1290,11 @@ export type Database = {
           company_id: string
           created_at?: string
           created_by?: string | null
+          depreciation_run_id?: string | null
           description?: string | null
           document_id?: string | null
           entry_date: string
+          fixed_asset_id?: string | null
           id?: string
           manual_journal_id?: string | null
           payment_id?: string | null
@@ -1063,9 +1305,11 @@ export type Database = {
           company_id?: string
           created_at?: string
           created_by?: string | null
+          depreciation_run_id?: string | null
           description?: string | null
           document_id?: string | null
           entry_date?: string
+          fixed_asset_id?: string | null
           id?: string
           manual_journal_id?: string | null
           payment_id?: string | null
@@ -1092,6 +1336,20 @@ export type Database = {
             columns: ['company_id', 'payment_id']
             isOneToOne: false
             referencedRelation: 'payments'
+            referencedColumns: ['company_id', 'id']
+          },
+          {
+            foreignKeyName: 'journal_entries_depreciation_run_fk'
+            columns: ['company_id', 'depreciation_run_id']
+            isOneToOne: false
+            referencedRelation: 'depreciation_runs'
+            referencedColumns: ['company_id', 'id']
+          },
+          {
+            foreignKeyName: 'journal_entries_fixed_asset_fk'
+            columns: ['company_id', 'fixed_asset_id']
+            isOneToOne: false
+            referencedRelation: 'fixed_assets'
             referencedColumns: ['company_id', 'id']
           },
           {
@@ -2064,6 +2322,12 @@ export type Database = {
         Returns: string
       }
       dashboard_summary: { Args: { p_company_id: string; p_months?: number }; Returns: Json }
+      depreciation_preview: { Args: { p_company_id: string; p_month: string }; Returns: Json }
+      disposal_preview: {
+        Args: { p_asset_id: string; p_date: string; p_proceeds: number }
+        Returns: Json
+      }
+      dispose_fixed_asset: { Args: { p_payload: Json }; Returns: string }
       document_balance: { Args: { p_document_id: string }; Returns: Json }
       file_vat_return: {
         Args: {
@@ -2074,11 +2338,13 @@ export type Database = {
         }
         Returns: undefined
       }
+      fixed_asset_register: { Args: { p_as_of: string; p_company_id: string }; Returns: Json }
       get_shared_document: { Args: { p_token: string }; Returns: Json }
       import_bank_statement: {
         Args: { p_bank_account_id: string; p_file_name: string; p_lines: Json; p_mapping?: Json }
         Returns: Json
       }
+      init_asset_categories: { Args: { p_company_id: string }; Returns: undefined }
       is_valid_thai_tax_id: { Args: { p_tax_id: string }; Returns: boolean }
       list_documents: {
         Args: { p_company_id: string; p_types: Database['public']['Enums']['document_type'][] }
@@ -2155,6 +2421,7 @@ export type Database = {
       post_stock_adjustment: { Args: { p_payload: Json }; Returns: string }
       print_document: { Args: { p_document_id?: string; p_payment_id?: string }; Returns: Json }
       print_wht_certificate: { Args: { p_certificate_id: string }; Returns: Json }
+      register_fixed_asset: { Args: { p_payload: Json }; Returns: string }
       remove_member: { Args: { p_company_id: string; p_user_id: string }; Returns: undefined }
       report_balance_sheet: { Args: { p_as_of: string; p_company_ids: string[] }; Returns: Json }
       report_general_ledger: {
@@ -2193,6 +2460,7 @@ export type Database = {
         Returns: Json
       }
       revoke_share_link: { Args: { p_token: string }; Returns: undefined }
+      run_depreciation: { Args: { p_company_id: string; p_month: string }; Returns: string }
       save_document: { Args: { p_doc: Json }; Returns: string }
       save_manual_journal: { Args: { p_payload: Json }; Returns: string }
       save_payment: { Args: { p_pay: Json }; Returns: string }
@@ -2222,6 +2490,7 @@ export type Database = {
       stock_card: { Args: { p_from: string; p_product_id: string; p_to: string }; Returns: Json }
       unfile_vat_return: { Args: { p_company_id: string; p_month: string }; Returns: undefined }
       unmatch_bank_line: { Args: { p_statement_line_id: string }; Returns: undefined }
+      unregistered_asset_lines: { Args: { p_company_id: string }; Returns: Json }
       update_member_role: {
         Args: {
           p_company_id: string
@@ -2231,6 +2500,7 @@ export type Database = {
         Returns: undefined
       }
       vat_return_summary: { Args: { p_company_id: string; p_month: string }; Returns: Json }
+      void_depreciation_run: { Args: { p_run_id: string }; Returns: undefined }
       void_document: { Args: { p_document_id: string; p_reason: string }; Returns: undefined }
       void_manual_journal: { Args: { p_id: string; p_reason: string }; Returns: undefined }
       void_payment: { Args: { p_payment_id: string; p_reason: string }; Returns: undefined }
@@ -2264,6 +2534,9 @@ export type Database = {
         | 'WHT_BORNE_EXPENSE'
         | 'COGS'
         | 'INVENTORY_ADJUSTMENT'
+        | 'DEPRECIATION_EXPENSE'
+        | 'ASSET_DISPOSAL_GAIN'
+        | 'ASSET_DISPOSAL_LOSS'
       account_type: 'asset' | 'liability' | 'equity' | 'revenue' | 'expense'
       bank_account_kind: 'savings' | 'current' | 'fixed' | 'other'
       business_type: 'service' | 'trading' | 'manufacturing' | 'restaurant'
@@ -2421,6 +2694,9 @@ export const Constants = {
         'WHT_BORNE_EXPENSE',
         'COGS',
         'INVENTORY_ADJUSTMENT',
+        'DEPRECIATION_EXPENSE',
+        'ASSET_DISPOSAL_GAIN',
+        'ASSET_DISPOSAL_LOSS',
       ],
       account_type: ['asset', 'liability', 'equity', 'revenue', 'expense'],
       bank_account_kind: ['savings', 'current', 'fixed', 'other'],

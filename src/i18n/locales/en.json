@@ -156,7 +156,10 @@
     "INPUT_VAT_DEFERRED": "Deferred input VAT",
     "WHT_BORNE_EXPENSE": "Income tax borne for payees",
     "COGS": "Cost of goods sold",
-    "INVENTORY_ADJUSTMENT": "Inventory shrinkage and damage"
+    "INVENTORY_ADJUSTMENT": "Inventory shrinkage and damage",
+    "DEPRECIATION_EXPENSE": "Depreciation",
+    "ASSET_DISPOSAL_GAIN": "Gain on disposal of assets",
+    "ASSET_DISPOSAL_LOSS": "Loss on disposal of assets"
   },
   "accounts": {
     "title": "Chart of accounts",
@@ -200,7 +203,10 @@
       "INPUT_VAT_DEFERRED": "VAT on services bought on credit, until paid",
       "WHT_BORNE_EXPENSE": "Withholding tax you pay on the payee's behalf (not deducted from them)",
       "COGS": "Cost of stocked goods when they are sold (posted automatically)",
-      "INVENTORY_ADJUSTMENT": "Count differences and damaged stock"
+      "INVENTORY_ADJUSTMENT": "Count differences and damaged stock",
+      "DEPRECIATION_EXPENSE": "Monthly depreciation of fixed assets",
+      "ASSET_DISPOSAL_GAIN": "Assets sold above book value",
+      "ASSET_DISPOSAL_LOSS": "Sold below book value or written off"
     }
   },
   "dbErrors": {
@@ -303,7 +309,17 @@
     "STOCK_PRODUCT_NOT_TRACKED": "This product does not track stock",
     "STOCK_UNIT_COST_REQUIRED": "Enter a unit cost (nothing in stock yet to average)",
     "STOCK_ADJUSTMENT_EMPTY": "Enter at least one line that changes stock",
-    "STOCK_ADJUSTMENT_KIND": "Opening stock must be a positive quantity"
+    "STOCK_ADJUSTMENT_KIND": "Opening stock must be a positive quantity",
+    "ASSET_CATEGORY_REQUIRED": "Choose an asset category",
+    "ASSET_SOURCE_INVALID": "The purchase line is invalid or already registered",
+    "DEPRECIATION_FUTURE_MONTH": "A future month cannot be posted yet",
+    "DEPRECIATION_MONTH_DONE": "This month (or a later one) is already posted",
+    "DEPRECIATION_NOTHING": "No depreciation is due this month",
+    "DEPRECIATION_NOT_LATEST": "Only the latest month can be undone",
+    "DEPRECIATION_ASSET_DISPOSED": "An asset in this run was disposed of since; it cannot be undone",
+    "ASSET_ALREADY_DISPOSED": "This asset is already disposed of",
+    "ASSET_DISPOSAL_DATE": "The disposal date cannot be before the asset was in use",
+    "ASSET_DISPOSAL_PROCEEDS": "The price cannot be negative"
   },
   "contacts": {
     "title": "Contacts",
@@ -539,6 +555,18 @@
       "INVENTORY_ADJUSTMENT": {
         "dr": "Stock shortage / damage {{amount}} (expense)",
         "cr": "Stock surplus found {{amount}}"
+      },
+      "DEPRECIATION_EXPENSE": {
+        "dr": "Depreciation {{amount}} (profit down)",
+        "cr": "Depreciation down {{amount}}"
+      },
+      "ASSET_DISPOSAL_GAIN": {
+        "dr": "Gain on asset sale down {{amount}}",
+        "cr": "Gain on asset sale {{amount}}"
+      },
+      "ASSET_DISPOSAL_LOSS": {
+        "dr": "Loss on asset disposal {{amount}}",
+        "cr": "Loss on disposal down {{amount}}"
       }
     },
     "money": {
@@ -1650,6 +1678,123 @@
       "notLocked": "Can still change (no stock movement yet) — owner or admin only",
       "warehouse": "Warehouse",
       "warehouseInfo": "One warehouse for now (main) — you can rename it; more warehouses are supported later"
+    }
+  },
+  "fa": {
+    "tab": "Fixed assets",
+    "title": "Fixed assets",
+    "info": "Asset register, monthly depreciation (one button) and sales / write-offs",
+    "registerButton": "Register asset",
+    "registerNow": "Register now",
+    "pendingPurchases": "{{count}} asset purchases are not registered yet —",
+    "purchasePrompt": "This document bought {{count}} fixed assets — register them so depreciation runs automatically:",
+    "registerThis": "Register \"{{name}}\" →",
+    "emptyTitle": "No fixed assets yet",
+    "emptyStep1": "Buy assets on a bill / cash purchase using an asset account (e.g. 1210 Office equipment) — or bring in assets you already own",
+    "emptyStep2": "Press \"Register asset\" and choose category, useful life and salvage value",
+    "emptyStep3": "Every month one button posts depreciation for all assets",
+    "tiles": {
+      "count": "Assets in use",
+      "cost": "Total cost",
+      "nbv": "Net book value",
+      "monthly": "Depreciation / month (approx.)"
+    },
+    "dep": {
+      "title": "Monthly depreciation",
+      "next": "{{month}}: depreciation {{amount}} on {{count}} assets is not posted yet",
+      "upToDate": "Depreciation is posted up to this month",
+      "behind": "({{count}} months behind — post them one by one, in order)",
+      "post": "Post depreciation for {{month}}",
+      "undo": "Undo the latest month",
+      "undoConfirm": "Undo this month’s depreciation? The entry will be reversed."
+    },
+    "registerReport": {
+      "title": "Fixed asset register",
+      "code": "Code",
+      "name": "Asset",
+      "category": "Category",
+      "acquired": "Acquired",
+      "cost": "Cost",
+      "accum": "Accumulated depreciation",
+      "nbv": "Net book value",
+      "status": "Status",
+      "disposed": "Disposed",
+      "total": "Total (in use)"
+    },
+    "showDisposed": "Show disposed",
+    "depreciatedPct": "{{pct}}% depreciated",
+    "monthly": "Depreciation / month",
+    "accum": "Accumulated",
+    "nbv": "Net book value",
+    "disposedOn": "Disposed on {{date}} for {{amount}}",
+    "viewSale": "View the sale",
+    "viewPurchase": "View the purchase",
+    "plan": {
+      "month": "Month",
+      "amount": "Depreciation",
+      "note": "Straight-line plan — the first month counts the days in use; faded rows are already posted"
+    },
+    "fields": {
+      "name": "Asset name",
+      "namePlaceholder": "e.g. MacBook Pro 14\"",
+      "category": "Category",
+      "chooseCategory": "— choose a category —",
+      "years": "{{n}} yrs",
+      "startDate": "In use from",
+      "cost": "Cost",
+      "lifeYears": "Useful life (years)",
+      "salvage": "Salvage value",
+      "salvageHint": "Optional — what is left at the end of its life (not depreciated)",
+      "openingAccum": "Accumulated depreciation brought forward",
+      "openingDate": "Brought forward on"
+    },
+    "register": {
+      "title": "Register a fixed asset",
+      "info": "Choose where the asset comes from; depreciation then runs every month",
+      "sources": {
+        "document": "From a purchase",
+        "opening": "Owned before FINORA",
+        "recorded": "Already in the books"
+      },
+      "sourceInfo": {
+        "document": "A bill / cash purchase posted to an asset account",
+        "opening": "You had it before starting FINORA",
+        "recorded": "You booked it yourself (e.g. a JV)"
+      },
+      "purchaseLine": "Purchase line",
+      "choosePurchase": "— choose a purchase line —",
+      "noPending": "No unregistered purchases posted to an asset account yet",
+      "preview": "About {{monthly}} per month · first month ({{firstMonth}}) {{first}} · fully depreciated in {{end}}",
+      "posting": {
+        "document": "No extra entry — the purchase already debited the asset account",
+        "opening": "Posts: debit the asset / credit retained earnings and accumulated depreciation brought forward",
+        "recorded": "No extra entry — for assets you already booked yourself"
+      },
+      "submit": "Register"
+    },
+    "dispose": {
+      "button": "Sell / write off",
+      "info": "Depreciation is brought up to the disposal date, cost and accumulated depreciation are cleared and the gain / loss is posted — with a price, a cash sale (tax invoice number, VAT) is issued for you",
+      "date": "Disposal date",
+      "proceeds": "Price (before VAT)",
+      "proceedsHint": "Enter 0 to write off (scrapped / damaged)",
+      "buyer": "Buyer",
+      "noBuyer": "— not specified —",
+      "receivedInto": "Received into",
+      "topUp": "Depreciation up to the disposal date",
+      "gain": "Gain on disposal",
+      "loss": "Loss on disposal",
+      "vatNote": "Output VAT {{vat}} on the cash sale (in the output VAT report)",
+      "submitSale": "Record the sale",
+      "submitWriteOff": "Write off"
+    },
+    "categories": {
+      "title": "Asset categories",
+      "info": "Each category links the asset account, the accumulated depreciation account and a default life",
+      "name": "Category name",
+      "assetAccount": "Asset account",
+      "accumAccount": "Accumulated depreciation account",
+      "add": "Add category"
     }
   }
 }

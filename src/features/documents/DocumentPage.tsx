@@ -8,6 +8,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert'
 import { ActionGroup, PageHeader } from '@/components/PageHeader'
 import { VatClaimCard } from '@/features/vat/VatClaimCard'
 import { ContactDialog } from '@/features/contacts/ContactDialog'
+import { usePendingLines } from '@/features/fixed-assets/queries'
 import { WhtReceivedCard } from '@/features/wht/WhtReceivedCard'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
@@ -693,6 +694,7 @@ function PostedDocument({ direction, id }: { direction: Direction; id: string })
           onSaved={() => void queryClient.invalidateQueries({ queryKey: ['document', id] })}
         />
       )}
+      {(type === 'bill' || type === 'cash_purchase') && <AssetPrompt documentId={doc.id} />}
       {(type === 'bill' || type === 'cash_purchase') &&
         current!.vat_registered &&
         Number(doc.vat_total) > 0 && (
@@ -830,5 +832,28 @@ function PostedDocument({ direction, id }: { direction: Direction; id: string })
         }}
       />
     </div>
+  )
+}
+
+/** M14: a purchase posted to a fixed-asset account → offer to register the asset (one click). */
+function AssetPrompt({ documentId }: { documentId: string }) {
+  const { t } = useTranslation()
+  const { current } = useCompany()
+  const pending = usePendingLines(current!.id)
+  const lines = (pending.data ?? []).filter((l) => l.document_id === documentId)
+  if (!lines.length || !canEditFinanceSetup(current?.role)) return null
+  return (
+    <Alert>
+      <AlertDescription className="flex flex-wrap items-center gap-2">
+        {t('fa.purchasePrompt', { count: lines.length })}
+        {lines.map((l) => (
+          <Button key={l.line_id} size="sm" variant="outline" className="h-7" asChild>
+            <Link to={`/accounting/fixed-assets?register=${l.line_id}`}>
+              {t('fa.registerThis', { name: l.description })}
+            </Link>
+          </Button>
+        ))}
+      </AlertDescription>
+    </Alert>
   )
 }
