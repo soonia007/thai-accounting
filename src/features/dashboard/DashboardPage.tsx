@@ -36,6 +36,7 @@ import {
 } from 'recharts'
 import { AnimatedMoney } from '@/components/AnimatedNumber'
 import { PageHeader } from '@/components/PageHeader'
+import { GettingStarted } from './GettingStarted'
 import { useCompany } from '@/features/company/CompanyProvider'
 import { MyInvitations } from '@/features/company/MyInvitations'
 import { formatMoney } from '@/lib/format'
@@ -331,6 +332,8 @@ export function DashboardPage() {
           </>
         }
       />
+
+      <GettingStarted companyId={current!.id} />
 
       {/* Quick actions, grouped by area of work */}
       <section aria-label={t('dashboard.quickActions')} className="grid gap-3 md:grid-cols-3">

@@ -82,9 +82,21 @@ interface Props {
   accounts: Account[]
   product: Product | null | undefined
   onClose: () => void
+  /** New product only: preset name (e.g. what was typed on the document line) */
+  defaultName?: string
+  /** New product only: called with the saved row, e.g. to put it on the line that opened it */
+  onCreated?: (product: Product) => void
 }
 
-export function ProductDialog({ companyId, vatRegistered, accounts, product, onClose }: Props) {
+export function ProductDialog({
+  companyId,
+  vatRegistered,
+  accounts,
+  product,
+  onClose,
+  defaultName,
+  onCreated,
+}: Props) {
   const { t, i18n } = useTranslation()
   const queryClient = useQueryClient()
   const open = product !== undefined
@@ -99,8 +111,12 @@ export function ProductDialog({ companyId, vatRegistered, accounts, product, onC
     formState: { errors },
   } = useForm<FormValues>({ resolver: zodResolver(schema), defaultValues: defaults(null) })
   useEffect(() => {
-    if (open) reset(defaults(product ?? null))
-  }, [open, product, reset])
+    if (open)
+      reset({
+        ...defaults(product ?? null),
+        ...(!product && defaultName ? { name: defaultName } : {}),
+      })
+  }, [open, product, reset, defaultName])
 
   const [kind, vatType, incomeId, expenseId, isActive] = useWatch({
     control,
@@ -136,13 +152,22 @@ export function ProductDialog({ companyId, vatRegistered, accounts, product, onC
         description: v.description || null,
         is_active: v.is_active,
       }
-      const { error } = product
-        ? await supabase.from('products').update(row).eq('id', product.id)
-        : await supabase.from('products').insert({ ...row, company_id: companyId })
+      if (product) {
+        const { error } = await supabase.from('products').update(row).eq('id', product.id)
+        if (error) throw error
+        return null
+      }
+      const { data, error } = await supabase
+        .from('products')
+        .insert({ ...row, company_id: companyId })
+        .select()
+        .single()
       if (error) throw error
+      return data as Product
     },
-    onSuccess: async () => {
+    onSuccess: async (created) => {
       await queryClient.invalidateQueries({ queryKey: ['products', companyId] })
+      if (created) onCreated?.(created)
       onClose()
     },
   })
@@ -194,7 +219,12 @@ export function ProductDialog({ companyId, vatRegistered, accounts, product, onC
           id="product-form"
           className="grid gap-4 sm:grid-cols-2"
           noValidate
-          onSubmit={handleSubmit((v) => save.mutate(v))}
+          onSubmit={(e) => {
+            // opened from inside another form (e.g. an invoice): React bubbles submit through
+            // the portal, so keep it from also submitting that form
+            e.stopPropagation()
+            void handleSubmit((v) => save.mutate(v))(e)
+          }}
         >
           {save.error && (
             <Alert variant="destructive" className="sm:col-span-2">

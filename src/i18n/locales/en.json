@@ -1356,5 +1356,44 @@
     "certDate": "50 Tawi date",
     "missing": "50 Tawi not received yet",
     "hint": "Record the number and date of the withholding certificate (50 Tawi) the customer sent you, as evidence for the tax credit — it does not change the books."
+  },
+  "quickAdd": {
+    "customer": "New customer",
+    "vendor": "New vendor",
+    "noCustomers": "No customers yet — press \"New customer\" to add one without leaving this page",
+    "noVendors": "No vendors yet — press \"New vendor\" to add one without leaving this page",
+    "productOption": "＋ New product / service…"
+  },
+  "gettingStarted": {
+    "title": "Get started with FINORA",
+    "subtitle": "A few minutes of setup — every document then posts to the books for you",
+    "dismiss": "Hide getting started",
+    "progress": "{{done}}/{{total}} steps",
+    "steps": {
+      "company": {
+        "title": "Add company details and logo",
+        "hint": "Address, tax ID, logo — printed on every document"
+      },
+      "contacts": {
+        "title": "Add a customer or vendor",
+        "hint": "Or add them while creating a document, on the same page"
+      },
+      "products": {
+        "title": "Add products / services you sell often",
+        "hint": "Price, VAT and withholding fill in automatically"
+      },
+      "sale": {
+        "title": "Issue your first invoice",
+        "hint": "Watch the posting live in the simulation panel"
+      },
+      "purchase": {
+        "title": "Record your first expense",
+        "hint": "Service bills, rent, goods"
+      },
+      "report": {
+        "title": "Open the trial balance and reports",
+        "hint": "Every figure comes from your posted documents"
+      }
+    }
   }
 }

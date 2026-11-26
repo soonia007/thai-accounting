@@ -1,12 +1,13 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { Ban, CircleDollarSign, Repeat } from 'lucide-react'
-import { useEffect, useMemo, useState } from 'react'
+import { Ban, CircleDollarSign, Plus, Repeat } from 'lucide-react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { ActionGroup, PageHeader } from '@/components/PageHeader'
 import { VatClaimCard } from '@/features/vat/VatClaimCard'
+import { ContactDialog } from '@/features/contacts/ContactDialog'
 import { WhtReceivedCard } from '@/features/wht/WhtReceivedCard'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
@@ -236,11 +237,22 @@ function DocumentEditor({
     },
   })
 
+  const [newContact, setNewContact] = useState(false)
+  // a contact created from this form is selected once it shows up in the (refetched) list
+  const pendingContact = useRef<string | null>(null)
+  const canAddContact = canEditMasterData(current?.role)
   const contactOptions = contacts.filter(
     (c) =>
       (c.is_active || c.id === form.contact_id) &&
       (c.contact_type === 'both' || c.contact_type === (isSale ? 'customer' : 'vendor')),
   )
+  useEffect(() => {
+    const id = pendingContact.current
+    if (id && contactOptions.some((c) => c.id === id)) {
+      setValue('contact_id', id, { shouldDirty: true })
+      pendingContact.current = null
+    }
+  }, [contactOptions, setValue])
 
   return (
     <div className="flex flex-col gap-4 pb-28 md:pb-0">
@@ -268,7 +280,23 @@ function DocumentEditor({
           <Card className="py-4 transition-shadow duration-300 focus-within:ring-2 focus-within:ring-finora-mint/60">
             <CardContent className="grid gap-4 px-4 sm:grid-cols-2">
               <div className="grid gap-2 sm:col-span-2">
-                <Label htmlFor="d-contact">{isSale ? t('docs.customer') : t('docs.vendor')}</Label>
+                <div className="flex items-center justify-between gap-2">
+                  <Label htmlFor="d-contact">
+                    {isSale ? t('docs.customer') : t('docs.vendor')}
+                  </Label>
+                  {canAddContact && (
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      className="h-7 px-2 text-xs text-brand-strong"
+                      onClick={() => setNewContact(true)}
+                    >
+                      <Plus className="size-3.5" />
+                      {isSale ? t('quickAdd.customer') : t('quickAdd.vendor')}
+                    </Button>
+                  )}
+                </div>
                 <select
                   id="d-contact"
                   className="h-10 rounded-xl border bg-card pr-9 pl-3.5 text-sm shadow-xs"
@@ -282,11 +310,18 @@ function DocumentEditor({
                     </option>
                   ))}
                 </select>
-                {contacts.length === 0 && (
-                  <Link to="/contacts" className="text-xs text-primary underline">
-                    {t('docs.addContactFirst')}
-                  </Link>
+                {contactOptions.length === 0 && (
+                  <p className="text-xs text-muted-foreground">
+                    {isSale ? t('quickAdd.noCustomers') : t('quickAdd.noVendors')}
+                  </p>
                 )}
+                <ContactDialog
+                  companyId={current!.id}
+                  contact={newContact ? null : undefined}
+                  defaultType={isSale ? 'customer' : 'vendor'}
+                  onClose={() => setNewContact(false)}
+                  onCreated={(c) => (pendingContact.current = c.id)}
+                />
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="d-date">{t('docs.date')}</Label>
@@ -408,6 +443,8 @@ function DocumentEditor({
                 vatRegistered={co.vat_registered}
                 lineAmounts={totals?.lines}
                 incomeTypes={isSale ? undefined : incomeTypes.data}
+                companyId={current!.id}
+                canAddProduct={canEditMasterData(current?.role)}
               />
             </CardContent>
           </Card>

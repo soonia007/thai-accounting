@@ -85,9 +85,21 @@ interface Props {
   /** `undefined` = closed, `null` = new contact */
   contact: Contact | null | undefined
   onClose: () => void
+  /** New contact only: preset type / name (e.g. opened from a sales or purchase form) */
+  defaultType?: 'customer' | 'vendor'
+  defaultName?: string
+  /** New contact only: called with the saved row, e.g. to select it in the form that opened it */
+  onCreated?: (contact: Contact) => void
 }
 
-export function ContactDialog({ companyId, contact, onClose }: Props) {
+export function ContactDialog({
+  companyId,
+  contact,
+  onClose,
+  defaultType,
+  defaultName,
+  onCreated,
+}: Props) {
   const { t } = useTranslation()
   const queryClient = useQueryClient()
   const open = contact !== undefined
@@ -104,8 +116,17 @@ export function ContactDialog({ companyId, contact, onClose }: Props) {
     defaultValues: defaults(null),
   })
   useEffect(() => {
-    if (open) reset(defaults(contact ?? null))
-  }, [open, contact, reset])
+    if (open)
+      reset({
+        ...defaults(contact ?? null),
+        ...(contact
+          ? {}
+          : {
+              ...(defaultType ? { contact_type: defaultType } : {}),
+              ...(defaultName ? { name: defaultName } : {}),
+            }),
+      })
+  }, [open, contact, reset, defaultType, defaultName])
 
   const [contactType, entityType, isHeadOffice, isActive] = useWatch({
     control,
@@ -131,13 +152,22 @@ export function ContactDialog({ companyId, contact, onClose }: Props) {
         notes: v.notes || null,
         is_active: v.is_active,
       }
-      const { error } = contact
-        ? await supabase.from('contacts').update(row).eq('id', contact.id)
-        : await supabase.from('contacts').insert({ ...row, company_id: companyId })
+      if (contact) {
+        const { error } = await supabase.from('contacts').update(row).eq('id', contact.id)
+        if (error) throw error
+        return null
+      }
+      const { data, error } = await supabase
+        .from('contacts')
+        .insert({ ...row, company_id: companyId })
+        .select()
+        .single()
       if (error) throw error
+      return data as Contact
     },
-    onSuccess: async () => {
+    onSuccess: async (created) => {
       await queryClient.invalidateQueries({ queryKey: ['contacts', companyId] })
+      if (created) onCreated?.(created)
       onClose()
     },
   })
@@ -163,7 +193,12 @@ export function ContactDialog({ companyId, contact, onClose }: Props) {
           id="contact-form"
           className="grid gap-4 sm:grid-cols-2"
           noValidate
-          onSubmit={handleSubmit((v) => save.mutate(v))}
+          onSubmit={(e) => {
+            // opened from inside another form (e.g. an invoice): React bubbles submit through
+            // the portal, so keep it from also submitting that form
+            e.stopPropagation()
+            void handleSubmit((v) => save.mutate(v))(e)
+          }}
         >
           {save.error && (
             <Alert variant="destructive" className="sm:col-span-2">

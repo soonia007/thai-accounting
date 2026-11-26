@@ -1,4 +1,5 @@
 import { Plus, Trash2 } from 'lucide-react'
+import { useState } from 'react'
 import {
   useFieldArray,
   useWatch,
@@ -9,6 +10,8 @@ import {
 import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { useAccounts } from '@/features/accounts/queries'
+import { ProductDialog } from '@/features/products/ProductDialog'
 import type { WhtIncomeType } from '@/features/wht/queries'
 import { formatMoney } from '@/lib/format'
 import type { LineAmounts } from '@/lib/money/calc'
@@ -25,7 +28,12 @@ interface Props {
   lineAmounts: LineAmounts[] | undefined
   /** Purchases: WHT income types (D6); omitted on sales */
   incomeTypes?: WhtIncomeType[]
+  companyId: string
+  /** Show "+ new product / service" in the item picker */
+  canAddProduct?: boolean
 }
+
+const NEW = '__new__'
 
 const WHT_RATES = ['0', '1', '1.5', '2', '3', '5', '10']
 
@@ -38,14 +46,23 @@ export function LinesEditor({
   vatRegistered,
   lineAmounts,
   incomeTypes,
+  companyId,
+  canAddProduct,
 }: Props) {
   const { t, i18n } = useTranslation()
+  // line index the "new product" dialog was opened from (null = closed)
+  const [newFor, setNewFor] = useState<number | null>(null)
+  const { data: accounts = [] } = useAccounts(companyId)
   const { fields, append, remove } = useFieldArray({ control, name: 'lines' })
   const lines = useWatch({ control, name: 'lines' })
 
-  const pickProduct = (index: number, productId: string) => {
+  const pickProduct = (index: number, productId: string, created?: Product) => {
+    if (productId === NEW) {
+      setNewFor(index)
+      return
+    }
     setValue(`lines.${index}.product_id`, productId)
-    const p = products.find((x) => x.id === productId)
+    const p = created ?? products.find((x) => x.id === productId)
     if (!p) return
     setValue(`lines.${index}.description`, p.name)
     setValue(`lines.${index}.item_kind`, p.kind)
@@ -96,6 +113,7 @@ export function LinesEditor({
                 onChange={(e) => pickProduct(i, e.target.value)}
               >
                 <option value="">{t('lines.noProduct')}</option>
+                {canAddProduct && <option value={NEW}>{t('quickAdd.productOption')}</option>}
                 {products
                   .filter((p) => p.is_active || p.id === line?.product_id)
                   .map((p) => (
@@ -225,6 +243,15 @@ export function LinesEditor({
         <Plus className="size-4" />
         {t('lines.add')}
       </Button>
+      <ProductDialog
+        companyId={companyId}
+        vatRegistered={vatRegistered}
+        accounts={accounts}
+        product={newFor === null ? undefined : null}
+        defaultName={newFor === null ? undefined : lines?.[newFor]?.description || undefined}
+        onClose={() => setNewFor(null)}
+        onCreated={(p) => newFor !== null && pickProduct(newFor, p.id, p)}
+      />
     </div>
   )
 }
