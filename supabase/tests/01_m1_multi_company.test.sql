@@ -63,8 +63,8 @@ select is(
   (select array_agg(r order by r) from unnest(enum_range(null::public.account_role)) r
    where r not in (select mapping_role from public.account_templates
                    where business_type = 'service' and mapping_role is not null)),
-  array['INVENTORY']::public.account_role[],
-  'service template maps every role except INVENTORY');
+  null::public.account_role[],
+  'service template maps every role (inventory accounts added in M13)');
 
 -- profiles are created for new auth users
 select is((select count(*)::int from public.profiles where email like '%@test.com'), 4,
@@ -89,7 +89,7 @@ select is(
 select is(
   (select count(*)::int from public.accounts where parent_id is null),
   5, 'only the 5 top-level groups have no parent');
-select is((select count(*)::int from public.account_mappings), 15, 'service company has 15 mappings (incl. deferred VAT, borne WHT)');
+select is((select count(*)::int from public.account_mappings), 18, 'service company has 18 mappings (incl. deferred VAT, borne WHT, inventory/COGS/shrinkage)');
 
 select throws_ok(
   $$ select public.create_company('Bad', 'service', '1111111111111') $$,

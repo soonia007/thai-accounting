@@ -504,6 +504,7 @@ export type Database = {
           branch_code: string
           branch_name: string | null
           business_type: Database['public']['Enums']['business_type']
+          cost_method: string | null
           created_at: string
           created_by: string | null
           date_era: Database['public']['Enums']['date_era']
@@ -526,6 +527,7 @@ export type Database = {
           branch_code?: string
           branch_name?: string | null
           business_type: Database['public']['Enums']['business_type']
+          cost_method?: string | null
           created_at?: string
           created_by?: string | null
           date_era?: Database['public']['Enums']['date_era']
@@ -547,6 +549,7 @@ export type Database = {
           branch_code?: string
           branch_name?: string | null
           business_type?: Database['public']['Enums']['business_type']
+          cost_method?: string | null
           created_at?: string
           created_by?: string | null
           date_era?: Database['public']['Enums']['date_era']
@@ -900,6 +903,7 @@ export type Database = {
           received_wht_cert_no: string | null
           ref_document_id: string | null
           reference: string | null
+          restock: boolean
           source: Database['public']['Enums']['document_source']
           status: Database['public']['Enums']['document_status']
           subtotal: number
@@ -938,6 +942,7 @@ export type Database = {
           received_wht_cert_no?: string | null
           ref_document_id?: string | null
           reference?: string | null
+          restock?: boolean
           source?: Database['public']['Enums']['document_source']
           status?: Database['public']['Enums']['document_status']
           subtotal?: number
@@ -975,6 +980,7 @@ export type Database = {
           received_wht_cert_no?: string | null
           ref_document_id?: string | null
           reference?: string | null
+          restock?: boolean
           source?: Database['public']['Enums']['document_source']
           status?: Database['public']['Enums']['document_status']
           subtotal?: number
@@ -1037,6 +1043,7 @@ export type Database = {
           manual_journal_id: string | null
           payment_id: string | null
           reverses_entry_id: string | null
+          stock_adjustment_id: string | null
         }
         ComputedFields: never
         Insert: {
@@ -1050,6 +1057,7 @@ export type Database = {
           manual_journal_id?: string | null
           payment_id?: string | null
           reverses_entry_id?: string | null
+          stock_adjustment_id?: string | null
         }
         Update: {
           company_id?: string
@@ -1062,6 +1070,7 @@ export type Database = {
           manual_journal_id?: string | null
           payment_id?: string | null
           reverses_entry_id?: string | null
+          stock_adjustment_id?: string | null
         }
         Relationships: [
           {
@@ -1098,6 +1107,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: 'journal_entries'
             referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'journal_entries_stock_adjustment_fk'
+            columns: ['company_id', 'stock_adjustment_id']
+            isOneToOne: false
+            referencedRelation: 'stock_adjustments'
+            referencedColumns: ['company_id', 'id']
           },
         ]
       }
@@ -1451,7 +1467,9 @@ export type Database = {
           kind: Database['public']['Enums']['product_kind']
           name: string
           purchase_price: number | null
+          reorder_level: number | null
           sale_price: number | null
+          track_stock: boolean
           unit: string | null
           updated_at: string
           vat_type: Database['public']['Enums']['product_vat_type']
@@ -1470,7 +1488,9 @@ export type Database = {
           kind?: Database['public']['Enums']['product_kind']
           name: string
           purchase_price?: number | null
+          reorder_level?: number | null
           sale_price?: number | null
+          track_stock?: boolean
           unit?: string | null
           updated_at?: string
           vat_type?: Database['public']['Enums']['product_vat_type']
@@ -1488,7 +1508,9 @@ export type Database = {
           kind?: Database['public']['Enums']['product_kind']
           name?: string
           purchase_price?: number | null
+          reorder_level?: number | null
           sale_price?: number | null
+          track_stock?: boolean
           unit?: string | null
           updated_at?: string
           vat_type?: Database['public']['Enums']['product_vat_type']
@@ -1550,6 +1572,188 @@ export type Database = {
         }
         Relationships: []
       }
+      stock_adjustments: {
+        Row: {
+          adj_date: string
+          company_id: string
+          created_at: string
+          created_by: string | null
+          id: string
+          kind: string
+          memo: string | null
+          number: string
+          status: Database['public']['Enums']['document_status']
+          void_reason: string | null
+          voided_at: string | null
+        }
+        ComputedFields: never
+        Insert: {
+          adj_date: string
+          company_id: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          kind: string
+          memo?: string | null
+          number: string
+          status?: Database['public']['Enums']['document_status']
+          void_reason?: string | null
+          voided_at?: string | null
+        }
+        Update: {
+          adj_date?: string
+          company_id?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          kind?: string
+          memo?: string | null
+          number?: string
+          status?: Database['public']['Enums']['document_status']
+          void_reason?: string | null
+          voided_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'stock_adjustments_company_id_fkey'
+            columns: ['company_id']
+            isOneToOne: false
+            referencedRelation: 'companies'
+            referencedColumns: ['id']
+          },
+        ]
+      }
+      stock_consumptions: {
+        Row: {
+          amount: number
+          layer_movement_id: string
+          out_movement_id: string
+          qty: number
+        }
+        ComputedFields: never
+        Insert: {
+          amount: number
+          layer_movement_id: string
+          out_movement_id: string
+          qty: number
+        }
+        Update: {
+          amount?: number
+          layer_movement_id?: string
+          out_movement_id?: string
+          qty?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'stock_consumptions_layer_movement_id_fkey'
+            columns: ['layer_movement_id']
+            isOneToOne: false
+            referencedRelation: 'stock_movements'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'stock_consumptions_out_movement_id_fkey'
+            columns: ['out_movement_id']
+            isOneToOne: false
+            referencedRelation: 'stock_movements'
+            referencedColumns: ['id']
+          },
+        ]
+      }
+      stock_movements: {
+        Row: {
+          adjustment_id: string | null
+          amount: number
+          company_id: string
+          created_at: string
+          document_id: string | null
+          id: string
+          kind: string
+          move_date: string
+          product_id: string
+          qty: number
+          remaining_amount: number
+          remaining_qty: number
+          reverses_movement_id: string | null
+          seq: number
+          voided_at: string | null
+          warehouse_id: string
+        }
+        ComputedFields: never
+        Insert: {
+          adjustment_id?: string | null
+          amount: number
+          company_id: string
+          created_at?: string
+          document_id?: string | null
+          id?: string
+          kind: string
+          move_date: string
+          product_id: string
+          qty: number
+          remaining_amount?: number
+          remaining_qty?: number
+          reverses_movement_id?: string | null
+          seq?: number
+          voided_at?: string | null
+          warehouse_id: string
+        }
+        Update: {
+          adjustment_id?: string | null
+          amount?: number
+          company_id?: string
+          created_at?: string
+          document_id?: string | null
+          id?: string
+          kind?: string
+          move_date?: string
+          product_id?: string
+          qty?: number
+          remaining_amount?: number
+          remaining_qty?: number
+          reverses_movement_id?: string | null
+          seq?: number
+          voided_at?: string | null
+          warehouse_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'stock_movements_company_id_adjustment_id_fkey'
+            columns: ['company_id', 'adjustment_id']
+            isOneToOne: false
+            referencedRelation: 'stock_adjustments'
+            referencedColumns: ['company_id', 'id']
+          },
+          {
+            foreignKeyName: 'stock_movements_company_id_document_id_fkey'
+            columns: ['company_id', 'document_id']
+            isOneToOne: false
+            referencedRelation: 'documents'
+            referencedColumns: ['company_id', 'id']
+          },
+          {
+            foreignKeyName: 'stock_movements_company_id_product_id_fkey'
+            columns: ['company_id', 'product_id']
+            isOneToOne: false
+            referencedRelation: 'products'
+            referencedColumns: ['company_id', 'id']
+          },
+          {
+            foreignKeyName: 'stock_movements_company_id_warehouse_id_fkey'
+            columns: ['company_id', 'warehouse_id']
+            isOneToOne: false
+            referencedRelation: 'warehouses'
+            referencedColumns: ['company_id', 'id']
+          },
+          {
+            foreignKeyName: 'stock_movements_reverses_movement_id_fkey'
+            columns: ['reverses_movement_id']
+            isOneToOne: false
+            referencedRelation: 'stock_movements'
+            referencedColumns: ['id']
+          },
+        ]
+      }
       vat_returns: {
         Row: {
           carried_in: number
@@ -1594,6 +1798,45 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: 'vat_returns_company_id_fkey'
+            columns: ['company_id']
+            isOneToOne: false
+            referencedRelation: 'companies'
+            referencedColumns: ['id']
+          },
+        ]
+      }
+      warehouses: {
+        Row: {
+          code: string
+          company_id: string
+          created_at: string
+          id: string
+          is_active: boolean
+          is_default: boolean
+          name: string
+        }
+        ComputedFields: never
+        Insert: {
+          code: string
+          company_id: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          is_default?: boolean
+          name: string
+        }
+        Update: {
+          code?: string
+          company_id?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          is_default?: boolean
+          name?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'warehouses_company_id_fkey'
             columns: ['company_id']
             isOneToOne: false
             referencedRelation: 'companies'
@@ -1909,6 +2152,7 @@ export type Database = {
       post_document: { Args: { p_document_id: string }; Returns: Json }
       post_manual_journal: { Args: { p_id: string }; Returns: Json }
       post_payment: { Args: { p_payment_id: string }; Returns: Json }
+      post_stock_adjustment: { Args: { p_payload: Json }; Returns: string }
       print_document: { Args: { p_document_id?: string; p_payment_id?: string }; Returns: Json }
       print_wht_certificate: { Args: { p_certificate_id: string }; Returns: Json }
       remove_member: { Args: { p_company_id: string; p_user_id: string }; Returns: undefined }
@@ -1952,6 +2196,7 @@ export type Database = {
       save_document: { Args: { p_doc: Json }; Returns: string }
       save_manual_journal: { Args: { p_payload: Json }; Returns: string }
       save_payment: { Args: { p_pay: Json }; Returns: string }
+      set_cost_method: { Args: { p_company_id: string; p_method: string }; Returns: undefined }
       set_received_wht_cert: {
         Args: {
           p_cert_date: string
@@ -1973,6 +2218,8 @@ export type Database = {
       }
       simulate_manual_journal: { Args: { p_payload: Json }; Returns: Json }
       simulate_posting: { Args: { p_kind: string; p_payload: Json }; Returns: Json }
+      stock_balance: { Args: { p_as_of: string; p_company_id: string }; Returns: Json }
+      stock_card: { Args: { p_from: string; p_product_id: string; p_to: string }; Returns: Json }
       unfile_vat_return: { Args: { p_company_id: string; p_month: string }; Returns: undefined }
       unmatch_bank_line: { Args: { p_statement_line_id: string }; Returns: undefined }
       update_member_role: {
@@ -1987,6 +2234,7 @@ export type Database = {
       void_document: { Args: { p_document_id: string; p_reason: string }; Returns: undefined }
       void_manual_journal: { Args: { p_id: string; p_reason: string }; Returns: undefined }
       void_payment: { Args: { p_payment_id: string; p_reason: string }; Returns: undefined }
+      void_stock_adjustment: { Args: { p_id: string; p_reason: string }; Returns: undefined }
       wht_tax: {
         Args: {
           p_base: number
@@ -2014,6 +2262,8 @@ export type Database = {
         | 'OUTPUT_VAT_DEFERRED'
         | 'INPUT_VAT_DEFERRED'
         | 'WHT_BORNE_EXPENSE'
+        | 'COGS'
+        | 'INVENTORY_ADJUSTMENT'
       account_type: 'asset' | 'liability' | 'equity' | 'revenue' | 'expense'
       bank_account_kind: 'savings' | 'current' | 'fixed' | 'other'
       business_type: 'service' | 'trading' | 'manufacturing' | 'restaurant'
@@ -2169,6 +2419,8 @@ export const Constants = {
         'OUTPUT_VAT_DEFERRED',
         'INPUT_VAT_DEFERRED',
         'WHT_BORNE_EXPENSE',
+        'COGS',
+        'INVENTORY_ADJUSTMENT',
       ],
       account_type: ['asset', 'liability', 'equity', 'revenue', 'expense'],
       bank_account_kind: ['savings', 'current', 'fixed', 'other'],

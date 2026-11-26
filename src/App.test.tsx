@@ -104,9 +104,9 @@ describe('App routing', () => {
       'href',
       '/reports/trial-balance',
     )
-    const stock = screen.getByText('รายงานสินค้าคงเหลือ').closest('[aria-disabled]')
-    expect(stock).toHaveAttribute('aria-disabled', 'true')
-    expect(stock).toHaveTextContent('M13')
+    const dash = screen.getByText('Dashboard การเงินฉบับเต็ม').closest('[aria-disabled]')
+    expect(dash).toHaveAttribute('aria-disabled', 'true')
+    expect(dash).toHaveTextContent('M16')
     await userEvent.click(screen.getByRole('button', { name: 'บัญชี' }))
     expect(screen.getByRole('link', { name: 'สมุดรายวันทั่วไป' })).toHaveAttribute(
       'href',

@@ -14,6 +14,7 @@ const form = (over: Partial<DocForm> = {}): DocForm => ({
   tax_invoice_no: '',
   tax_invoice_date: '',
   vat_claim_month: '',
+  restock: true,
   lines: [{ ...emptyLine(), description: 'ออกแบบ', unit_price: '10,000', wht_rate: '3' }],
   ...over,
 })

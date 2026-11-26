@@ -3,7 +3,7 @@ import { Ban, CircleDollarSign, Plus, Repeat } from 'lucide-react'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
+import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { ActionGroup, PageHeader } from '@/components/PageHeader'
 import { VatClaimCard } from '@/features/vat/VatClaimCard'
@@ -69,6 +69,7 @@ const blankForm = (): DocForm => ({
   tax_invoice_no: '',
   tax_invoice_date: '',
   vat_claim_month: '',
+  restock: true,
   lines: [emptyLine()],
 })
 
@@ -202,6 +203,7 @@ function DocumentEditor({
     [form, companyId, type, co, id],
   )
   const sim = usePostingSimulation('document', payload.lines.length ? payload : null)
+  const shortages = sim.data?.ok ? (sim.data.stock?.shortages ?? []) : []
 
   const save = useMutation({
     mutationFn: async ({ post }: { post: boolean }) => {
@@ -372,6 +374,15 @@ function DocumentEditor({
                       </option>
                     ))}
                   </select>
+                  {type === 'credit_note' && (
+                    <label className="flex items-center gap-2 text-sm">
+                      <input type="checkbox" {...register('restock')} />
+                      {t('stock.restock')}
+                      <span className="text-xs text-muted-foreground">
+                        {t('stock.restockHint')}
+                      </span>
+                    </label>
+                  )}
                 </div>
               )}
               {co.vat_registered && (
@@ -432,6 +443,18 @@ function DocumentEditor({
             </CardContent>
           </Card>
 
+          {shortages.length > 0 && (
+            <Alert variant="destructive">
+              <AlertDescription>
+                {shortages
+                  .map((s) => t('stock.shortage', { name: s.name, short: Number(s.short) }))
+                  .join(' · ')}{' '}
+                <Link to="/accounting/inventory" className="underline">
+                  {t('stock.shortageAction')}
+                </Link>
+              </AlertDescription>
+            </Alert>
+          )}
           <Card className="py-4 transition-shadow duration-300 focus-within:ring-2 focus-within:ring-finora-mint/60">
             <CardContent className="px-4">
               <LinesEditor

@@ -86,7 +86,7 @@ export const NAV_TREE: NavNode[] = [
     items: [
       leaf('contacts', '/contacts'),
       leaf('products', '/products'),
-      leaf('warehouses', undefined, 'M13'),
+      leaf('warehouses', '/accounting/inventory?tab=settings'),
     ],
   },
   {
@@ -100,7 +100,7 @@ export const NAV_TREE: NavNode[] = [
       leaf('mappings', '/accounting/mappings'),
       leaf('bankAccounts', '/accounting/bank-accounts'),
       leaf('bankRecon', '/accounting/bank-reconciliation'),
-      leaf('stock', undefined, 'M13'),
+      leaf('stock', '/accounting/inventory'),
       leaf('fixedAssets', undefined, 'M14'),
       leaf('periodClose', undefined, 'M15'),
     ],
@@ -118,7 +118,7 @@ export const NAV_TREE: NavNode[] = [
       leaf('arApSummary', '/reports/receivables-payables'),
       leaf('vatReport', '/reports/vat'),
       leaf('whtReport', '/reports/wht'),
-      leaf('stockReport', undefined, 'M13'),
+      leaf('stockReport', '/accounting/inventory?tab=card'),
       leaf('fullDashboard', undefined, 'M16'),
     ],
   },

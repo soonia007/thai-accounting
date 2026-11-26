@@ -418,3 +418,13 @@ esourcesin` — ถ้า terminal หา `docker` ไม่เจอให้�
 - หน้ารับ/จ่ายชำระรับค่า `?date=&account=&ref=&amount=` จาก statement
 - ทดสอบ: pgTAP `13_m12_bank_reconciliation.test.sql` (15) รวม 319; Vitest 160 (parse + report); ในเบราว์เซอร์: นำเข้า CSV แบบกสิกร → จับคู่อัตโนมัติ 3 คู่ → ค่าธรรมเนียม JV → รายงานผลต่าง 0
 - ถัดไป: M13 สต็อกสินค้า
+
+## M13 — สต็อกสินค้า (2026-11-26)
+
+- migrations `20261126000000_m13_roles.sql` (role COGS, INVENTORY_ADJUSTMENT) + `20261126000100_m13_inventory.sql`: บัญชี 1160/5101/5102 ทุกประเภทธุรกิจ (+ backfill), `products.track_stock/reorder_level`, `companies.cost_method`, `warehouses` (คลังหลักอัตโนมัติ), `stock_movements` (FIFO layers), `stock_consumptions`, `stock_adjustments`, `documents.restock`; engine: build_journal/save_document/document_payload/post_document/void_document/simulate_posting รองรับสต็อก; RPC `set_cost_method`, `post_stock_adjustment`, `void_stock_adjustment`, `stock_balance`, `stock_card`
+- ตัดสินใจ D16
+- หน้า `/accounting/inventory`: สินค้าคงเหลือ (มูลค่า, ต้นทุนเฉลี่ย, ใกล้หมด), รายงานสินค้าและวัตถุดิบ (รับ/จ่าย/คงเหลือ จำนวน+มูลค่า), ปรับสต็อก (นับ/เสียหาย/ยอดยกมา/อื่นๆ — ผู้ใช้ใส่สิ่งที่เห็น ระบบคำนวณส่วนต่าง), ตั้งค่า (วิธีคิดต้นทุน, ชื่อคลัง), PDF/Excel; หน้าว่างมี 3 ขั้นตอนเริ่มต้น
+- สินค้า: สวิตช์ "นับสต็อกสินค้านี้" + จุดสั่งซื้อ; ใบลดหนี้: "คืนสินค้าเข้าสต็อก"; ฟอร์มขายเตือน "สต็อกไม่พอ" ขณะพิมพ์; หน้าแรกแจ้งสินค้าใกล้หมด
+- ทดสอบ: pgTAP `14_m13_inventory.test.sql` (17, เทียบตัวเลขคำนวณมือ + มูลค่าสต็อก = ยอดบัญชีสินค้าคงเหลือ) รวม 336 (ปรับ 2 ข้อใน M1: บริษัทบริการได้บัญชีสต็อกเพิ่ม); Vitest 162
+- ทราบไว้: สมุดรายวัน (JV) ยังลงบัญชีสินค้าคงเหลือได้ ซึ่งจะทำให้ยอดบัญชีไม่ตรงกับสต็อก — ควรปรับผ่านหน้าปรับสต็อก (อาจบล็อกเหมือน D9 ภายหลังถ้าเจ้าของต้องการ)
+- ถัดไป: M14 สินทรัพย์ถาวร

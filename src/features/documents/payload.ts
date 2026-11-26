@@ -39,6 +39,8 @@ export interface DocForm {
   tax_invoice_no: string
   tax_invoice_date: string
   vat_claim_month: string
+  /** M13 credit notes: put the returned goods back in stock (D16) */
+  restock: boolean
   lines: LineForm[]
 }
 
@@ -100,6 +102,7 @@ export function toPayload(
           vat_claim_month: form.vat_claim_month ? `${form.vat_claim_month}-01` : null,
         }
       : {}),
+    ...(type === 'credit_note' ? { restock: form.restock } : {}),
     lines: form.lines
       .filter((l) => l.description.trim() || l.product_id || num(l.unit_price) > 0)
       .map((l) => ({
@@ -157,6 +160,7 @@ export function docToForm(doc: DocumentRow, lines: DocumentLine[]): DocForm {
     tax_invoice_no: doc.tax_invoice_no ?? '',
     tax_invoice_date: doc.tax_invoice_date ?? '',
     vat_claim_month: doc.vat_claim_month ? doc.vat_claim_month.slice(0, 7) : '',
+    restock: doc.restock,
     lines: lines.map((l) => ({
       product_id: l.product_id ?? '',
       description: l.description,

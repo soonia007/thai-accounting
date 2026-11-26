@@ -54,6 +54,11 @@ const schema = z.object({
   wht_income_type: z.string(),
   description: z.string().trim(),
   is_active: z.boolean(),
+  track_stock: z.boolean(),
+  reorder_level: z
+    .string()
+    .trim()
+    .refine((v) => v === '' || Number(v.replace(/,/g, '')) >= 0, 'money'),
 })
 type FormValues = z.infer<typeof schema>
 
@@ -73,6 +78,11 @@ function defaults(p: Product | null): FormValues {
     wht_income_type: p?.wht_income_type ?? '',
     description: p?.description ?? '',
     is_active: p?.is_active ?? true,
+    track_stock: p?.track_stock ?? false,
+    reorder_level:
+      p?.reorder_level === null || p?.reorder_level === undefined
+        ? ''
+        : String(Number(p.reorder_level)),
   }
 }
 
@@ -118,9 +128,16 @@ export function ProductDialog({
       })
   }, [open, product, reset, defaultName])
 
-  const [kind, vatType, incomeId, expenseId, isActive] = useWatch({
+  const [kind, vatType, incomeId, expenseId, isActive, trackStock] = useWatch({
     control,
-    name: ['kind', 'vat_type', 'income_account_id', 'expense_account_id', 'is_active'],
+    name: [
+      'kind',
+      'vat_type',
+      'income_account_id',
+      'expense_account_id',
+      'is_active',
+      'track_stock',
+    ],
   })
 
   const postable = (a: Account, keep: string) => !a.is_group && (a.is_active || a.id === keep)
@@ -151,6 +168,12 @@ export function ProductDialog({
         wht_income_type: v.wht_income_type || null,
         description: v.description || null,
         is_active: v.is_active,
+        // M13: only goods can be stocked
+        track_stock: v.kind === 'product' && v.track_stock,
+        reorder_level:
+          v.kind === 'product' && v.track_stock && v.reorder_level !== ''
+            ? Number(v.reorder_level.replace(/,/g, ''))
+            : null,
       }
       if (product) {
         const { error } = await supabase.from('products').update(row).eq('id', product.id)
@@ -341,6 +364,33 @@ export function ProductDialog({
             <p className="text-xs text-muted-foreground">{t('wht.defaultIncomeTypeHelp')}</p>
           </div>
 
+          {kind === 'product' && (
+            <div className="grid gap-3 rounded-xl border border-dashed p-3 sm:col-span-2 sm:grid-cols-2">
+              <div className="flex items-start gap-2 sm:col-span-2">
+                <Switch
+                  id="p-track"
+                  checked={trackStock}
+                  onCheckedChange={(c) => setValue('track_stock', c)}
+                />
+                <div>
+                  <Label htmlFor="p-track">{t('stock.trackStock')}</Label>
+                  <p className="text-xs text-muted-foreground">{t('stock.trackStockHint')}</p>
+                </div>
+              </div>
+              {trackStock && (
+                <div className="grid gap-2">
+                  <Label htmlFor="p-reorder">{t('stock.reorderLevel')}</Label>
+                  <Input
+                    id="p-reorder"
+                    inputMode="decimal"
+                    placeholder="0"
+                    {...register('reorder_level')}
+                  />
+                  <p className="text-xs text-muted-foreground">{t('stock.reorderHint')}</p>
+                </div>
+              )}
+            </div>
+          )}
           <div className="grid gap-2 sm:col-span-2">
             <Label htmlFor="p-desc">{t('products.description')}</Label>
             <Input id="p-desc" {...register('description')} />

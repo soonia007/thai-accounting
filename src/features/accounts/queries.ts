@@ -24,6 +24,8 @@ export const ACCOUNT_ROLES: AccountRole[] = [
   'SALES_RETURNS',
   'DEFAULT_EXPENSE',
   'WHT_BORNE_EXPENSE',
+  'COGS',
+  'INVENTORY_ADJUSTMENT',
 ]
 
 /** Must match SQL public.account_role_type(). */
@@ -44,6 +46,8 @@ export const ROLE_ACCOUNT_TYPE: Record<AccountRole, AccountType> = {
   SALES_RETURNS: 'revenue',
   DEFAULT_EXPENSE: 'expense',
   WHT_BORNE_EXPENSE: 'expense',
+  COGS: 'expense',
+  INVENTORY_ADJUSTMENT: 'expense',
 }
 
 /** Roles that may edit the chart of accounts (DB RLS enforces the same). */

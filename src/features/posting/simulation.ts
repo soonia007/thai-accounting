@@ -32,6 +32,8 @@ export type SimResult =
       ok: true
       lines: SimLine[]
       totals: SimTotals | null
+      /** M13: goods sold beyond what is in stock (posting would be refused) */
+      stock?: { shortages: { product_id: string; name: string; short: number; line: number }[] }
       next: { type: string; lines: SimLine[] } | null
     }
   | { ok: false; error: string; detail?: string }
@@ -74,6 +76,9 @@ const ROLE_ICONS: Record<string, string> = {
   SALES_RETURNS: 'undo',
   DEFAULT_EXPENSE: 'trending-down',
   WHT_BORNE_EXPENSE: 'receipt',
+  INVENTORY: 'package',
+  COGS: 'package',
+  INVENTORY_ADJUSTMENT: 'package',
   BANK: 'banknote',
   CASH: 'banknote',
 }

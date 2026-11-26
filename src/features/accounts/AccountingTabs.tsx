@@ -8,6 +8,7 @@ const TABS = [
   { to: '/accounting/bank-accounts', labelKey: 'bankAccounts.title' },
   { to: '/accounting/journal', labelKey: 'journal.title' },
   { to: '/accounting/bank-reconciliation', labelKey: 'bankRecon.tab' },
+  { to: '/accounting/inventory', labelKey: 'stock.tab' },
 ]
 
 export function AccountingTabs() {
