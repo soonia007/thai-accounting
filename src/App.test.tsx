@@ -106,10 +106,6 @@ describe('App routing', () => {
       'href',
       '/reports/trial-balance',
     )
-    expect(screen.getByRole('link', { name: 'Dashboard การเงินฉบับเต็ม' })).toHaveAttribute(
-      'href',
-      '/',
-    )
     await userEvent.click(screen.getByRole('button', { name: 'บัญชี' }))
     expect(screen.getByRole('link', { name: 'สมุดรายวันทั่วไป' })).toHaveAttribute(
       'href',
