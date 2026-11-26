@@ -10,6 +10,7 @@ const TABS = [
   { to: '/accounting/bank-reconciliation', labelKey: 'bankRecon.tab' },
   { to: '/accounting/inventory', labelKey: 'stock.tab' },
   { to: '/accounting/fixed-assets', labelKey: 'fa.tab' },
+  { to: '/accounting/period-close', labelKey: 'close.tab' },
 ]
 
 export function AccountingTabs() {

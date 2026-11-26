@@ -35,6 +35,7 @@ import {
   toSatang,
   type JournalLineForm,
 } from './journal-math'
+import { LockedHint } from '@/features/period-close/LockedHint'
 import { JOURNAL_TEMPLATES, journalsKey, useJournal } from './queries'
 
 interface JournalForm {
@@ -294,6 +295,7 @@ function JournalEditor({ id, initial }: { id?: string; initial: JournalForm }) {
                   value={form.entry_date}
                   onChange={(e) => setForm((f) => ({ ...f, entry_date: e.target.value }))}
                 />
+                <LockedHint date={form.entry_date} />
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="j-memo">{t('journal.memo')}</Label>

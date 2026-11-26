@@ -102,7 +102,7 @@ export const NAV_TREE: NavNode[] = [
       leaf('bankRecon', '/accounting/bank-reconciliation'),
       leaf('stock', '/accounting/inventory'),
       leaf('fixedAssets', '/accounting/fixed-assets'),
-      leaf('periodClose', undefined, 'M15'),
+      leaf('periodClose', '/accounting/period-close'),
     ],
   },
   {

@@ -55,6 +55,7 @@ import { WhtCertificateActions } from '@/features/wht/WhtCertificateActions'
 import { WhtConditionSelect } from '@/features/wht/WhtConditionSelect'
 import { useFocusTracking } from '@/features/posting/focus'
 import { PreviewFocusProvider } from '@/features/posting/PreviewFocusProvider'
+import { LockedHint } from '@/features/period-close/LockedHint'
 import { settlementWht } from './payment-math'
 
 const blankForm = (): DocForm => ({
@@ -329,6 +330,7 @@ function DocumentEditor({
               <div className="grid gap-2">
                 <Label htmlFor="d-date">{t('docs.date')}</Label>
                 <Input id="d-date" type="date" {...register('doc_date')} />
+                <LockedHint date={form.doc_date} />
               </div>
               {isCreditType(type) || type === 'quotation' || type === 'purchase_order' ? (
                 <div className="grid gap-2">

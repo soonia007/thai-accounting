@@ -40,6 +40,7 @@ import {
 import { documentsKey, useContacts, useMoneyAccounts } from './queries'
 import { useFocusTracking } from '@/features/posting/focus'
 import { PreviewFocusProvider } from '@/features/posting/PreviewFocusProvider'
+import { LockedHint } from '@/features/period-close/LockedHint'
 import { VoidDialog } from './VoidDialog'
 
 interface AllocRow {
@@ -275,6 +276,7 @@ function PaymentEditor({ direction }: { direction: Direction }) {
                   value={payDate}
                   onChange={(e) => setPayDate(e.target.value)}
                 />
+                <LockedHint date={payDate} />
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="p-account">

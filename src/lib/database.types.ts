@@ -568,6 +568,7 @@ export type Database = {
           email: string | null
           fiscal_year_start_month: number
           id: string
+          locked_through: string | null
           logo_path: string | null
           name: string
           name_en: string | null
@@ -591,6 +592,7 @@ export type Database = {
           email?: string | null
           fiscal_year_start_month?: number
           id?: string
+          locked_through?: string | null
           logo_path?: string | null
           name: string
           name_en?: string | null
@@ -613,6 +615,7 @@ export type Database = {
           email?: string | null
           fiscal_year_start_month?: number
           id?: string
+          locked_through?: string | null
           logo_path?: string | null
           name?: string
           name_en?: string | null
@@ -1160,6 +1163,54 @@ export type Database = {
           },
         ]
       }
+      fiscal_year_closes: {
+        Row: {
+          closed_at: string
+          closed_by: string | null
+          company_id: string
+          id: string
+          net_profit: number
+          reopen_reason: string | null
+          reopened_at: string | null
+          reopened_by: string | null
+          year_end: string
+          year_start: string
+        }
+        ComputedFields: never
+        Insert: {
+          closed_at?: string
+          closed_by?: string | null
+          company_id: string
+          id?: string
+          net_profit: number
+          reopen_reason?: string | null
+          reopened_at?: string | null
+          reopened_by?: string | null
+          year_end: string
+          year_start: string
+        }
+        Update: {
+          closed_at?: string
+          closed_by?: string | null
+          company_id?: string
+          id?: string
+          net_profit?: number
+          reopen_reason?: string | null
+          reopened_at?: string | null
+          reopened_by?: string | null
+          year_end?: string
+          year_start?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'fiscal_year_closes_company_id_fkey'
+            columns: ['company_id']
+            isOneToOne: false
+            referencedRelation: 'companies'
+            referencedColumns: ['id']
+          },
+        ]
+      }
       fixed_assets: {
         Row: {
           acquired_on: string
@@ -1278,6 +1329,7 @@ export type Database = {
           description: string | null
           document_id: string | null
           entry_date: string
+          fiscal_close_id: string | null
           fixed_asset_id: string | null
           id: string
           manual_journal_id: string | null
@@ -1294,6 +1346,7 @@ export type Database = {
           description?: string | null
           document_id?: string | null
           entry_date: string
+          fiscal_close_id?: string | null
           fixed_asset_id?: string | null
           id?: string
           manual_journal_id?: string | null
@@ -1309,6 +1362,7 @@ export type Database = {
           description?: string | null
           document_id?: string | null
           entry_date?: string
+          fiscal_close_id?: string | null
           fixed_asset_id?: string | null
           id?: string
           manual_journal_id?: string | null
@@ -1343,6 +1397,13 @@ export type Database = {
             columns: ['company_id', 'depreciation_run_id']
             isOneToOne: false
             referencedRelation: 'depreciation_runs'
+            referencedColumns: ['company_id', 'id']
+          },
+          {
+            foreignKeyName: 'journal_entries_fiscal_close_fk'
+            columns: ['company_id', 'fiscal_close_id']
+            isOneToOne: false
+            referencedRelation: 'fiscal_year_closes'
             referencedColumns: ['company_id', 'id']
           },
           {
@@ -1709,6 +1770,48 @@ export type Database = {
             isOneToOne: false
             referencedRelation: 'accounts'
             referencedColumns: ['company_id', 'id']
+          },
+        ]
+      }
+      period_closes: {
+        Row: {
+          closed_at: string
+          closed_by: string | null
+          company_id: string
+          id: string
+          month: string
+          reopen_reason: string | null
+          reopened_at: string | null
+          reopened_by: string | null
+        }
+        ComputedFields: never
+        Insert: {
+          closed_at?: string
+          closed_by?: string | null
+          company_id: string
+          id?: string
+          month: string
+          reopen_reason?: string | null
+          reopened_at?: string | null
+          reopened_by?: string | null
+        }
+        Update: {
+          closed_at?: string
+          closed_by?: string | null
+          company_id?: string
+          id?: string
+          month?: string
+          reopen_reason?: string | null
+          reopened_at?: string | null
+          reopened_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'period_closes_company_id_fkey'
+            columns: ['company_id']
+            isOneToOne: false
+            referencedRelation: 'companies'
+            referencedColumns: ['id']
           },
         ]
       }
@@ -2287,6 +2390,8 @@ export type Database = {
         }
         Returns: Record<string, unknown>
       }
+      close_fiscal_year: { Args: { p_company_id: string; p_year_end: string }; Returns: string }
+      close_period: { Args: { p_company_id: string; p_month: string }; Returns: undefined }
       create_bank_account_with_ledger: {
         Args: {
           p_account_name: string
@@ -2338,6 +2443,7 @@ export type Database = {
         }
         Returns: undefined
       }
+      fiscal_year_preview: { Args: { p_company_id: string; p_year_end: string }; Returns: Json }
       fixed_asset_register: { Args: { p_as_of: string; p_company_id: string }; Returns: Json }
       get_shared_document: { Args: { p_token: string }; Returns: Json }
       import_bank_statement: {
@@ -2415,6 +2521,7 @@ export type Database = {
           wht_total: number
         }[]
       }
+      period_close_checklist: { Args: { p_company_id: string; p_month: string }; Returns: Json }
       post_document: { Args: { p_document_id: string }; Returns: Json }
       post_manual_journal: { Args: { p_id: string }; Returns: Json }
       post_payment: { Args: { p_payment_id: string }; Returns: Json }
@@ -2423,6 +2530,14 @@ export type Database = {
       print_wht_certificate: { Args: { p_certificate_id: string }; Returns: Json }
       register_fixed_asset: { Args: { p_payload: Json }; Returns: string }
       remove_member: { Args: { p_company_id: string; p_user_id: string }; Returns: undefined }
+      reopen_fiscal_year: {
+        Args: { p_company_id: string; p_reason: string; p_year_end: string }
+        Returns: undefined
+      }
+      reopen_period: {
+        Args: { p_company_id: string; p_month: string; p_reason: string }
+        Returns: undefined
+      }
       report_balance_sheet: { Args: { p_as_of: string; p_company_ids: string[] }; Returns: Json }
       report_general_ledger: {
         Args: { p_account_code?: string; p_company_ids: string[]; p_from: string; p_to: string }
@@ -2465,6 +2580,7 @@ export type Database = {
       save_manual_journal: { Args: { p_payload: Json }; Returns: string }
       save_payment: { Args: { p_pay: Json }; Returns: string }
       set_cost_method: { Args: { p_company_id: string; p_method: string }; Returns: undefined }
+      set_fiscal_year_start: { Args: { p_company_id: string; p_month: number }; Returns: undefined }
       set_received_wht_cert: {
         Args: {
           p_cert_date: string

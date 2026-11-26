@@ -319,7 +319,19 @@
     "DEPRECIATION_ASSET_DISPOSED": "An asset in this run was disposed of since; it cannot be undone",
     "ASSET_ALREADY_DISPOSED": "This asset is already disposed of",
     "ASSET_DISPOSAL_DATE": "The disposal date cannot be before the asset was in use",
-    "ASSET_DISPOSAL_PROCEEDS": "The price cannot be negative"
+    "ASSET_DISPOSAL_PROCEEDS": "The price cannot be negative",
+    "PERIOD_LOCKED": "This date is in a closed period. Ask the owner to reopen it.",
+    "PERIOD_CLOSE_ORDER": "Periods must be closed in order.",
+    "PERIOD_NOT_ENDED": "This month hasn't ended yet.",
+    "PERIOD_REOPEN_OWNER_ONLY": "Only the owner can reopen periods.",
+    "PERIOD_NOT_CLOSED": "This period isn't closed.",
+    "PERIOD_IN_CLOSED_YEAR": "This period is in a closed fiscal year — reopen the year first.",
+    "FISCAL_YEAR_START_LOCKED": "Can't change the start month after a year has been closed.",
+    "FISCAL_YEAR_INVALID": "Invalid fiscal year.",
+    "FISCAL_YEAR_MONTHS_OPEN": "Some months of this year are still open.",
+    "FISCAL_YEAR_CLOSED": "This fiscal year is already closed.",
+    "FISCAL_YEAR_ORDER": "Fiscal years must be closed in order.",
+    "FISCAL_YEAR_NOT_CLOSED": "This fiscal year isn't closed."
   },
   "contacts": {
     "title": "Contacts",
@@ -1796,5 +1808,56 @@
       "accumAccount": "Accumulated depreciation account",
       "add": "Add category"
     }
+  },
+  "close": {
+    "tab": "Period close",
+    "title": "Period close",
+    "subtitle": "Check everything, then lock the month so past figures can't be changed by accident",
+    "lockedHint": "This date is in a closed period (locked through {{date}}) — it can't be posted.",
+    "lockedHintLink": "View period close",
+    "lockedThrough": "Books locked through {{date}}",
+    "nothingLocked": "No period closed yet",
+    "lockExplain": "Documents and entries dated in a closed period can't be created, edited or voided.",
+    "nextTitle": "Close {{month}}",
+    "firstMonth": "First time: choose the month to close",
+    "notEnded": "This month hasn't ended yet — close it after month end.",
+    "check": {
+      "drafts": "No drafts left",
+      "bank": "Bank reconciliation complete",
+      "depreciation": "Depreciation posted",
+      "vat": "VAT return (PP30) filed",
+      "balanced": "Trial balance balances"
+    },
+    "fix": {
+      "drafts": "{{count}} pending",
+      "bank": "{{count}} unreconciled",
+      "depreciation": "{{amount}} not posted",
+      "vat": "filing not recorded",
+      "balanced": "debits and credits differ"
+    },
+    "goFix": "Fix it",
+    "confirmWarnings": "{{count}} checks are not done. Close the month anyway?",
+    "closeButton": "Close {{month}}",
+    "closedOk": "{{month}} closed",
+    "noPermission": "Only owners, admins or accountants can close periods.",
+    "reopenReason": "Reopen {{month}} (and later months) — reason:",
+    "reopenedOk": "Reopened",
+    "reopen": "Reopen",
+    "history": "Close history",
+    "historyEmpty": "No history yet",
+    "closedBadge": "Closed",
+    "reopenedBadge": "Reopened: {{reason}}",
+    "yearTitle": "Fiscal year close",
+    "yearStart": "Fiscal year starts in",
+    "yearStartSaved": "Fiscal year start saved",
+    "yearRange": "Fiscal year {{from}} – {{to}}",
+    "yearClosed": "Year closed",
+    "netProfit": "Net profit (loss)",
+    "yearClose": "Close year to retained earnings",
+    "yearConfirm": "Transfer net profit {{amount}} to retained earnings and close the year?",
+    "yearClosedOk": "Fiscal year closed",
+    "yearReopen": "Reopen fiscal year",
+    "yearReopenReason": "Reason for reopening the fiscal year:",
+    "yearNeedMonths": "Close every month of the year first."
   }
 }

@@ -33,6 +33,8 @@ const ACME: MyCompany = {
   date_era: 'BE',
   logo_path: null,
   tax_id: null,
+  locked_through: null,
+  fiscal_year_start_month: 1,
   role: 'owner',
 }
 
