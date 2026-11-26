@@ -119,7 +119,7 @@ export const NAV_TREE: NavNode[] = [
       leaf('vatReport', '/reports/vat'),
       leaf('whtReport', '/reports/wht'),
       leaf('stockReport', '/accounting/inventory?tab=card'),
-      leaf('fullDashboard', undefined, 'M16'),
+      leaf('fullDashboard', '/'),
     ],
   },
   {
