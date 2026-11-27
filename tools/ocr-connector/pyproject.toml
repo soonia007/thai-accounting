@@ -1,0 +1,27 @@
+[project]
+name = "finora-ocr"
+version = "1.0.0"
+description = "FINORA OCR connector: reads bills with pdfstruct and sends them to FINORA"
+requires-python = ">=3.10"
+# pdfstruct: https://github.com/soonia007/pdf-structure-extractor (install it first, see README.md)
+dependencies = []
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "jsonschema>=4", "ruff>=0.5"]
+
+[project.scripts]
+finora-ocr = "finora_ocr.__main__:main"
+
+[tool.setuptools]
+packages = ["finora_ocr"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+
+[tool.ruff]
+line-length = 120
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "PLW1510"]

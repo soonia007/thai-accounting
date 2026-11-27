@@ -1,0 +1,102 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://finora.app/contracts/ocr-document.v1.json",
+  "title": "FINORA OCR document v1",
+  "description": "What an OCR program sends to FINORA for one document. Amounts are in baht with 2 decimals; dates are ISO (CE). Unknown values are null. confidence maps a field path to 0..1.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "document_type",
+    "issue_date",
+    "total",
+    "lines",
+    "confidence",
+    "source_file"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "const": "1" },
+    "document_type": {
+      "enum": [
+        "tax_invoice",
+        "receipt",
+        "tax_invoice_receipt",
+        "invoice",
+        "cash_bill",
+        "credit_note",
+        "debit_note",
+        "other"
+      ]
+    },
+    "document_number": { "type": ["string", "null"], "maxLength": 60 },
+    "issue_date": {
+      "type": ["string", "null"],
+      "format": "date",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+    },
+    "due_date": { "type": ["string", "null"], "pattern": "^\\d{4}-\\d{2}-\\d{2}$" },
+    "seller": { "$ref": "#/$defs/party" },
+    "buyer": { "$ref": "#/$defs/party" },
+    "lines": {
+      "type": "array",
+      "maxItems": 500,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["description", "amount"],
+        "properties": {
+          "description": { "type": "string", "maxLength": 500 },
+          "qty": { "type": ["number", "null"] },
+          "unit_price": { "$ref": "#/$defs/money" },
+          "amount": { "$ref": "#/$defs/money" }
+        }
+      }
+    },
+    "subtotal": { "$ref": "#/$defs/money" },
+    "discount": { "$ref": "#/$defs/money" },
+    "vat_rate": { "type": ["number", "null"], "minimum": 0, "maximum": 100 },
+    "vat_amount": { "$ref": "#/$defs/money" },
+    "wht_rate": { "type": ["number", "null"], "minimum": 0, "maximum": 100 },
+    "wht_amount": { "$ref": "#/$defs/money" },
+    "total": { "$ref": "#/$defs/money" },
+    "currency": { "type": "string", "pattern": "^[A-Z]{3}$", "default": "THB" },
+    "confidence": {
+      "type": "object",
+      "additionalProperties": { "type": "number", "minimum": 0, "maximum": 1 }
+    },
+    "source_file": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name"],
+      "properties": {
+        "name": { "type": "string", "maxLength": 255 },
+        "sha256": { "type": ["string", "null"], "pattern": "^[0-9a-f]{64}$" },
+        "pages": { "type": ["integer", "null"], "minimum": 0 }
+      }
+    },
+    "engine": {
+      "type": "object",
+      "description": "Which OCR program produced this (free-form, for accuracy reports).",
+      "properties": {
+        "name": { "type": "string" },
+        "version": { "type": "string" },
+        "template": { "type": ["string", "null"] },
+        "ocr_used": { "type": "boolean" }
+      }
+    },
+    "warnings": { "type": "array", "items": { "type": "string" } }
+  },
+  "$defs": {
+    "money": { "type": ["number", "null"], "minimum": -1e15, "maximum": 1e15 },
+    "party": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "properties": {
+        "name": { "type": ["string", "null"], "maxLength": 300 },
+        "tax_id": { "type": ["string", "null"], "pattern": "^\\d{13}$" },
+        "branch": { "type": ["string", "null"], "maxLength": 60 },
+        "address": { "type": ["string", "null"], "maxLength": 1000 }
+      }
+    }
+  }
+}

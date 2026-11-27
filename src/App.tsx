@@ -58,6 +58,9 @@ const BankReconPage = lazy(() =>
 const InventoryPage = lazy(() =>
   import('@/features/inventory/InventoryPage').then((m) => ({ default: m.InventoryPage })),
 )
+const OcrConnectionPage = lazy(() =>
+  import('@/features/ocr/OcrConnectionPage').then((m) => ({ default: m.OcrConnectionPage })),
+)
 const PeriodClosePage = lazy(() =>
   import('@/features/period-close/PeriodClosePage').then((m) => ({ default: m.PeriodClosePage })),
 )
@@ -96,6 +99,7 @@ export default function App() {
               <Route path="/accounting/inventory" element={<InventoryPage />} />
               <Route path="/accounting/fixed-assets" element={<FixedAssetsPage />} />
               <Route path="/accounting/period-close" element={<PeriodClosePage />} />
+              <Route path="/import/ocr" element={<OcrConnectionPage />} />
               <Route path="/accounting/journal" element={<JournalListPage />} />
               <Route path="/accounting/journal/new" element={<JournalEntryPage />} />
               <Route path="/accounting/journal/:id" element={<JournalEntryPage />} />

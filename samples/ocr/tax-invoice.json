@@ -1,0 +1,67 @@
+{
+  "schema_version": "1",
+  "document_type": "tax_invoice",
+  "document_number": "INV-2026-0042",
+  "issue_date": "2026-10-15",
+  "due_date": null,
+  "seller": {
+    "name": "บริษัท ซัพพลาย ไทย จำกัด",
+    "tax_id": "0105556012345",
+    "branch": "สำนักงานใหญ่",
+    "address": null
+  },
+  "buyer": {
+    "name": "บริษัท นอร์ทวินด์ สตูดิโอ จำกัด",
+    "tax_id": "0105561234561",
+    "branch": null,
+    "address": null
+  },
+  "lines": [
+    {
+      "description": "กระดาษ A4 80 แกรม",
+      "qty": 10.0,
+      "unit_price": 120.0,
+      "amount": 1200.0
+    },
+    {
+      "description": "หมึกพิมพ์ HP 680",
+      "qty": 2.0,
+      "unit_price": 450.0,
+      "amount": 900.0
+    }
+  ],
+  "subtotal": 2100.0,
+  "discount": null,
+  "vat_rate": 7.0,
+  "vat_amount": 147.0,
+  "wht_rate": null,
+  "wht_amount": null,
+  "total": 2247.0,
+  "currency": "THB",
+  "confidence": {
+    "seller.name": 0.85,
+    "buyer.name": 0.92,
+    "seller.tax_id": 0.85,
+    "buyer.tax_id": 0.85,
+    "total": 0.92,
+    "vat_amount": 0.85,
+    "vat_rate": 0.85,
+    "subtotal": 0.92,
+    "document_number": 0.97,
+    "issue_date": 0.92,
+    "lines": 0.9,
+    "document_type": 0.85
+  },
+  "source_file": {
+    "name": "tax-invoice.pdf",
+    "sha256": "49843ea5321af88248fa967896a95936192840b9eb6812efda08df7f6002b701",
+    "pages": null
+  },
+  "engine": {
+    "name": "pdfstruct",
+    "version": "0.1.0",
+    "template": null,
+    "ocr_used": false
+  },
+  "warnings": []
+}

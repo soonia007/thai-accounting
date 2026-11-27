@@ -127,7 +127,7 @@ export const NAV_TREE: NavNode[] = [
     labelKey: 'navTree.groups.import',
     icon: ScanLine,
     items: [
-      leaf('ocrApi', undefined, 'M17'),
+      leaf('ocrApi', '/import/ocr'),
       leaf('upload', undefined, 'M18'),
       leaf('reviewQueue', undefined, 'M20'),
       leaf('vendorRules', undefined, 'M21'),

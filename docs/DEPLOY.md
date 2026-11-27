@@ -41,6 +41,18 @@ git pull && npx supabase db push --remote
 
 ทำ **ก่อน** หรือพร้อมกับการ push โค้ดเว็บ ไม่งั้นเว็บจะขึ้นข้อความ "ฐานข้อมูลยังไม่ได้อัปเดต"
 
+### Edge Function สำหรับ OCR (ตั้งแต่ M17)
+
+ตัวเชื่อม OCR บนเครื่องคุณคุยกับ FINORA ผ่าน Edge Function `ocr-agent` ส่งขึ้นครั้งแรก และทุกครั้งที่โฟลเดอร์
+`supabase/functions/` เปลี่ยน:
+
+```bash
+npx supabase functions deploy ocr-agent --no-verify-jwt
+```
+
+(`--no-verify-jwt` เพราะตัวเชื่อมใช้กุญแจของตัวเองใน header `x-finora-key` ไม่ใช่ login ของผู้ใช้)
+วิธีติดตั้งตัวเชื่อมบนเครื่อง: [tools/ocr-connector/README.md](../tools/ocr-connector/README.md)
+
 ## 5. ขึ้นเว็บด้วย Cloudflare Pages (เชื่อม GitHub)
 
 1. https://dash.cloudflare.com → **Workers & Pages → Create → Pages → Connect to Git**
