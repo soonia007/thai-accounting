@@ -1,0 +1,73 @@
+# pdfstruct spec for Thai purchase documents (tax invoices, receipts, cash bills).
+# The connector maps these fields onto contracts/ocr-document.v1.json.
+version: 1
+fields:
+  - name: title
+    regex: '(ใบกำกับภาษี[^\n]*|ใบเสร็จรับเงิน[^\n]*|ใบแจ้งหนี้[^\n]*|บิลเงินสด[^\n]*|Tax Invoice[^\n]*|Receipt[^\n]*|Invoice[^\n]*)'
+  - name: document_number
+    label: ['เลขที่', 'Invoice No', 'No.']
+    pattern: '[A-Za-z0-9][A-Za-z0-9/_.-]*'
+    required: true
+  - name: issue_date
+    type: date
+    label: ['วันที่', 'Date']
+    required: true
+  - name: tax_ids
+    regex: '\b(\d{13})\b'
+    all: true
+  - name: branch
+    regex: '(สำนักงานใหญ่|สาขา(?:ที่)?\s*\d{1,5}|Head Office|Branch\s*\d{1,5})'
+  - name: seller_name
+    regex: '^((?:บริษัท|ห้างหุ้นส่วน|หจก\.|ร้าน)[^\n]+)'
+  - name: buyer_name
+    label: ['ลูกค้า', 'ผู้ซื้อ', 'Customer', 'Bill To']
+  - name: subtotal
+    type: number
+    label: ['รวมเงิน', 'ราคาก่อนภาษี', 'มูลค่าสินค้า', 'Subtotal']
+  - name: discount
+    type: number
+    label: ['ส่วนลด', 'Discount']
+  - name: vat_rate
+    type: number
+    regex: 'ภาษีมูลค่าเพิ่ม\s*(\d+(?:\.\d+)?)\s*%'
+  - name: vat_amount
+    type: number
+    regex: 'ภาษีมูลค่าเพิ่ม(?:\s*\d+(?:\.\d+)?\s*%)?\s+([\d,]+\.\d{2})'
+  - name: wht_rate
+    type: number
+    regex: 'หัก(?:ภาษี)?\s*ณ\s*ที่จ่าย\s*(\d+(?:\.\d+)?)\s*%'
+  - name: wht_amount
+    type: number
+    regex: 'หัก(?:ภาษี)?\s*ณ\s*ที่จ่าย(?:\s*\d+(?:\.\d+)?\s*%)?\s+([\d,]+\.\d{2})'
+  - name: total
+    type: number
+    label: ['ยอดรวมทั้งสิ้น', 'รวมทั้งสิ้น', 'จำนวนเงินรวมทั้งสิ้น', 'Grand Total', 'Total']
+    required: true
+  # A table matches only when every listed header is present, so list a few common layouts;
+  # the connector uses the first one found.
+  - name: lines
+    type: table
+    columns:
+      รายการ: description
+      จำนวน: { key: qty, type: number }
+      ราคาต่อหน่วย: { key: unit_price, type: number }
+      จำนวนเงิน: { key: amount, type: number }
+  - name: lines_unit
+    type: table
+    columns:
+      รายการ: description
+      จำนวน: { key: qty, type: number }
+      หน่วยละ: { key: unit_price, type: number }
+      จำนวนเงิน: { key: amount, type: number }
+  - name: lines_simple
+    type: table
+    columns:
+      รายการ: description
+      จำนวนเงิน: { key: amount, type: number }
+  - name: lines_en
+    type: table
+    columns:
+      Description: description
+      Qty: { key: qty, type: number }
+      Unit Price: { key: unit_price, type: number }
+      Amount: { key: amount, type: number }

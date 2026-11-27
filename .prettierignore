@@ -6,3 +6,5 @@ ios
 package-lock.json
 supabase/.temp
 docs/PHASE*_SPEC.md
+tools/ocr-connector/tests/fixtures
+**/.pytest_cache

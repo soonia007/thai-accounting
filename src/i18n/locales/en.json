@@ -331,7 +331,10 @@
     "FISCAL_YEAR_MONTHS_OPEN": "Some months of this year are still open.",
     "FISCAL_YEAR_CLOSED": "This fiscal year is already closed.",
     "FISCAL_YEAR_ORDER": "Fiscal years must be closed in order.",
-    "FISCAL_YEAR_NOT_CLOSED": "This fiscal year isn't closed."
+    "FISCAL_YEAR_NOT_CLOSED": "This fiscal year isn't closed.",
+    "OCR_THRESHOLD_INVALID": "Threshold must be 50–100%",
+    "OCR_JOB_NOT_FAILED": "Only failed jobs can be retried",
+    "OCR_SOURCE_INVALID": "Invalid source"
   },
   "contacts": {
     "title": "Contacts",
@@ -1895,5 +1898,78 @@
     "yearReopen": "Reopen fiscal year",
     "yearReopenReason": "Reason for reopening the fiscal year:",
     "yearNeedMonths": "Close every month of the year first."
+  },
+  "ocr": {
+    "title": "Connect the OCR program",
+    "subtitle": "Let pdfstruct on your computer read bills and tax invoices and send them to FINORA automatically — nothing is posted until you check it",
+    "copy": "Copy",
+    "copied": "Copied",
+    "status": {
+      "online": "Connector online",
+      "offline": "Connector offline",
+      "lastSeen": "Last seen {{when}}",
+      "never": "Never connected",
+      "thisMonth": "Documents read this month",
+      "waiting": "Waiting for review",
+      "waitingHint": "Read, waiting for you before posting"
+    },
+    "setup": {
+      "title": "First-time setup (once)",
+      "step1": "Install pdfstruct and the FINORA connector on your computer",
+      "step1Hint": "Needs Python 3.10+. Follow the steps in the guide",
+      "guide": "Open the install guide",
+      "step2": "Create a connection key and paste it into finora-ocr.json",
+      "step3": "Start the connector",
+      "step3Hint": "Drop PDFs or photos of bills into the folder; they are read and sent automatically, then moved to processed/ (never deleted)",
+      "exampleFolder": "C:/Users/you/Documents/FINORA Inbox"
+    },
+    "keys": {
+      "title": "Active connection keys",
+      "name": "Computer name",
+      "namePlaceholder": "e.g. Office PC",
+      "defaultName": "Computer",
+      "create": "Create key",
+      "showOnce": "This key is shown only once — copy all of this into finora-ocr.json in the connector folder and set watch_dir to your folder",
+      "hide": "Hide",
+      "revoke": "Revoke",
+      "revokeConfirm": "Revoke \"{{name}}\"? That computer will no longer be able to send documents."
+    },
+    "threshold": {
+      "label": "Flag fields read with confidence below",
+      "hint": "for checking (recommended 85%)"
+    },
+    "jobs": {
+      "title": "Recent documents",
+      "empty": "No documents yet — drop a file into your folder to start",
+      "file": "File",
+      "found": "What was read",
+      "total": "Total",
+      "status": "Status",
+      "retry": "Retry",
+      "reviewSoon": "Turning these into draft documents and the review screen come next (M19–M20)"
+    },
+    "source": {
+      "web": "Web upload",
+      "mobile": "Mobile",
+      "folder": "Watched folder",
+      "api": "API"
+    },
+    "jobStatus": {
+      "queued": "Queued",
+      "processing": "Reading",
+      "needs_review": "Needs review",
+      "done": "Done",
+      "failed": "Failed"
+    },
+    "docType": {
+      "tax_invoice": "Tax invoice",
+      "receipt": "Receipt",
+      "tax_invoice_receipt": "Tax invoice/receipt",
+      "invoice": "Invoice",
+      "cash_bill": "Cash bill",
+      "credit_note": "Credit note",
+      "debit_note": "Debit note",
+      "other": "Document"
+    }
   }
 }

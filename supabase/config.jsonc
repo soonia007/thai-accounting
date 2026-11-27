@@ -510,4 +510,9 @@
       // "format_options": "{\"keywordCase\":\"upper\",\"indent\":2,\"maxWidth\":180,\"commaStyle\":\"trailing\"}",
     },
   },
+
+  // M17: the OCR connector authenticates with its own agent key (x-finora-key), not a user JWT.
+  "functions": {
+    "ocr-agent": { "verify_jwt": false },
+  },
 }

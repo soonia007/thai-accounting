@@ -572,6 +572,7 @@ export type Database = {
           logo_path: string | null
           name: string
           name_en: string | null
+          ocr_review_threshold: number
           phone: string | null
           tax_id: string | null
           updated_at: string
@@ -596,6 +597,7 @@ export type Database = {
           logo_path?: string | null
           name: string
           name_en?: string | null
+          ocr_review_threshold?: number
           phone?: string | null
           tax_id?: string | null
           updated_at?: string
@@ -619,6 +621,7 @@ export type Database = {
           logo_path?: string | null
           name?: string
           name_en?: string | null
+          ocr_review_threshold?: number
           phone?: string | null
           tax_id?: string | null
           updated_at?: string
@@ -1617,6 +1620,140 @@ export type Database = {
           },
         ]
       }
+      ocr_agent_keys: {
+        Row: {
+          company_id: string
+          created_at: string
+          created_by: string | null
+          id: string
+          key_hash: string
+          key_prefix: string
+          last_used_at: string | null
+          name: string
+          revoked_at: string | null
+        }
+        ComputedFields: never
+        Insert: {
+          company_id: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          key_hash: string
+          key_prefix: string
+          last_used_at?: string | null
+          name: string
+          revoked_at?: string | null
+        }
+        Update: {
+          company_id?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          key_hash?: string
+          key_prefix?: string
+          last_used_at?: string | null
+          name?: string
+          revoked_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'ocr_agent_keys_company_id_fkey'
+            columns: ['company_id']
+            isOneToOne: false
+            referencedRelation: 'companies'
+            referencedColumns: ['id']
+          },
+        ]
+      }
+      ocr_jobs: {
+        Row: {
+          agent_key_id: string | null
+          attempts: number
+          company_id: string
+          created_at: string
+          created_by: string | null
+          document_id: string | null
+          error: string | null
+          file_name: string
+          file_sha256: string | null
+          finished_at: string | null
+          id: string
+          mime_type: string | null
+          raw_json: Json | null
+          result: Json | null
+          size_bytes: number | null
+          source: Database['public']['Enums']['ocr_job_source']
+          started_at: string | null
+          status: Database['public']['Enums']['ocr_job_status']
+          storage_path: string
+        }
+        ComputedFields: never
+        Insert: {
+          agent_key_id?: string | null
+          attempts?: number
+          company_id: string
+          created_at?: string
+          created_by?: string | null
+          document_id?: string | null
+          error?: string | null
+          file_name: string
+          file_sha256?: string | null
+          finished_at?: string | null
+          id?: string
+          mime_type?: string | null
+          raw_json?: Json | null
+          result?: Json | null
+          size_bytes?: number | null
+          source: Database['public']['Enums']['ocr_job_source']
+          started_at?: string | null
+          status?: Database['public']['Enums']['ocr_job_status']
+          storage_path: string
+        }
+        Update: {
+          agent_key_id?: string | null
+          attempts?: number
+          company_id?: string
+          created_at?: string
+          created_by?: string | null
+          document_id?: string | null
+          error?: string | null
+          file_name?: string
+          file_sha256?: string | null
+          finished_at?: string | null
+          id?: string
+          mime_type?: string | null
+          raw_json?: Json | null
+          result?: Json | null
+          size_bytes?: number | null
+          source?: Database['public']['Enums']['ocr_job_source']
+          started_at?: string | null
+          status?: Database['public']['Enums']['ocr_job_status']
+          storage_path?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'ocr_jobs_agent_key_id_fkey'
+            columns: ['agent_key_id']
+            isOneToOne: false
+            referencedRelation: 'ocr_agent_keys'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'ocr_jobs_company_id_document_id_fkey'
+            columns: ['company_id', 'document_id']
+            isOneToOne: false
+            referencedRelation: 'documents'
+            referencedColumns: ['company_id', 'id']
+          },
+          {
+            foreignKeyName: 'ocr_jobs_company_id_fkey'
+            columns: ['company_id']
+            isOneToOne: false
+            referencedRelation: 'companies'
+            referencedColumns: ['id']
+          },
+        ]
+      }
       payment_allocations: {
         Row: {
           amount: number
@@ -2422,6 +2559,19 @@ export type Database = {
         }
         Returns: string
       }
+      create_ocr_agent_key: { Args: { p_company_id: string; p_name: string }; Returns: string }
+      create_ocr_job: {
+        Args: {
+          p_company_id: string
+          p_file_name: string
+          p_mime: string
+          p_sha256?: string
+          p_size: number
+          p_source?: Database['public']['Enums']['ocr_job_source']
+          p_storage_path: string
+        }
+        Returns: string
+      }
       create_share_link: {
         Args: { p_document_id?: string; p_expires_at?: string; p_payment_id?: string }
         Returns: string
@@ -2504,6 +2654,24 @@ export type Database = {
           role: Database['public']['Enums']['member_role']
         }[]
       }
+      ocr_agent_auth: { Args: { p_key: string }; Returns: Json }
+      ocr_agent_claim: { Args: { p_key_id: string; p_limit?: number }; Returns: Json }
+      ocr_agent_create_job: {
+        Args: {
+          p_file_name: string
+          p_key_id: string
+          p_mime: string
+          p_sha256: string
+          p_size: number
+          p_storage_path: string
+        }
+        Returns: Json
+      }
+      ocr_agent_submit: {
+        Args: { p_error: string; p_job_id: string; p_key_id: string; p_raw: Json; p_result: Json }
+        Returns: Json
+      }
+      ocr_overview: { Args: { p_company_id: string }; Returns: Json }
       open_documents: {
         Args: {
           p_company_id: string
@@ -2575,6 +2743,8 @@ export type Database = {
         Args: { p_company_id: string; p_from: string; p_to: string }
         Returns: Json
       }
+      retry_ocr_job: { Args: { p_job_id: string }; Returns: undefined }
+      revoke_ocr_agent_key: { Args: { p_key_id: string }; Returns: undefined }
       revoke_share_link: { Args: { p_token: string }; Returns: undefined }
       run_depreciation: { Args: { p_company_id: string; p_month: string }; Returns: string }
       save_document: { Args: { p_doc: Json }; Returns: string }
@@ -2582,6 +2752,7 @@ export type Database = {
       save_payment: { Args: { p_pay: Json }; Returns: string }
       set_cost_method: { Args: { p_company_id: string; p_method: string }; Returns: undefined }
       set_fiscal_year_start: { Args: { p_company_id: string; p_month: number }; Returns: undefined }
+      set_ocr_threshold: { Args: { p_company_id: string; p_threshold: number }; Returns: undefined }
       set_received_wht_cert: {
         Args: {
           p_cert_date: string
@@ -2672,6 +2843,8 @@ export type Database = {
         | 'cash_purchase'
       entity_type: 'juristic' | 'individual'
       member_role: 'owner' | 'admin' | 'staff' | 'accountant' | 'viewer'
+      ocr_job_source: 'web' | 'mobile' | 'folder' | 'api'
+      ocr_job_status: 'queued' | 'processing' | 'done' | 'failed' | 'needs_review'
       payment_direction: 'received' | 'paid'
       product_kind: 'product' | 'service'
       product_vat_type: 'standard' | 'zero' | 'exempt'
@@ -2834,6 +3007,8 @@ export const Constants = {
       ],
       entity_type: ['juristic', 'individual'],
       member_role: ['owner', 'admin', 'staff', 'accountant', 'viewer'],
+      ocr_job_source: ['web', 'mobile', 'folder', 'api'],
+      ocr_job_status: ['queued', 'processing', 'done', 'failed', 'needs_review'],
       payment_direction: ['received', 'paid'],
       product_kind: ['product', 'service'],
       product_vat_type: ['standard', 'zero', 'exempt'],

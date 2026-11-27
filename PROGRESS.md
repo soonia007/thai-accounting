@@ -7,31 +7,31 @@ Spec (อ่านก่อนเริ่มงานทุกครั้ง):
 - [docs/DESIGN_SIMULATION.md](docs/DESIGN_SIMULATION.md) — แผงจำลองบัญชีระหว่างกรอก (ใช้ตั้งแต่ M4 เป็นต้นไป)
 - [docs/DECISIONS.md](docs/DECISIONS.md) — การตัดสินใจเรื่อง logic บัญชีจากเจ้าของ (D1–D5) — engine ทำตามนี้
 
-| Milestone                           | สถานะ                                                          |
-| ----------------------------------- | -------------------------------------------------------------- |
-| M0 — Project setup                  | ✅ เสร็จ                                                        |
-| M1 — Auth + Multi-company           | ✅ เสร็จ                                                        |
-| M2 — ผังบัญชี                          | ✅ เสร็จ                                                        |
-| M3 — ข้อมูลหลัก                        | ✅ เสร็จ                                                        |
-| M4 — Posting engine                 | ✅ เสร็จ                                                        |
-| M5 — ฝั่งขาย                          | ✅ เสร็จ                                                        |
-| M6 — ฝั่งซื้อ/ค่าใช้จ่าย                   | ✅ เสร็จ                                                        |
-| M7 — สมุดรายวันทั่วไป                   | ✅ เสร็จ                                                        |
-| M8 — รายงาน                         | ✅ เสร็จ                                                        |
-| M9 — Mobile polish + Release prep   | ✅ เสร็จ (build ไบนารีจริงต้องทำบนเครื่องเจ้าของ — ดู docs/RELEASE.md) |
-| M10 — รายงาน VAT                    | ⏳                                                             |
-| M11 — รายงานภาษีหัก ณ ที่จ่าย            | ⏳                                                             |
-| M12 — กระทบยอดธนาคาร                | ⏳                                                             |
-| M13 — สต็อกสินค้า                      | ⏳                                                             |
-| M14 — สินทรัพย์ถาวร                    | ⏳                                                             |
-| M15 — ปิดงวดบัญชี                      | ✅ 2026-11-26 checklist, ล็อก/เปิดงวด, ปิดปีบัญชี                    |
-| M16 — Dashboard การเงินฉบับเต็ม        | ✅ 2026-11-26 aging, กระแสเงินสด, ภาษีเดือนนี้, รวมหลายบริษัท         |
-| M17 — OCR JSON contract + ingestion | ⏳ ต้องได้ข้อมูล OCR ก่อน                                           |
-| M18 — ช่องทางนำเข้าไฟล์                | ⏳                                                             |
-| M19 — Validation + เอกสารร่าง        | ⏳                                                             |
-| M20 — คิวตรวจทาน                     | ⏳                                                             |
-| M21 — เรียนรู้จากการแก้ไข               | ⏳                                                             |
-| M22 — Auto-post + รายงานความแม่นยำ   | ⏳                                                             |
+| Milestone                           | สถานะ                                                                |
+| ----------------------------------- | -------------------------------------------------------------------- |
+| M0 — Project setup                  | ✅ เสร็จ                                                              |
+| M1 — Auth + Multi-company           | ✅ เสร็จ                                                              |
+| M2 — ผังบัญชี                          | ✅ เสร็จ                                                              |
+| M3 — ข้อมูลหลัก                        | ✅ เสร็จ                                                              |
+| M4 — Posting engine                 | ✅ เสร็จ                                                              |
+| M5 — ฝั่งขาย                          | ✅ เสร็จ                                                              |
+| M6 — ฝั่งซื้อ/ค่าใช้จ่าย                   | ✅ เสร็จ                                                              |
+| M7 — สมุดรายวันทั่วไป                   | ✅ เสร็จ                                                              |
+| M8 — รายงาน                         | ✅ เสร็จ                                                              |
+| M9 — Mobile polish + Release prep   | ✅ เสร็จ (build ไบนารีจริงต้องทำบนเครื่องเจ้าของ — ดู docs/RELEASE.md)       |
+| M10 — รายงาน VAT                    | ⏳                                                                   |
+| M11 — รายงานภาษีหัก ณ ที่จ่าย            | ⏳                                                                   |
+| M12 — กระทบยอดธนาคาร                | ⏳                                                                   |
+| M13 — สต็อกสินค้า                      | ⏳                                                                   |
+| M14 — สินทรัพย์ถาวร                    | ⏳                                                                   |
+| M15 — ปิดงวดบัญชี                      | ✅ 2026-11-26 checklist, ล็อก/เปิดงวด, ปิดปีบัญชี                          |
+| M16 — Dashboard การเงินฉบับเต็ม        | ✅ 2026-11-26 aging, กระแสเงินสด, ภาษีเดือนนี้, รวมหลายบริษัท               |
+| M17 — OCR JSON contract + ingestion | ✅ 2026-11-27 contract v1, ocr_jobs, Edge Function, ตัวเชื่อม pdfstruct |
+| M18 — ช่องทางนำเข้าไฟล์                | ⏳                                                                   |
+| M19 — Validation + เอกสารร่าง        | ⏳                                                                   |
+| M20 — คิวตรวจทาน                     | ⏳                                                                   |
+| M21 — เรียนรู้จากการแก้ไข               | ⏳                                                                   |
+| M22 — Auto-post + รายงานความแม่นยำ   | ⏳                                                                   |
 
 ## M0 — Project setup (2026-11-25)
 
@@ -343,7 +343,7 @@ esourcesin` — ถ้า terminal หา `docker` ไม่เจอให้�
 - **ข้อกำหนดดีไซน์ใหม่: จำลองการลงบัญชีระหว่างกรอก** (`docs/DESIGN_SIMULATION.md`)
   - กระทบ M4: แยก `private.build_journal()` (pure) ให้ `post_document()` และ `simulate_posting()` ใช้ร่วมกัน + test ว่าผลจำลอง = ผล post จริง
   - กระทบ M5/M6/M7 และ M12–M15, M20, M22: ทุกฟอร์มที่ลงบัญชีต้องมี `<PostingPreview>`
-- **ข้อมูลที่ต้องได้ก่อน M17 (OCR):** OCR รันที่ไหน, เรียกใช้อย่างไร, ตัวอย่าง JSON จริง 3–5 ไฟล์ใน `samples/ocr/`, มี confidence ต่อ field หรือไม่
+- **ข้อมูล OCR (ได้แล้ว 2026-11-27):** pdfstruct รันบนเครื่องเจ้าของผ่านตัวเชื่อม, เรียกทาง CLI, มี confidence ต่อ field; `samples/ocr/` ยังเป็นตัวอย่างที่สร้างขึ้น — ขอบิลจริงเพิ่ม
 - M11: ไฟล์ข้อความสำหรับยื่นออนไลน์ — ต้องถามรูปแบบก่อนทำ
 
 ## หัวหน้าเพจแบบ global + ปุ่มจัดหมวด (2026-11-25)
@@ -449,3 +449,13 @@ esourcesin` — ถ้า terminal หา `docker` ไม่เจอให้�
 - migration `20261126030000_m16_dashboard.sql` (`dashboard_full`); pgTAP `17_m16_dashboard.test.sql`
 - หน้าแรก: สลับดูบริษัทนี้/รวมทุกบริษัท, กราฟโหมดเงินสด, การ์ดลูกหนี้/เจ้าหนี้ตามอายุ, การ์ดภาษีที่ต้องยื่นเดือนนี้
 - Phase 2 ครบ → ต่อไป M17 (Phase 3 OCR)
+
+## M17 — JSON Contract + Ingestion API ✅ (2026-11-27)
+
+- `contracts/ocr-document.v1.json`, ตัวอย่าง `samples/ocr/*.json`
+- migration `20261127000000_m17_ocr_ingestion.sql` (ocr_jobs, ocr_agent_keys, bucket ocr-files, RPC); pgTAP `18_m17_ocr.test.sql`
+- Edge Function `supabase/functions/ocr-agent` (ping/claim/upload/result) — deploy: `npx supabase functions deploy ocr-agent --no-verify-jwt`
+- ตัวเชื่อม `tools/ocr-connector` (pdfstruct → contract, เฝ้าโฟลเดอร์ + ดึงไฟล์ที่อัปโหลดในเว็บ) + pytest 14 ข้อ
+- หน้า `/import/ocr`: สถานะเชื่อมต่อ, สร้าง/ยกเลิกกุญแจ, threshold, รายการเอกสารล่าสุด
+- ทดสอบจริง: PDF 3 ใบ + ไฟล์อัปโหลดเว็บ → needs_review ครบ
+- ต่อไป: M18 (อัปโหลดหลายไฟล์ในเว็บ/มือถือ)
