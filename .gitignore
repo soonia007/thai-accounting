@@ -42,3 +42,8 @@ playwright-report
 
 # Cloudflare
 .wrangler
+
+# Python virtual environments (OCR connector)
+.venv/
+venv/
+__pycache__/
